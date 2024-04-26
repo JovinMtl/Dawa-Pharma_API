@@ -1,11 +1,15 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (TokenObtainPairView, \
-                                            TokenRefreshView,\
-                                                  TokenVerifyView)
+# from rest_framework_simplejwt.views import (TokenObtainPairView, \
+#                                             TokenRefreshView,\
+#                                                   TokenVerifyView)
+
+from .views import EntrantImiti
 
 
+router = DefaultRouter()
+router.register(r'in', EntrantImiti, basename='entrants' )
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path('', include(router.urls)),
 ]
