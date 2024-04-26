@@ -13,12 +13,13 @@ from pharma.models import UmutiEntree
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
-    # @action(methods=['post'], detail=False,\
-    #          permission_classes= [IsAuthenticated])
-    @action(methods=['post'], detail=False)
+    
+    # @action(methods=['get'], detail=False)
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def kurangura(self, request):
         dataReceived = request.data
-        print(f"The data Received: {dataReceived}")
+        print(f"The data Received: {request.user}")
 
         return JsonResponse({"Things ":"well"})
 
