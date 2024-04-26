@@ -1,4 +1,5 @@
 
 django
 djangorestframework
-rest_framework_simplejwt
+rest_framework_simplejwt(deprecated)
+djangorestframework-simplejwt
