@@ -13,8 +13,9 @@ from pharma.models import UmutiEntree
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
-    @action(methods=['post'], detail=False,\
-             permission_classes= [IsAuthenticated])
+    # @action(methods=['post'], detail=False,\
+    #          permission_classes= [IsAuthenticated])
+    @action(methods=['post'], detail=False)
     def kurangura(self, request):
         dataReceived = request.data
         print(f"The data Received: {dataReceived}")

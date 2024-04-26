@@ -3,3 +3,4 @@ django
 djangorestframework
 rest_framework_simplejwt(deprecated)
 djangorestframework-simplejwt
+django-cors-headers
