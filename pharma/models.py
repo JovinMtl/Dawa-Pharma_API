@@ -26,6 +26,7 @@ class UmutiEntree(models.Model):
         return f"{self.code_umuti} {(str(self.date_winjiriyeko))[:7]}"
 
 class ImitiSet(models.Model):
+    """THis one will contain the unique Umuti and its availability"""
     code_umuti = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
     name_umuti = models.CharField(max_length=30, default='null')
     description_umuti = models.TextField(verbose_name="ukwo bawufata n'ico umaze, bizofasha uwutawuzi")

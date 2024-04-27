@@ -39,8 +39,8 @@ class EntrantImiti(viewsets.ViewSet):
             try:
                 code_set = ImitiSet.objects.get(code_umuti=code)
             except ImitiSet.DoesNotExist:
-                #mugihe iyo code atayo muri Set
-                #duca tuyishiraho
+                #when the code is new in the ImitiSet
+                #we create that entry in the ImitiSet
                 umuti_new = self._umutiMushasha(umuti=umuti)
                 if type(umuti_new) == 'ImitiSet':
                     obj = {
