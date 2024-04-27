@@ -27,12 +27,12 @@ def getIndex(chaine:str, sous_chaine:str):
             worth = True
             i += 1
     if (len(sous_chaine) == found):
-        return 1
+        return i
     else:
-        return found
+        return 0
 
 
 print("Hello, we want to execute the function")
-chaine = "Thierry Jovin est charmant"
-sous_chaine = "est"
+chaine = "Thierry Jovin estj charmant"
+sous_chaine = "estj"
 print(f"The response is {getIndex(chaine=chaine, sous_chaine=sous_chaine)}")
