@@ -55,9 +55,10 @@ class EntrantImiti(viewsets.ViewSet):
             else:
                 #mugihe iyo code ihari muri Set
                 if ((code_set.lot)[:7] == (str(umuti.date_uzohererako))[:7]):
-                    current_lot = code_set.lot
-                    date_index = getIndex(current_lot, (code_set.lot)[:7]) + 3
-                    current_date = current_lot
+                    date_index = getIndex(code_set.lot, (code_set.lot)[:7]) + 3
+                    # current_date = current_lot
+                    print(f"This is what we already have: {code_set.lot} :\
+                          Index: {date_index} ; STR:{(code_set.lot)[:7]}")
                 pass
 
         print(f"The data Received: {request.user}")
