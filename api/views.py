@@ -32,6 +32,7 @@ class EntrantImiti(viewsets.ViewSet):
         procured = UmutiEntree.objects.all()
         i = 1
         j = 1
+        lot = []
         for umuti in procured:
             code = umuti.code_umuti
             umuti.location
@@ -42,13 +43,15 @@ class EntrantImiti(viewsets.ViewSet):
                 #duca tuyishiraho
                 umuti_new = self._umutiMushasha(umuti=umuti)
                 if type(umuti_new) == 'ImitiSet':
-                    lot = []
                     obj = {
                         'date': (str(umuti.date_uzohererako))[:7],
                         'qte': int(i),
                         'code_operation': str(code)
                     }
                     i += 1
+                    lot.append(obj)
+                    umuti_new.lot = lot
+                    umuti_new.save()
             else:
                 #mugihe iyo code ihari muri Set
                 pass
