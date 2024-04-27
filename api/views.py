@@ -35,6 +35,7 @@ class EntrantImiti(viewsets.ViewSet):
         j = 1
         lot = []
         for umuti in procured:
+            print(f"The current UMUTI is {type(umuti)}")
             code = umuti.code_umuti
             umuti.location
             try:
