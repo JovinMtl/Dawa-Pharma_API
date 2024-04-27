@@ -24,8 +24,9 @@ class EntrantImiti(viewsets.ViewSet):
 
         return JsonResponse({"Things ":"well"})
     
-    @action(methods=['get'], detail=False,\
-             permission_classes= [IsAuthenticated])
+    # @action(methods=['get'], detail=False,\
+    #          permission_classes= [IsAuthenticated])
+    @action(methods=['get'], detail=False)
     def imitiSet(self, request):
         """Compile all the list of the Medicament procured, according
         the Code_umuti and date_echeance"""
