@@ -18,9 +18,25 @@ class EntrantImiti(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def kurangura(self, request):
+        """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
         print(f"The data Received: {request.user}")
 
         return JsonResponse({"Things ":"well"})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def imitiSet(self, request):
+        """Compile all the list of the Medicament procured, according
+        the Code_umuti and date_echeance"""
+        procured = UmutiEntree.objects.all()
+        for umuti in procured:
+            code = umuti.code_umuti
+            
+        print(f"The data Received: {request.user}")
+
+        return JsonResponse({"Things ":"well"})
+
+# class 
 
 
