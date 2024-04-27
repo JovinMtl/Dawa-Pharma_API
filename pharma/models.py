@@ -20,5 +20,9 @@ class UmutiEntree(models.Model):
     difference = models.IntegerField(default=0) #9: benefice
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
+    code_operation = models.CharField(max_length=8, default='null') #code yo kwinjiza uwo muti(miti):commune
+
+    def __str__(self) -> str:
+        return f"{self.code_umuti} {(str(self.date_winjiriyeko))[:7]}"
 
 
