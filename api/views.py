@@ -56,7 +56,8 @@ class EntrantImiti(viewsets.ViewSet):
                 #mugihe iyo code ihari muri Set
                 if ((code_set.lot)[:7] == (str(umuti.date_uzohererako))[:7]):
                     current_lot = code_set.lot
-
+                    date_index = getIndex(current_lot, (code_set.lot)[:7]) + 3
+                    current_date = current_lot
                 pass
 
         print(f"The data Received: {request.user}")
@@ -86,29 +87,27 @@ class EntrantImiti(viewsets.ViewSet):
 # class 
 def getIndex(chaine:str, sous_chaine:str):
     """THis one will return the index of last caracter of 
-    sous_chaine which is in a chaine"""
-
-    urufatiro = sous_chaine[0]
-    worth = True
+    sous_chaine which is in a chaine of type STRING.
     
-    def nextMatch(a, b):
-        if a == b:
-            return 1
-        else:
-            return 0
-    length_chaine = len(chaine)
-    i=0
-    rep = 0
-    while worth and (i < length_chaine):
-        if urufatiro == chaine:
-            rep = nextMatch(urufatiro[i+1],chaine[i+1])
-            if(not rep):
-                worth = False
-                i += 1
-            else:
-                i +=2
-            
+    RETURNS index or 0
+    """
 
+    worth = True
+    length_chaine = len(chaine)
+    i=0 #counter for chaine
+    j=0 #counter for sous_chaine
+    found = 0 #the number of occurence
+    while (worth and (i < length_chaine) and (j < len(sous_chaine))):
+        if sous_chaine[j] == chaine[i]:
+            i += 1
+            j += 1
+            found += 1
+        else:
+            i += 1
+    if (len(sous_chaine) == found):
+        return i
+    else:
+        return 0
 
 
 
