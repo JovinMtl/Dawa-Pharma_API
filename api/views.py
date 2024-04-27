@@ -34,34 +34,40 @@ class EntrantImiti(viewsets.ViewSet):
         i = 1
         j = 1
         lot = []
-        for umuti in procured:
-            print(f"The current UMUTI is {type(umuti)}")
-            code = umuti.code_umuti
-            umuti.location
+        for umutie in procured:
+            # print(f"The current UMUTI is {type(umutie)}")
+            # print(f"The umuti Code is {umutie.code_umuti}")
+            code = umutie.code_umuti
+            # umuti.location
             try:
                 code_set = ImitiSet.objects.get(code_umuti=code)
             except ImitiSet.DoesNotExist:
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
-                umuti_new = self._umutiMushasha(umuti=umuti)
-                if type(umuti_new) == 'ImitiSet':
-                    obj = {
-                        'date': (str(umuti.date_uzohererako))[:7],
-                        'qte': int(i),
-                        'code_operation': str(code)
-                    }
-                    i += 1
-                    lot.append(obj)
-                    umuti_new.lot = lot
-                    umuti_new.save()
+                # pass
+                print(f"The Umutie: {umutie}")
+                umuti_new = self._umutiMushasha(umutie)
+                print(f"the new UMUTI: {umuti_new}")
             else:
-                #mugihe iyo code ihari muri Set
-                if ((code_set.lot)[:7] == (str(umuti.date_uzohererako))[:7]):
-                    date_index = getIndex(code_set.lot, (code_set.lot)[:7]) + 3
-                    # current_date = current_lot
-                    print(f"This is what we already have: {code_set.lot} :\
-                          Index: {date_index} ; STR:{(code_set.lot)[:7]}")
-                pass
+                print(f"THe existing UMUTI: {code_set}")
+            #     if type(umuti_new) == 'ImitiSet':
+            #         obj = {
+            #             'date': (str(umutie.date_uzohererako))[:7],
+            #             'qte': int(i),
+            #             'code_operation': str(code)
+            #         }
+            #         i += 1
+            #         lot.append(obj)
+            #         umuti_new.lot = lot
+            #         umuti_new.save()
+            # else:
+            #     #mugihe iyo code ihari muri Set
+            #     if ((code_set.lot)[:7] == (str(umutie.date_uzohererako))[:7]):
+            #         date_index = getIndex(code_set.lot, (code_set.lot)[:7]) + 3
+            #         # current_date = current_lot
+            #         print(f"This is what we already have: {code_set.lot} :\
+            #               Index: {date_index} ; STR:{(code_set.lot)[:7]}")
+                # pass
 
         print(f"The data Received: {request.user}")
 
@@ -69,7 +75,8 @@ class EntrantImiti(viewsets.ViewSet):
     
     def _umutiMushasha(self, umuti):
         umuti_new = ImitiSet.objects.create()
-        umuti_new.code_umuti = str(umuti.umuti_code)
+        umuti_new.code_umuti = str("umuti.umuti_code")
+        print(f"The Sent umuti Code: {umuti.code_umuti}")
         umuti_new.name_umuti = str(umuti.name_umuti)
         umuti_new.description_umuti = str(umuti.description_umuti)
         umuti_new.type_umuti = str(umuti.type_umuti)
