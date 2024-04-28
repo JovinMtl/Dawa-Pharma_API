@@ -44,3 +44,6 @@ class ImitiSet(models.Model):
     #    {'date':"2025,04", 'qte':"3", 'code_operation':'12stM'},
     #    {'date':"2025,04", 'qte':"3", 'code_operation':'12stM'},
     # ]
+
+    def __str__(self) -> str:
+        return f"{self.code_umuti}:{self.price_out}"
