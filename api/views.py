@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
+import json
+
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet
 
@@ -35,8 +37,6 @@ class EntrantImiti(viewsets.ViewSet):
         j = 1
         lot = []
         for umutie in procured:
-            # print(f"The current UMUTI is {type(umutie)}")
-            # print(f"The umuti Code is {umutie.code_umuti}")
             code = umutie.code_umuti
             # umuti.location
             try:
@@ -44,42 +44,52 @@ class EntrantImiti(viewsets.ViewSet):
             except ImitiSet.DoesNotExist:
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
-                # print(f"The Umutie: {umutie}")
                 umuti_new = self._umutiMushasha(umutie)
                 print(f"the new UMUTI: {umuti_new} : {type(umuti_new)}")
                 if str(type(umuti_new)) == "<class 'pharma.models.ImitiSet'>":
                     obj = {
                         'date': (str(umutie.date_uzohererako))[:7],
-                        'qte': int(i),
-                        'code_operation': str(code)
+                        'qte': int(umutie.quantite_restant),
+                        'code_operation': str(umutie.code_operation)
                     }
-                    i += 1
-                    lot.append(obj)
-                    print(f"The lot: {lot}")
-                    umuti_new.lot = str(lot)
-                    print(f"Lot assigned: {umuti_new.lot}")
+                    arr = []
+                    arr.append(obj)
+                    jove = json.dumps(obj=arr)
+                    print(f"THe dumped: {jove}")
+                    # i += 1
+                    # lot.append(obj)
+                    # print(f"The lot: {lot}")
+                    # arr.append(jove)
+                    umuti_new.lot = jove
+                    # print(f"Lot assigned: {umuti_new.lot}")
                     umuti_new.save()
             else:
                 print(f"THe existing UMUTI: {code_set}")
             
                 #mugihe iyo code ihari muri Set
-                if ((code_set.lot)[11:18] == (str(umutie.date_uzohererako))[:7]):
-                    date_index = getIndex(code_set.lot, (code_set.lot)[11:18]) + 10
-                    # current_date = current_lot
-                    qte = code_set.lot[date_index]
-                    qte_int = int(qte) + 1
-                    # code_set.lot[date_index] = '3'
-                    # [4] = '9'
-                    code = str(code_set.code_umuti)
-                    code[4] = 'T'
-                    print(f"This is what we already have: {code_set.lot} :\
-                          Index: {date_index} ; STR:{(code_set.lot)[:7]}")
-                    print(f"Qte: {qte} : {qte_int}")
-                    print(f"Code um: {code_set.code_umuti[1]}")
-                    # code_set.save()
-                else:
-                    print(f"Pas egale: {(code_set.lot)[11:18]} et {(str(umutie.date_uzohererako))[:7]}")
-                pass
+                lot = code_set.lot
+                saved_lot = json.loads(lot)
+                print(f"The Saved lot {lot} ; type {type(lot)}")
+                print(f"The converted: {saved_lot} of type: {type(saved_lot)}")
+                i = 0
+                j = 0
+                for lote in saved_lot:
+                    if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
+                        lote.qte += umutie.quantite_restant
+                        j += 1
+                    print(f"The lote : {lote} of type {type(lote)}")
+                if not j:
+                    obj = {
+                        'date': (str(umutie.date_uzohererako))[:7],
+                        'qte': int(umutie.quantite_restant),
+                        'code_operation': str(umutie.code_operation)
+                    }
+                    i += 1
+                    saved_lot.append(obj)
+                code_set.quantite_restant += umutie.quantite_restant
+                code_set.lot = saved_lot
+                code_set.save()
+                print(f"The now lot: {code_set.lot}")
 
         print(f"The data Received: {request.user}")
 
@@ -98,7 +108,7 @@ class EntrantImiti(viewsets.ViewSet):
         # imiti_reversed = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti)[-1]
         # last_umuti = imiti_reversed[0]
         umuti_new.price_in = str(umuti.price_in)
-        umuti_new.quantite_restant = str(umuti.quantite_restant)
+        umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
 
