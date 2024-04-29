@@ -18,7 +18,7 @@ class UmutiEntree(models.Model):
     price_in = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe
     price_out = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
     difference = models.IntegerField(default=0) #9: benefice
-    quantite_init = models.IntegerField(default=0) # izinjiye ubwambere
+    quantite_initial = models.IntegerField(default=0) # izinjiye ubwambere
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=8, default='null') #code yo kwinjiza uwo muti(miti):commune
