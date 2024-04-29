@@ -106,3 +106,13 @@ class EntrantImiti(viewsets.ViewSet):
         print("saving")
 
         return umuti_new
+
+
+
+class ImitiOut(viewsets.ViewSet):
+    """THis will give informations about the Imiti in the Store 
+    or etagere"""
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def dispo(self, request):
