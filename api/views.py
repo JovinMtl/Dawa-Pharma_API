@@ -32,7 +32,7 @@ class EntrantImiti(viewsets.ViewSet):
     # @action(methods=['get'], detail=False,\
     #          permission_classes= [IsAuthenticated])
     @action(methods=['get'], detail=False)
-    def imitiSet(self, request):
+    def compileImitiSet(self, request=None):
         """Compile all the list of the Medicament procured, according
         the Code_umuti and date_echeance"""
         procured = UmutiEntree.objects.all()
@@ -141,6 +141,10 @@ class ImitiOut(viewsets.ViewSet):
         except UmutiEntree.DoesNotExist:
             pass
         else:
+            #can now perfom the Vente operation and then call compile
             print(f"The Umuti found : {umuti}")
+            imiti = EntrantImiti()
+            jove = imiti.compileImitiSet()
+            print(f"La reponse de vente est: {jove}")
 
         return JsonResponse({"It is":"Okay"})
