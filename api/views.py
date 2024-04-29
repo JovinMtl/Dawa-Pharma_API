@@ -38,7 +38,6 @@ class EntrantImiti(viewsets.ViewSet):
         lot = []
         for umutie in procured:
             code = umutie.code_umuti
-            # umuti.location
             try:
                 code_set = ImitiSet.objects.get(code_umuti=code)
             except ImitiSet.DoesNotExist:
@@ -55,17 +54,10 @@ class EntrantImiti(viewsets.ViewSet):
                     arr = []
                     arr.append(obj)
                     jove = json.dumps(obj=arr)
-                    print(f"THe dumped: {jove}")
-                    # i += 1
-                    # lot.append(obj)
-                    # print(f"The lot: {lot}")
-                    # arr.append(jove)
                     umuti_new.lot = jove
-                    # print(f"Lot assigned: {umuti_new.lot}")
                     umuti_new.save()
             else:
                 print(f"THe existing UMUTI: {code_set}")
-            
                 #mugihe iyo code ihari muri Set
                 lot = code_set.lot
                 saved_lot = json.loads(lot)
@@ -91,8 +83,6 @@ class EntrantImiti(viewsets.ViewSet):
                 code_set.save()
                 print(f"The now lot: {code_set.lot}")
 
-        print(f"The data Received: {request.user}")
-
         return JsonResponse({"Things ":"well"})
     
     def _umutiMushasha(self, umuti):
@@ -116,31 +106,3 @@ class EntrantImiti(viewsets.ViewSet):
         print("saving")
 
         return umuti_new
-
-# class 
-def getIndex(chaine:str, sous_chaine:str):
-    """THis one will return the index of last caracter of 
-    sous_chaine which is in a chaine of type STRING.
-    
-    RETURNS index or 0
-    """
-
-    worth = True
-    length_chaine = len(chaine)
-    i=0 #counter for chaine
-    j=0 #counter for sous_chaine
-    found = 0 #the number of occurence
-    while (worth and (i < length_chaine) and (j < len(sous_chaine))):
-        if sous_chaine[j] == chaine[i]:
-            i += 1
-            j += 1
-            found += 1
-        else:
-            i += 1
-    if (len(sous_chaine) == found):
-        return i
-    else:
-        return 0
-
-
-
