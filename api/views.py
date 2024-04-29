@@ -126,3 +126,21 @@ class ImitiOut(viewsets.ViewSet):
             return Response(imitiSerialized.data)
 
         return JsonResponse({"THings are":"okay"})
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def sell(self, request):
+        data_query = request.data
+        code_umuti = data_query.get('code_umuti')
+        code_operation = data_query.get('code_operation')
+        qte = data_query.get('qte')
+        try:
+            umuti = UmutiEntree.objects.\
+                filter(code_umuti=code_umuti).\
+                filter(code_operation=code_operation)
+        except UmutiEntree.DoesNotExist:
+            pass
+        else:
+            print(f"The Umuti found : {umuti}")
+
+        return JsonResponse({"It is":"Okay"})
