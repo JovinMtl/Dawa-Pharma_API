@@ -10,6 +10,9 @@ import json
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet
 
+#importing the serializers
+from .serializers import ImitiSetSeriazer
+
 # Create your views here.
 
 class EntrantImiti(viewsets.ViewSet):
