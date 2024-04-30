@@ -156,4 +156,6 @@ class ImitiOut(viewsets.ViewSet):
         return JsonResponse({"It is":"Okay"})
     
     def _imitiSell(umuti:UmutiEntree, qte:int):
+        """Will substract the quantite_restante in UmutiEntree and
+        write a new instance of UmutiSell"""
         pass
