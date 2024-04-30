@@ -127,24 +127,33 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
     
+
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def sell(self, request):
         data_query = request.data
-        code_umuti = data_query.get('code_umuti')
-        code_operation = data_query.get('code_operation')
-        qte = data_query.get('qte')
-        try:
-            umuti = UmutiEntree.objects.\
-                filter(code_umuti=code_umuti).\
-                filter(code_operation=code_operation)
-        except UmutiEntree.DoesNotExist:
-            pass
-        else:
-            #can now perfom the Vente operation and then call compile
-            print(f"The Umuti found : {umuti}")
-            imiti = EntrantImiti()
-            jove = imiti.compileImitiSet()
-            print(f"La reponse de vente est: {jove}")
+        bundle = data_query
+        for actual in bundle:
+            code_umuti = actual.get('code_umuti')
+            code_operation = actual.get('code_operation')
+            qte = actual.get('qte')
+            try:
+                umuti = UmutiEntree.objects.\
+                    filter(code_umuti=code_umuti).\
+                    filter(code_operation=code_operation)
+            except UmutiEntree.DoesNotExist:
+                pass
+            else:
+                #can now perfom the Vente operation
+                print(f"The Umuti found : {umuti}")
+                self._imitiSell(umuti)
+
+        #  after sell then call compile
+        imiti = EntrantImiti()
+        jove = imiti.compileImitiSet()
+        print(f"La reponse de vente est: {jove}")
 
         return JsonResponse({"It is":"Okay"})
+    
+    def _imitiSell(umuti:UmutiEntree):
+        pass
