@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
 import json
+from django.utils import timezone
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold
@@ -158,7 +159,7 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"It is":"Okay"})
     
-    def _imitiSell(umuti:UmutiEntree, qte:int):
+    def _imitiSell(umuti:UmutiEntree, qte:int, operator:str):
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
         reference_umuti = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
@@ -169,5 +170,8 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.price_out = reference_umuti.price_out
         new_vente.code_operation_entrant = umuti.code_operation
         new_vente.code_operation = GenerateCode.gene(12)
+        new_vente.operator = operator
+        new_vente.date_operation = timezone.now()
         umuti.quantite_restant -= qte
-        pass
+        
+        return 200
