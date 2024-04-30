@@ -50,7 +50,7 @@ class ImitiSet(models.Model):
         return f"{self.code_umuti}:{self.price_out}"
     
 
-class UmutiSale(models.Model):
+class UmutiSold(models.Model):
     """This one will record all the sale and benefit as well"""
     code_umuti = models.CharField(max_length=8, default='null')
     name_umuti = models.CharField(max_length=30, default='null')
