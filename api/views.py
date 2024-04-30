@@ -8,10 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 import json
 
 #importing my models from Pharma
-from pharma.models import UmutiEntree, ImitiSet
+from pharma.models import UmutiEntree, ImitiSet, UmutiSold
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer
+
+#importing my code generator
+from .code_generator import GenerateCode
 
 # Create your views here.
 
@@ -146,7 +149,7 @@ class ImitiOut(viewsets.ViewSet):
             else:
                 #can now perfom the Vente operation
                 print(f"The Umuti found : {umuti}")
-                self._imitiSell(umuti)
+                self._imitiSell(umuti, qte)
 
         #  after sell then call compile
         imiti = EntrantImiti()
@@ -158,4 +161,13 @@ class ImitiOut(viewsets.ViewSet):
     def _imitiSell(umuti:UmutiEntree, qte:int):
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
+        reference_umuti = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
+        new_vente = UmutiSold.objects.create()
+        new_vente.code_umuti = umuti.code_umuti
+        new_vente.name_umuti = umuti.name_umuti
+        new_vente.quantity = qte
+        new_vente.price_out = reference_umuti.price_out
+        new_vente.code_operation_entrant = umuti.code_operation
+        new_vente.code_operation = genera
+        umuti.quantite_restant -= qte
         pass
