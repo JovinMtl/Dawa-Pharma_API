@@ -156,7 +156,6 @@ class ImitiOut(viewsets.ViewSet):
                     return JsonResponse({"Umuti":"does not exist"})
                 sold = self._imitiSell(umuti=umuti[0], qte=qte, operator=request.user)
                 if sold == 200:
-                    # print(f"Umuti {umuti.code_umuti} is sold")
                     print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
 
         #  after sell then call compile
@@ -177,10 +176,11 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.quantity = qte
         new_vente.price_out = reference_umuti.price_out
         new_vente.code_operation_entrant = umuti.code_operation
-        new_vente.code_operation = GenerateCode.gene(12)
-        new_vente.operator = operator
+        code = GenerateCode(12)
+        new_vente.code_operation = code.giveCode()
+        new_vente.operator = str(operator.username)
         new_vente.date_operation = timezone.now()
-        umuti.quantite_restant -= qte
+        umuti.quantite_restant -= int(qte)
 
         umuti.save()
         new_vente.save()
