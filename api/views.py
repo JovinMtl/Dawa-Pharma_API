@@ -168,6 +168,6 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.quantity = qte
         new_vente.price_out = reference_umuti.price_out
         new_vente.code_operation_entrant = umuti.code_operation
-        new_vente.code_operation = genera
+        new_vente.code_operation = GenerateCode.gene(12)
         umuti.quantite_restant -= qte
         pass
