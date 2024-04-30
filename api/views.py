@@ -170,17 +170,19 @@ class ImitiOut(viewsets.ViewSet):
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
 
-        print(f"The umuti received: {umuti}")
-        # reference_umuti = ImitiSet.objects.get(code_umuti='AMT23')
-        # new_vente = UmutiSold.objects.create()
-        # new_vente.code_umuti = umuti.code_umuti
-        # new_vente.name_umuti = umuti.name_umuti
-        # new_vente.quantity = qte
-        # new_vente.price_out = reference_umuti.price_out
-        # new_vente.code_operation_entrant = umuti.code_operation
-        # new_vente.code_operation = GenerateCode.gene(12)
-        # new_vente.operator = operator
-        # new_vente.date_operation = timezone.now()
-        # umuti.quantite_restant -= qte
+        reference_umuti = ImitiSet.objects.get(code_umuti='AMT23')
+        new_vente = UmutiSold.objects.create()
+        new_vente.code_umuti = umuti.code_umuti
+        new_vente.name_umuti = umuti.name_umuti
+        new_vente.quantity = qte
+        new_vente.price_out = reference_umuti.price_out
+        new_vente.code_operation_entrant = umuti.code_operation
+        new_vente.code_operation = GenerateCode.gene(12)
+        new_vente.operator = operator
+        new_vente.date_operation = timezone.now()
+        umuti.quantite_restant -= qte
+
+        umuti.save()
+        new_vente.save()
         
         return 200
