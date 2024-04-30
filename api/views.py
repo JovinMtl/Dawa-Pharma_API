@@ -150,7 +150,9 @@ class ImitiOut(viewsets.ViewSet):
             else:
                 #can now perfom the Vente operation
                 print(f"The Umuti found : {umuti}")
-                self._imitiSell(umuti, qte)
+                sold = self._imitiSell(umuti=umuti, qte=qte, operator=request.user)
+                if sold == 200:
+                    print(f"Umuti {umuti.code_umuti} is sold")
 
         #  after sell then call compile
         imiti = EntrantImiti()
