@@ -136,11 +136,13 @@ class ImitiOut(viewsets.ViewSet):
              permission_classes= [IsAuthenticated])
     def sell(self, request):
         data_query = request.data
-        bundle = data_query
+        bundle = []
+        bundle.append(dict(data_query))
         for actual in bundle:
-            code_umuti = actual.get('code_umuti')
-            code_operation = actual.get('code_operation')
-            qte = actual.get('qte')
+            print(f"actual: {actual}")
+            code_umuti = actual.get('code_umuti')[0]
+            code_operation = actual.get('code_operation')[0]
+            qte = actual.get('qte')[0]
             try:
                 umuti = UmutiEntree.objects.\
                     filter(code_umuti=code_umuti).\
@@ -150,30 +152,35 @@ class ImitiOut(viewsets.ViewSet):
             else:
                 #can now perfom the Vente operation
                 print(f"The Umuti found : {umuti}")
-                sold = self._imitiSell(umuti=umuti, qte=qte, operator=request.user)
+                if not umuti:
+                    return JsonResponse({"Umuti":"does not exist"})
+                sold = self._imitiSell(umuti=umuti[0], qte=qte, operator=request.user)
                 if sold == 200:
-                    print(f"Umuti {umuti.code_umuti} is sold")
+                    # print(f"Umuti {umuti.code_umuti} is sold")
+                    print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
 
         #  after sell then call compile
-        imiti = EntrantImiti()
-        jove = imiti.compileImitiSet()
-        print(f"La reponse de vente est: {jove}")
+        # imiti = EntrantImiti()
+        # jove = imiti.compileImitiSet()
+        # print(f"La reponse de vente est: {jove}")
 
         return JsonResponse({"It is":"Okay"})
     
-    def _imitiSell(umuti:UmutiEntree, qte:int, operator:str):
+    def _imitiSell(self, umuti:UmutiEntree, qte:int, operator:str):
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
-        reference_umuti = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
-        new_vente = UmutiSold.objects.create()
-        new_vente.code_umuti = umuti.code_umuti
-        new_vente.name_umuti = umuti.name_umuti
-        new_vente.quantity = qte
-        new_vente.price_out = reference_umuti.price_out
-        new_vente.code_operation_entrant = umuti.code_operation
-        new_vente.code_operation = GenerateCode.gene(12)
-        new_vente.operator = operator
-        new_vente.date_operation = timezone.now()
-        umuti.quantite_restant -= qte
+
+        print(f"The umuti received: {umuti}")
+        # reference_umuti = ImitiSet.objects.get(code_umuti='AMT23')
+        # new_vente = UmutiSold.objects.create()
+        # new_vente.code_umuti = umuti.code_umuti
+        # new_vente.name_umuti = umuti.name_umuti
+        # new_vente.quantity = qte
+        # new_vente.price_out = reference_umuti.price_out
+        # new_vente.code_operation_entrant = umuti.code_operation
+        # new_vente.code_operation = GenerateCode.gene(12)
+        # new_vente.operator = operator
+        # new_vente.date_operation = timezone.now()
+        # umuti.quantite_restant -= qte
         
         return 200
