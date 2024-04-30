@@ -155,5 +155,5 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"It is":"Okay"})
     
-    def _imitiSell(umuti:UmutiEntree):
+    def _imitiSell(umuti:UmutiEntree, qte:int):
         pass
