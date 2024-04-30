@@ -52,7 +52,7 @@ class GenerateCode:
         while worth:
             current_code = self.gene()
             try:
-                verify = UmutiSold.objects.get(code=current_code)
+                verify = UmutiSold.objects.get(code_operation=current_code)
             except UmutiSold.DoesNotExist:
                 worth = False
             else:
