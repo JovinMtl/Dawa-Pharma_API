@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.utils import timezone
 
 # Create your models here.
 
@@ -60,5 +61,5 @@ class UmutiSold(models.Model):
     code_operation_entrant = models.CharField(max_length=8, default='null') #code operation uyo muti winjiriyeko
     code_operation = models.CharField(max_length=8, default='null') #common with other sold together
     operator = models.CharField(max_length=15, default='null')
-    date_operation = models.DateTimeField(default=datetime.now())
+    date_operation = models.DateTimeField(default=timezone.now())
 
