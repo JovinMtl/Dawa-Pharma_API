@@ -93,7 +93,8 @@ class EntrantImiti(viewsets.ViewSet):
                 code_set.quantite_restant += umutie.quantite_restant
                 code_set.lot = lot_list
                 last_date = self._findLastDate(code_umuti=code_set.code_umuti)
-                code_set.date_last_vente = last_date
+                if last_date:
+                    code_set.date_last_vente = last_date
                 code_set.save()
                 # print(f"The now lot: {code_set.lot}")
 
@@ -115,6 +116,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
+        umuti_new.date_last_vente = umuti.date_winjiriyeko
 
         umuti_new.save()
         print("saving")
