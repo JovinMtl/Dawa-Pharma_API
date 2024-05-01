@@ -48,7 +48,7 @@ class ImitiSet(models.Model):
     # ]
 
     def __str__(self) -> str:
-        return f"{self.code_umuti}:{self.price_out}"
+        return f"{self.code_umuti}:{self.quantite_restant}"
     
 
 class UmutiSold(models.Model):
