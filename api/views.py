@@ -80,7 +80,7 @@ class EntrantImiti(viewsets.ViewSet):
                     j = 0
                     for lote in saved_lot:
                         if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                            lote.qte += umutie.quantite_restant
+                            lote['qte'] += umutie.quantite_restant
                             j += 1
                         print(f"The lote : {lote} of type {type(lote)}")
                     if not j:
