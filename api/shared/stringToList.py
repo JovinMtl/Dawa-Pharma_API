@@ -23,6 +23,6 @@ class StringToList:
         #replacing a single quote " ' " into double quote "
         double_quoted = self.data.replace("'", "\"")
         toJson = json.loads(double_quoted)
-        print(f"THe result : {(double_quoted)}")
-        print(f"And the its Json: {toJson}: of type: {type(toJson)}")
+        # print(f"THe result : {(double_quoted)}")
+        # print(f"And the its Json: {toJson}: of type: {type(toJson)}")
         return toJson # a list
