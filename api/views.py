@@ -163,9 +163,9 @@ class ImitiOut(viewsets.ViewSet):
                     print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
 
         #  after sell then call compile
-        # imiti = EntrantImiti()
-        # jove = imiti.compileImitiSet()
-        # print(f"La reponse de vente est: {jove}")
+        imiti = EntrantImiti()
+        jove = imiti.compileImitiSet()
+        print(f"La reponse de vente est: {jove}")
 
         return JsonResponse({"It is":"Okay"})
     
