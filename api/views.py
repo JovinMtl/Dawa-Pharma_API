@@ -14,8 +14,9 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold
 #importing the serializers
 from .serializers import ImitiSetSeriazer
 
-#importing my code generator
+#importing my additional code
 from .code_generator import GenerateCode
+from .shared.stringToList import StringToList
 
 # Create your views here.
 
