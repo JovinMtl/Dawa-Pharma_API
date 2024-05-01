@@ -47,7 +47,7 @@ class ImitiSet(models.Model):
     #    {'date':"2025,04", 'qte':"3", 'code_operation':'12stM'},
     # ]
     qte_entrant_big = models.IntegerField(default=0) #twisunga mukugira rapport y'iyisigaye
-    date_last_vente = models.DateTimeField(default=datetime.now()) #aho uwo muti uheruka gusohoka ku murwayi
+    date_last_vente = models.DateTimeField(default=timezone.now()) #aho uwo muti uheruka gusohoka ku murwayi
 
     def __str__(self) -> str:
         return f"{self.code_umuti}:{self.quantite_restant}"
