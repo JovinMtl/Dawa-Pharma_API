@@ -60,35 +60,43 @@ class EntrantImiti(viewsets.ViewSet):
                     }
                     arr = []
                     arr.append(obj)
-                    jove = json.dumps(obj=arr)
+                    jove = json.dumps(obj=obj)
                     umuti_new.lot = jove
-                    umuti_new.save()
+                    # lot = umuti_new.lot
+                    # saved_lot = json.loads(lot)
+                    # umuti_new.lot = str(arr)
+                    print(f"Umuti new: {arr}")
+                    # umuti_new.save()
             else:
                 print(f"THe existing UMUTI: {code_set}")
                 #mugihe iyo code ihari muri Set
                 lot = code_set.lot
-                saved_lot = json.loads(lot)
-                print(f"The Saved lot {lot} ; type {type(lot)}")
-                print(f"The converted: {saved_lot} of type: {type(saved_lot)}")
-                i = 0
-                j = 0
-                for lote in saved_lot:
-                    if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                        lote.qte += umutie.quantite_restant
-                        j += 1
-                    print(f"The lote : {lote} of type {type(lote)}")
-                if not j:
-                    obj = {
-                        'date': (str(umutie.date_uzohererako))[:7],
-                        'qte': int(umutie.quantite_restant),
-                        'code_operation': str(umutie.code_operation)
-                    }
-                    i += 1
-                    saved_lot.append(obj)
-                code_set.quantite_restant += umutie.quantite_restant
-                code_set.lot = saved_lot
-                code_set.save()
-                print(f"The now lot: {code_set.lot}")
+                try:
+                    saved_lot = json.loads(lot)
+                except json.decoder.JSONDecodeError:
+                    print(f"The format of lot is incorrect")
+                else:
+                    print(f"The Saved lot {lot} ; type {type(lot)}")
+                    print(f"The converted: {saved_lot} of type: {type(saved_lot)}")
+                    i = 0
+                    j = 0
+                    for lote in saved_lot:
+                        if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
+                            lote.qte += umutie.quantite_restant
+                            j += 1
+                        print(f"The lote : {lote} of type {type(lote)}")
+                    if not j:
+                        obj = {
+                            'date': (str(umutie.date_uzohererako))[:7],
+                            'qte': int(umutie.quantite_restant),
+                            'code_operation': str(umutie.code_operation)
+                        }
+                        i += 1
+                        saved_lot.append(obj)
+                    code_set.quantite_restant += umutie.quantite_restant
+                    code_set.lot = saved_lot
+                    code_set.save()
+                    print(f"The now lot: {code_set.lot}")
 
         return JsonResponse({"Things ":"well"})
     
