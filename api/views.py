@@ -92,6 +92,8 @@ class EntrantImiti(viewsets.ViewSet):
                     lot_list.append(obj)
                 code_set.quantite_restant += umutie.quantite_restant
                 code_set.lot = lot_list
+                last_date = self._findLastDate(code_umuti=code_set.code_umuti)
+                code_set.date_last_vente = last_date
                 code_set.save()
                 # print(f"The now lot: {code_set.lot}")
 
@@ -118,6 +120,16 @@ class EntrantImiti(viewsets.ViewSet):
         print("saving")
 
         return umuti_new
+    
+    def _findLastDate(self, code_umuti:str):
+        sell_done = UmutiSold.objects.filter(code_umuti=code_umuti).last()
+        if sell_done:
+            date = sell_done
+            print(f"The umuti SOLD is: {date} with date {date.date_operation}")
+            return date.date_operation
+        else:
+            print(f"THe umuti SOLD is not found")
+            return None
 
 
 
