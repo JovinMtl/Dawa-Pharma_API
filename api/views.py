@@ -52,7 +52,7 @@ class EntrantImiti(viewsets.ViewSet):
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
                 umuti_new = self._umutiMushasha(umutie)
-                print(f"the new UMUTI: {umuti_new} : {type(umuti_new)}")
+                # print(f"the new UMUTI: {umuti_new} : {type(umuti_new)}")
                 if str(type(umuti_new)) == "<class 'pharma.models.ImitiSet'>":
                     obj = {
                         'date': (str(umutie.date_uzohererako))[:7],
@@ -63,24 +63,24 @@ class EntrantImiti(viewsets.ViewSet):
                     arr.append(obj)
                     jove = json.dumps(obj=arr)
                     umuti_new.lot = jove
-                    print(f"Umuti initial lot: {umuti_new.lot}")
+                    # print(f"Umuti initial lot: {umuti_new.lot}")
                     umuti_new.save()
             else:
-                print(f"THe existing UMUTI: {code_set}")
+                # print(f"THe existing UMUTI: {code_set}")
                 #mugihe iyo code ihari muri Set
                 lot = code_set.lot
                 lot_string = StringToList(code_set.lot)
                 #the string of list must be made into json
                 lot_list = lot_string.toList()
-                print(f"The Saved lot {lot} ; type {type(lot)}")
-                print(f"The converted: {lot_list} of type: {type(lot_list)}")
+                # print(f"The Saved lot {lot} ; type {type(lot)}")
+                # print(f"The converted: {lot_list} of type: {type(lot_list)}")
                 i = 0
                 j = 0
                 for lote in lot_list:
                     if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
                         lote['qte'] += umutie.quantite_restant
                         j += 1
-                    print(f"The lote : {lote} of type {type(lote)}")
+                    # print(f"The lote : {lote} of type {type(lote)}")
                 if not j:
                     obj = {
                         'date': (str(umutie.date_uzohererako))[:7],
@@ -92,7 +92,7 @@ class EntrantImiti(viewsets.ViewSet):
                 code_set.quantite_restant += umutie.quantite_restant
                 code_set.lot = lot_list
                 code_set.save()
-                print(f"The now lot: {code_set.lot}")
+                # print(f"The now lot: {code_set.lot}")
 
         return JsonResponse({"Things ":"well"})
     
