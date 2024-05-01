@@ -97,8 +97,11 @@ class EntrantImiti(viewsets.ViewSet):
                 if last_date:
                     code_set.date_last_vente = last_date
                 #checking if there is qte_entrant bigger than before
-                if code_set.qte_entrant_big < umutie.quantite_initial:
-                    code_set.qte_entrant_big = umutie.quantite_initial
+                if (int(code_set.qte_entrant_big) < int(umutie.quantite_initial)):
+                    code_set.qte_entrant_big = int(umutie.quantite_initial)
+                    print(f"The Umutie is bigger {umutie.quantite_initial} out of {code_set.qte_entrant_big}")
+                else:
+                    print(f"The Existing UmutiSet is bigger {code_set.qte_entrant_big} out of {umutie.quantite_initial}")
                 code_set.save()
                 # print(f"The now lot: {code_set.lot}")
 
@@ -120,8 +123,8 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
-        umuti_new.date_last_vente = int(umuti.quantite_initial)
-        umuti_new.qte_entrant_big = umuti
+        umuti_new.date_last_vente = umuti.date_winjiriyeko
+        umuti_new.qte_entrant_big = int(umuti.quantite_initial)
 
         umuti_new.save()
         print("saving")
