@@ -7,7 +7,7 @@ from django.utils import timezone
 # All the structure of Pharma operations will be defined here
 
 class UmutiEntree(models.Model):
-    date_winjiriyeko = models.DateField(default=datetime.now())
+    date_winjiriyeko = models.DateTimeField(default=timezone.now())
     date_uzohererako = models.DateField(default=datetime.now())
     code_umuti = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
     name_umuti = models.CharField(max_length=30, default='null')
