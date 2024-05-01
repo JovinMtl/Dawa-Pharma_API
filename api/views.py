@@ -62,9 +62,6 @@ class EntrantImiti(viewsets.ViewSet):
                     arr.append(obj)
                     jove = json.dumps(obj=arr)
                     umuti_new.lot = jove
-                    # lot = umuti_new.lot
-                    # saved_lot = json.loads(lot)
-                    # umuti_new.lot = str(arr)
                     print(f"Umuti initial lot: {umuti_new.lot}")
                     umuti_new.save()
             else:
@@ -74,7 +71,8 @@ class EntrantImiti(viewsets.ViewSet):
                 try:
                     saved_lot = json.loads(lot)
                 except json.decoder.JSONDecodeError:
-                    print(f"The format of lot is incorrect of :{lot}:of:{code_set}")
+                    print(f"{'#' * 10}\n \
+    THE FORMAT of LOT is INCORRECT of :{lot}:of:{code_set}\n{'#' * 10}")
                 else:
                     print(f"The Saved lot {lot} ; type {type(lot)}")
                     print(f"The converted: {saved_lot} of type: {type(saved_lot)}")
