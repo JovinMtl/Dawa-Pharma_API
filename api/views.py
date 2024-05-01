@@ -95,6 +95,8 @@ class EntrantImiti(viewsets.ViewSet):
                 last_date = self._findLastDate(code_umuti=code_set.code_umuti)
                 if last_date:
                     code_set.date_last_vente = last_date
+                #checking if there is qte_entrant bigger than before
+                if code_set.qte_entrant_big < umutie.quantite_initial
                 code_set.save()
                 # print(f"The now lot: {code_set.lot}")
 
@@ -116,7 +118,8 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
-        umuti_new.date_last_vente = umuti.date_winjiriyeko
+        umuti_new.date_last_vente = int(umuti.quantite_initial)
+        umuti_new.qte_entrant_big = umuti
 
         umuti_new.save()
         print("saving")
