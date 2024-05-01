@@ -48,6 +48,7 @@ class EntrantImiti(viewsets.ViewSet):
             code = umutie.code_umuti
             try:
                 code_set = ImitiSet.objects.get(code_umuti=code)
+                code_set.quantite_restant = 0
             except ImitiSet.DoesNotExist:
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
