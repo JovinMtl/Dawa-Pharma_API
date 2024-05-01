@@ -72,7 +72,9 @@ class EntrantImiti(viewsets.ViewSet):
                     saved_lot = json.loads(lot)
                 except json.decoder.JSONDecodeError:
                     print(f"{'#' * 70}\n \
-    THE FORMAT of LOT is INCORRECT of :{lot}:of:{code_set}\n{'#' * 70}")
+    THE FORMAT of LOT is INCORRECT of :{lot}:of type:{type(code_set.lot)}\n{'#' * 70}")
+                    make_json = json.dumps(obj=arr)
+                    print(f"Maybe the correct should be: {make_json}")
                 else:
                     print(f"The Saved lot {lot} ; type {type(lot)}")
                     print(f"The converted: {saved_lot} of type: {type(saved_lot)}")
