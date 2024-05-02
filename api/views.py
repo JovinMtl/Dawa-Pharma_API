@@ -47,14 +47,13 @@ class EntrantImiti(viewsets.ViewSet):
         for umutie in procured:
             code = umutie.code_umuti
             try:
-                code_set = ImitiSet.objects.get(code_umuti=code)
-                code_set.quantite_restant = 0
-                code_set.qte_entrant_big = 0
+                umuti_set = ImitiSet.objects.get(code_umuti=code)
+                umuti_set.quantite_restant = 0
+                # umuti_set.qte_entrant_big = 0
             except ImitiSet.DoesNotExist:
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
                 umuti_new = self._umutiMushasha(umutie)
-                # print(f"the new UMUTI: {umuti_new} : {type(umuti_new)}")
                 if str(type(umuti_new)) == "<class 'pharma.models.ImitiSet'>":
                     obj = {
                         'date': (str(umutie.date_uzohererako))[:7],
@@ -65,24 +64,21 @@ class EntrantImiti(viewsets.ViewSet):
                     arr.append(obj)
                     jove = json.dumps(obj=arr)
                     umuti_new.lot = jove
-                    # print(f"Umuti initial lot: {umuti_new.lot}")
                     umuti_new.save()
             else:
-                # print(f"THe existing UMUTI: {code_set}")
+                # print(f"THe existing UMUTI: {umuti_set}")
                 #mugihe iyo code ihari muri Set
-                lot = code_set.lot
-                lot_string = StringToList(code_set.lot)
+                lot = umuti_set.lot
+                lot_string = StringToList(umuti_set.lot)
                 #the string of list must be made into json
                 lot_list = lot_string.toList()
-                # print(f"The Saved lot {lot} ; type {type(lot)}")
-                # print(f"The converted: {lot_list} of type: {type(lot_list)}")
                 i = 0
                 j = 0
                 for lote in lot_list:
                     if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
                         lote['qte'] += umutie.quantite_restant
                         j += 1
-                    # print(f"The lote : {lote} of type {type(lote)}")
+                    
                 if not j:
                     obj = {
                         'date': (str(umutie.date_uzohererako))[:7],
@@ -91,19 +87,19 @@ class EntrantImiti(viewsets.ViewSet):
                     }
                     i += 1
                     lot_list.append(obj)
-                code_set.quantite_restant += umutie.quantite_restant
-                code_set.lot = lot_list
-                last_date = self._findLastDate(code_umuti=code_set.code_umuti)
+                umuti_set.quantite_restant += umutie.quantite_restant
+                umuti_set.lot = lot_list
+                last_date = self._findLastDate(code_umuti=umuti_set.code_umuti)
                 if last_date:
-                    code_set.date_last_vente = last_date
+                    umuti_set.date_last_vente = last_date
                 #checking if there is qte_entrant bigger than before
-                if (int(code_set.qte_entrant_big) < int(umutie.quantite_initial)):
-                    code_set.qte_entrant_big = int(umutie.quantite_initial)
-                    print(f"The Umutie is bigger {umutie.quantite_initial} out of {code_set.qte_entrant_big}")
+                if (int(umuti_set.qte_entrant_big)) < (int(umutie.quantite_initial)):
+                    print(f"The Umutie is bigger {umutie.quantite_initial} out of {umuti_set.qte_entrant_big}")
+                    umuti_set.qte_entrant_big = int(umutie.quantite_initial)
                 else:
-                    print(f"The Existing UmutiSet is bigger {code_set.qte_entrant_big} out of {umutie.quantite_initial}")
-                code_set.save()
-                # print(f"The now lot: {code_set.lot}")
+                    print(f"The Existing UmutiSet : {umuti_set.qte_entrant_big} \
+isn't bigger than {umutie.quantite_initial}")
+                umuti_set.save()
 
         return JsonResponse({"Things ":"well"})
     
@@ -127,7 +123,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
 
         umuti_new.save()
-        print("saving")
+        # print("saving")
 
         return umuti_new
     
@@ -135,10 +131,10 @@ class EntrantImiti(viewsets.ViewSet):
         sell_done = UmutiSold.objects.filter(code_umuti=code_umuti).last()
         if sell_done:
             date = sell_done
-            print(f"The umuti SOLD is: {date} with date {date.date_operation}")
+            # print(f"The umuti SOLD is: {date} with date {date.date_operation}")
             return date.date_operation
         else:
-            print(f"THe umuti SOLD is not found")
+            # print(f"THe umuti SOLD is not found")
             return None
 
 
