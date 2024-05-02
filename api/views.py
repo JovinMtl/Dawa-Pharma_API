@@ -94,11 +94,13 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_set.date_last_vente = last_date
                 #checking if there is qte_entrant bigger than before
                 if (int(umuti_set.qte_entrant_big)) < (int(umutie.quantite_initial)):
-                    print(f"The Umutie is bigger {umutie.quantite_initial} out of {umuti_set.qte_entrant_big}")
                     umuti_set.qte_entrant_big = int(umutie.quantite_initial)
+                    print(f"The Umutie is bigger {umutie.quantite_initial}\
+ out of {umuti_set.qte_entrant_big}")
                 else:
-                    print(f"The Existing UmutiSet : {umuti_set.qte_entrant_big} \
-isn't bigger than {umutie.quantite_initial}")
+                    print(f"The Existing UmutiSet :\
+ {umutie.quantite_initial}  \
+isn't bigger than {umuti_set.qte_entrant_big}.")
                 umuti_set.save()
 
         return JsonResponse({"Things ":"well"})
@@ -106,16 +108,15 @@ isn't bigger than {umutie.quantite_initial}")
     def _umutiMushasha(self, umuti):
         umuti_new = ImitiSet.objects.create()
         umuti_new.code_umuti = str(umuti.code_umuti)
-        # print(f"The Sent umuti Code: {umuti.code_umuti}")
         umuti_new.name_umuti = str(umuti.name_umuti)
         umuti_new.description_umuti = str(umuti.description_umuti)
         umuti_new.type_umuti = str(umuti.type_umuti)
         umuti_new.type_in = str(umuti.type_in)
         umuti_new.ratio_type = str(umuti.ratio_type)
         umuti_new.type_out = str(umuti.type_out)
-        # imiti_reversed = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti)[-1]
-        # last_umuti = imiti_reversed[0]
-        umuti_new.price_in = str(umuti.price_in)
+        last_umuti = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti).last()
+        umuti_new.price_in = int(last_umuti.price_in)
+        umuti_new.price_out = int(last_umuti.price_out)
         umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
@@ -123,7 +124,6 @@ isn't bigger than {umutie.quantite_initial}")
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
 
         umuti_new.save()
-        # print("saving")
 
         return umuti_new
     
