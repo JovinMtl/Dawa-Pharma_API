@@ -276,4 +276,7 @@ class Rapport(viewsets.ViewSet):
             filter(date_operation__gte=date2)
         
         report = self._makeReport(sold)
+    
+    def _makeReport(self, data:UmutiSold):
+        """will get a queryset an make a syntesis"""
 
