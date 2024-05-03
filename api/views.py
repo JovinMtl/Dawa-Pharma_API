@@ -14,7 +14,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell
 
 #importing the serializers
-from .serializers import ImitiSetSeriazer
+from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -279,6 +279,14 @@ class Rapport(viewsets.ViewSet):
         report = self._makeReport(sold)
         if report == 200:
             done_report = umutiReportSell.objects.all()
+            if done_report:
+                done_report_serializer = umutiReportSellSeriazer(\
+                    done_report, many=True)
+                if done_report_serializer.is_valid:
+                    return Response(done_report_serializer.data)
+        
+        return JsonResponse({"Things are":"Quite well"})
+            
     
     def _makeReport(self, data:UmutiSold):
         """will get a queryset an make a syntesis of the following form:
