@@ -250,6 +250,7 @@ class ImitiOut(viewsets.ViewSet):
             print(f"The final recommandation: {final_imiti}")
         else:
             print(f"There are no recommandations")
+            
         return JsonResponse({"Things are ":"well"})
     
 
