@@ -10,7 +10,8 @@ from django.utils import timezone
 from datetime import timedelta, datetime
 
 #importing my models from Pharma
-from pharma.models import UmutiEntree, ImitiSet, UmutiSold
+from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
+    umutiReportSell
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer
@@ -295,4 +296,27 @@ class Rapport(viewsets.ViewSet):
         imitiList = []
 
         for element in data:
-            e
+            try:
+                umuti_set = umutiReportSell.objects.get\
+                    (code_umuti=element.code_umuti)
+            except umutiReportSell.DoesNotExist:
+                umuti_record = self.
+    
+
+    def _recordNew(self, umuti:UmutiSold):
+        record_new = umutiReportSell.objects.create()
+        record_new.code_umuti = umuti.code_umuti
+        record_new.name_umuti = umuti.name_umuti
+        record_new.nb_vente = umuti.quantity
+        record_new.px_T_vente = int(umuti.price_out) * \
+            int(umuti.quantity)
+        record_new.benefice = int(umuti.price_out * umuti.quantity) - \
+                                int(umuti.price_in * umuti.quantity)
+        current = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
+        record_new.nb_rest = int(current.quantite_restant)
+        record_new.px_T_rest = int(current.quantite_restant * \
+                                   current.price_out)
+        
+        record_new.save()
+
+        return 200
