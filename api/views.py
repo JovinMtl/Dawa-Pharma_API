@@ -252,4 +252,7 @@ class ImitiOut(viewsets.ViewSet):
         return JsonResponse({"Things are ":"well"})
     
     def rapportVente(self, request):
+        pass
 
+class Rapport(viewsets.ViewSet):
+    """This class is meant to be of generating reports"""
