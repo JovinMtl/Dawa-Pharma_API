@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 import json
 from django.utils import timezone
+from datetime import timedelta
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold
@@ -209,3 +210,43 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.save()
         
         return 200
+    
+    def _getLess35(self):
+        imiti = ImitiSet.objects.all()
+        less_35 = []
+        for umuti in imiti:
+            if (umuti.qte_entrant_big / umuti.quantite_restant) < 3.5:
+                obj = {
+                    'code_umuti': umuti.code_umuti,
+                    'name_umuti' : umuti.name_umuti,
+                    'quantite_restant' : umuti.quantite_restant
+                }
+                less_35.append(obj)
+        
+        if less_35:
+            return less_35
+        else:
+            return None
+    
+    def workOn35(self, request):
+        """THis one will work on less than 35% remaining quantity
+         and return among them the sold within past 15days"""
+        imiti = self._getLess35()
+        days_15 = timezone.now().date() - timedelta(days=15)
+        ventes_15 = UmutiSold.objects.filter(date_operation__gte=days_15)
+        final_imiti = []
+        if imiti:
+            i = 0
+            for umuti in imiti:
+                umuti_exist_15 = ventes_15.filter(code_umuti=umuti.code_umuti)
+                if umuti_exist_15:
+                    final_imiti.append(imiti[i])
+        
+        if final_imiti:
+            print(f"The final recommandation: {final_imiti}")
+        else:
+            print(f"There are no recommandations")
+        return JsonResponse({"Things are ":"well"})
+    
+    def rapportVente(self, request):
+
