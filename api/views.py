@@ -278,27 +278,21 @@ class Rapport(viewsets.ViewSet):
         
         report = self._makeReport(sold)
         if report == 200:
-            return 
+            done_report = umutiReportSell.objects.all()
     
     def _makeReport(self, data:UmutiSold):
         """will get a queryset an make a syntesis of the following form:
         umuti_code, umuti_name, nb_vente, px_T, benefice, nb_rest, px_T_rest
         """
-        umutiRerportSell = {
-            'umuti_code': '',
-            'umuti_name': '',
-            'nb_vente': 0,
-            'px_T_vente': 0, # PU x nb_vente
-            'benefice': 0,
-            'nb_rest': 0,
-            'px_T_rest': 0 # PU x nb_rest
-
-        }
+        
+        # if exist, clean all the report existing
         old_report = umutiReportSell.objects.all()
         if old_report:
             for element in old_report:
                 element.delete()
             old_report.save()
+        
+        #stating a new report
         for element in data:
             try:
                 umuti_set = umutiReportSell.objects.get\
@@ -306,14 +300,14 @@ class Rapport(viewsets.ViewSet):
             except umutiReportSell.DoesNotExist:
                 umuti_record = self._recordNew(umuti=element)
                 if umuti_record != 200:
-                    print(f"Un nouveau record n'est pas cree")
+                    print(f"a new record is not created")
             else:
                 update_record = self._updateRecord(umuti_set=umuti_set,\
                                                     umuti=element)
                 if update_record:
-                    return update_record
+                    print(f"The report is well done")
                 else:
-                    print(f"Nous n'avons pas pu mettre a jour rapport")
+                    print(f"The report is not well done")
         
         return 200
     
