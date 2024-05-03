@@ -277,6 +277,8 @@ class Rapport(viewsets.ViewSet):
             filter(date_operation__gte=date2)
         
         report = self._makeReport(sold)
+        if report == 200:
+            return 
     
     def _makeReport(self, data:UmutiSold):
         """will get a queryset an make a syntesis of the following form:
@@ -292,9 +294,11 @@ class Rapport(viewsets.ViewSet):
             'px_T_rest': 0 # PU x nb_rest
 
         }
-
-        imitiList = []
-
+        old_report = umutiReportSell.objects.all()
+        if old_report:
+            for element in old_report:
+                element.delete()
+            old_report.save()
         for element in data:
             try:
                 umuti_set = umutiReportSell.objects.get\
@@ -304,9 +308,28 @@ class Rapport(viewsets.ViewSet):
                 if umuti_record != 200:
                     print(f"Un nouveau record n'est pas cree")
             else:
-                umuti_set.nb_vente +=
-                pass
+                update_record = self._updateRecord(umuti_set=umuti_set,\
+                                                    umuti=element)
+                if update_record:
+                    return update_record
+                else:
+                    print(f"Nous n'avons pas pu mettre a jour rapport")
+        
+        return 200
     
+    def _updateRecord(self,umuti_set:umutiReportSell, umuti:UmutiSold):
+        """We update only:  nb_vente, px_T_vente, benefice, nb_rest,
+          px_T_rest"""
+        umuti_set.nb_rest -= umuti.quantity
+        umuti_set.nb_vente += umuti.quantity
+        umuti_set.px_T_vente += int(umuti.quantity * umuti.price_out)
+        umuti_set.benefice += int(umuti.quantity) * \
+            int(umuti.price_out - umuti.price_in)
+        umuti_set.px_T_rest -= umuti_set.px_T_vente
+
+        umuti_set.save()
+
+        return umuti_set
 
     def _recordNew(self, umuti:UmutiSold):
         record_new = umutiReportSell.objects.create()
@@ -324,8 +347,6 @@ class Rapport(viewsets.ViewSet):
         
         record_new.save()
 
-        return 200
+        return record_new
     
-    def _updateRecord(self, umuti:UmutiSold):
-        """We update only:  nb_vente, px_T_vente, benefice, nb_rest,
-          px_T_rest"""
+    
