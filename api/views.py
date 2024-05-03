@@ -334,6 +334,7 @@ class Rapport(viewsets.ViewSet):
         return umuti_set
 
     def _recordNew(self, umuti:UmutiSold):
+        """Here we record new umuti report"""
         record_new = umutiReportSell.objects.create()
         record_new.code_umuti = umuti.code_umuti
         record_new.name_umuti = umuti.name_umuti
