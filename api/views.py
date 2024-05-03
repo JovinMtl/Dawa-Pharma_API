@@ -300,7 +300,12 @@ class Rapport(viewsets.ViewSet):
                 umuti_set = umutiReportSell.objects.get\
                     (code_umuti=element.code_umuti)
             except umutiReportSell.DoesNotExist:
-                umuti_record = self.
+                umuti_record = self._recordNew(umuti=element)
+                if umuti_record != 200:
+                    print(f"Un nouveau record n'est pas cree")
+            else:
+                umuti_set.nb_vente +=
+                pass
     
 
     def _recordNew(self, umuti:UmutiSold):
@@ -320,3 +325,7 @@ class Rapport(viewsets.ViewSet):
         record_new.save()
 
         return 200
+    
+    def _updateRecord(self, umuti:UmutiSold):
+        """We update only:  nb_vente, px_T_vente, benefice, nb_rest,
+          px_T_rest"""
