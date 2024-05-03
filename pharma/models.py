@@ -65,3 +65,14 @@ class UmutiSold(models.Model):
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now())
 
+class umutiReportSell(models.Model):
+    """THis will contain report of its sale in a given period of time"""
+    code_umuti = models.CharField(max_length=8, default='null')
+    name_umuti = models.CharField(max_length=30, default='null')
+    nb_vente = models.IntegerField(default=0)
+    px_T_vente = models.IntegerField(default=0)
+    benefice = models.IntegerField(default=0)
+    nb_rest = models.IntegerField(default=0)
+    px_T_rest = models.IntegerField(default=0)
+
+
