@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 import json
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold
@@ -251,8 +251,29 @@ class ImitiOut(viewsets.ViewSet):
             print(f"There are no recommandations")
         return JsonResponse({"Things are ":"well"})
     
-    def rapportVente(self, request):
-        pass
+
 
 class Rapport(viewsets.ViewSet):
     """This class is meant to be of generating reports"""
+    def reportSell(self, request):
+        """Will receive criteria from the form passed via request.
+        Accepted criteria: today(default), date1, date2
+        """
+
+        criteria = request.data
+        today = datetime.today()
+        if criteria.get('date1'):
+            date1 = criteria.get('date1')
+        else:
+            date1 = today
+        if criteria.get('date2'):
+            date2 = criteria.get('date2')
+        else:
+            date2 = today
+        
+        report = []
+        sold = UmutiSold.objects.filter(date_operation__gte=date1).\
+            filter(date_operation__gte=date2)
+        
+        report = self._makeReport(sold)
+
