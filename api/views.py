@@ -212,6 +212,8 @@ class ImitiOut(viewsets.ViewSet):
         return 200
     
     def _getLess35(self):
+        """THis one returns a list of objects from imitiSet with less than
+          35% of the remaining quantity"""
         imiti = ImitiSet.objects.all()
         less_35 = []
         for umuti in imiti:
