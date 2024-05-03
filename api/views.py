@@ -281,3 +281,18 @@ class Rapport(viewsets.ViewSet):
         """will get a queryset an make a syntesis of the following form:
         umuti_code, umuti_name, nb_vente, px_T, benefice, nb_rest, px_T_rest
         """
+        umutiRerportSell = {
+            'umuti_code': '',
+            'umuti_name': '',
+            'nb_vente': 0,
+            'px_T_vente': 0, # PU x nb_vente
+            'benefice': 0,
+            'nb_rest': 0,
+            'px_T_rest': 0 # PU x nb_rest
+
+        }
+
+        imitiList = []
+
+        for element in data:
+            e
