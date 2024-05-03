@@ -229,8 +229,9 @@ class ImitiOut(viewsets.ViewSet):
             return None
     
     def workOn35(self, request):
-        """THis one will work on less than 35% remaining quantity
-         and return among them the sold within past 15days"""
+        """THis one works on imitiSet with  less than 35% of
+          remaining quantity and return among them the sold
+            within past 15days"""
         imiti = self._getLess35()
         days_15 = timezone.now().date() - timedelta(days=15)
         ventes_15 = UmutiSold.objects.filter(date_operation__gte=days_15)
