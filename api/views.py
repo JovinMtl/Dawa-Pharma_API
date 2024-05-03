@@ -278,5 +278,6 @@ class Rapport(viewsets.ViewSet):
         report = self._makeReport(sold)
     
     def _makeReport(self, data:UmutiSold):
-        """will get a queryset an make a syntesis"""
-
+        """will get a queryset an make a syntesis of the following form:
+        umuti_code, umuti_name, nb_vente, px_T, benefice, nb_rest, px_T_rest
+        """
