@@ -257,11 +257,12 @@ class ImitiOut(viewsets.ViewSet):
 
 class Rapport(viewsets.ViewSet):
     """This class is meant to be of generating reports"""
+
+    @action(methods=['post'], detail=False)
     def reportSell(self, request):
         """Will receive criteria from the form passed via request.
         Accepted criteria: today(default), date1, date2
         """
-
         criteria = request.data
         today = datetime.today()
         if criteria.get('date1'):
