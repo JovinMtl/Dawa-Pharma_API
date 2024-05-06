@@ -275,17 +275,17 @@ class Rapport(viewsets.ViewSet):
             date2 = today
         
         report = []
-        sold = UmutiSold.objects.filter(date_operation__gte=date1).\
-            filter(date_operation__gte=date2)
+        # sold = UmutiSold.objects.filter(date_operation__gte=date1).\
+        #     filter(date_operation__gte=date2)
         
-        report = self._makeReport(sold)
-        if report == 200:
-            done_report = umutiReportSell.objects.all()
-            if done_report:
-                done_report_serializer = umutiReportSellSeriazer(\
-                    done_report, many=True)
-                if done_report_serializer.is_valid:
-                    return Response(done_report_serializer.data)
+        # report = self._makeReport(sold)
+        # if report == 200:
+        #     done_report = umutiReportSell.objects.all()
+        #     if done_report:
+        #         done_report_serializer = umutiReportSellSeriazer(\
+        #             done_report, many=True)
+        #         if done_report_serializer.is_valid:
+        #             return Response(done_report_serializer.data)
         
         return JsonResponse({"Things are":"Quite well"})
             
