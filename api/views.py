@@ -350,8 +350,10 @@ class Rapport(viewsets.ViewSet):
         record_new.nb_vente = umuti.quantity
         record_new.px_T_vente = int(umuti.price_out) * \
             int(umuti.quantity)
-        record_new.benefice = int(umuti.price_out * umuti.quantity) - \
-                                int(umuti.price_in * umuti.quantity)
+        # record_new.benefice = int(umuti.price_out * umuti.quantity) - \
+        #                         int(umuti.price_in * umuti.quantity)
+        record_new.benefice = int(umuti.price_out - umuti.price_in) * \
+                                int (umuti.quantity)
         try:
             current = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
             record_new.nb_rest = int(current.quantite_restant)
