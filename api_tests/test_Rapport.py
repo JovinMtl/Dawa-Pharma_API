@@ -51,7 +51,5 @@ class RapportTestCase(APITestCase):
         umuti_sold.price_in = 1200
         umuti_sold.difference = 900
     #     umuti_sold_qs.iterator.return_value = iter((individual_obj1, individual_obj2, individual_obj3))
-
-    #     # response = self.instance_rapport._makeReport(umuti_sold_qs)
         response = self.instance_rapport._makeReport([ umuti_sold])
         assert response == 200
