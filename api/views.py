@@ -314,7 +314,7 @@ class Rapport(viewsets.ViewSet):
                     (code_umuti=element.code_umuti)
             except umutiReportSell.DoesNotExist:
                 umuti_record = self._recordNew(umuti=element)
-                if umuti_record != 200:
+                if not umuti_record:
                     print(f"a new record is not created")
                 else:
                     print("The new record is created")
