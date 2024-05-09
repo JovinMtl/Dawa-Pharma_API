@@ -39,17 +39,19 @@ class RapportTestCase(APITestCase):
 
         print(f"The response is : {response.name_umuti}")
     
-    # def test_makeReport(self):
-    #     umuti_sold_qs = MagicMock()
-    #     umuti_sold_qs.count.return_value = 3
-    #     individual_obj1 = MagicMock()
-    #     individual_obj1.code_umuti = 1
-    #     individual_obj2 = MagicMock()
-    #     individual_obj2.code_umuti = 2
-    #     individual_obj3 = MagicMock()
-    #     individual_obj3.code_umuti = 3
+    def test_makeReport(self):
+        """Works on umutiSold objects"""
+        umuti_sold = MagicMock
+        umuti_sold.code_umuti = 1
+        umuti_sold.name_umuti = "test 1 umuti"
+        umuti_sold.quantity = 3
+        umuti_sold.price_out = 1500
+
+        umuti_sold.price_total = 4500
+        umuti_sold.price_in = 1200
+        umuti_sold.difference = 900
     #     umuti_sold_qs.iterator.return_value = iter((individual_obj1, individual_obj2, individual_obj3))
 
     #     # response = self.instance_rapport._makeReport(umuti_sold_qs)
-    #     response = self.instance_rapport._makeReport([ individual_obj1])
-    #     assert response == 200
+        response = self.instance_rapport._makeReport([ umuti_sold])
+        assert response == 200
