@@ -76,4 +76,5 @@ class RapportTestCase(APITestCase):
 
         response = self.instance_rapport._updateRecord(umuti_set=umuti_set\
                                                        , umuti=umuti)
-        print(f"umuti_set test: {(response)}")
+        # print(f"umuti_set test: {(int(umuti_set.nb_rest) - int(umuti.quantity))}")
+        assert response.nb_rest == 1
