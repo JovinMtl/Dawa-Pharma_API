@@ -28,13 +28,12 @@ class RapportTestCase(APITestCase):
         umuti_sold = MagicMock
         umuti_sold.code_umuti = 1
         umuti_sold.name_umuti = "test 1 umuti"
-        umuti_sold.quantity = 10
-        umuti_sold.nb_vente = 3
+        umuti_sold.quantity = 3
+        umuti_sold.price_out = 1500
 
-        umuti_sold.px_T_vente = 1500
-        umuti_sold.benefice = 300
-        umuti_sold.nb_rest = 7
-        umuti_sold.px_T_rest = 3500
+        umuti_sold.price_total = 4500
+        umuti_sold.price_in = 1200
+        umuti_sold.difference = 900
 
         response = self.instance_rapport._recordNew(umuti=umuti_sold)
 
