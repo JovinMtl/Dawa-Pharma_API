@@ -33,6 +33,10 @@ class RapportTestCase(APITestCase):
         umuti_new.benefice = 300
         umuti_new.nb_rest = 7
         umuti_new.px_T_rest = 3500
+
+        response = self.instance_rapport._recordNew(umuti=umuti_new)
+
+        print(f"The response is : {response}")
     
     def test_makeReport(self):
         umuti_sold_qs = MagicMock()
