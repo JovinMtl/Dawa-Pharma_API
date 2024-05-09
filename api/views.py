@@ -341,8 +341,6 @@ class Rapport(viewsets.ViewSet):
 
         umuti_set.save()
 
-        print(f"HAVE done enough updating")
-
         return umuti_set
 
     def _recordNew(self, umuti:UmutiSold):
