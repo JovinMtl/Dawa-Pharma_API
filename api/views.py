@@ -295,7 +295,6 @@ class Rapport(viewsets.ViewSet):
         umuti_code, umuti_name, nb_vente, px_T, benefice, nb_rest, px_T_rest
         """
         
-        print(f"_makeReport starts here with : {data}")
         # if exist, clean all the report existing
         old_report = umutiReportSell.objects.all()
         if old_report:
@@ -303,21 +302,23 @@ class Rapport(viewsets.ViewSet):
                 element.delete()
             old_report.save()
         else:
-            print(f"No record in Report sell, use:")
+            # print(f"No record in Report sell, use:")
+            pass
         
         #stating a new report
         for element in data:
-            print(f"Trying to fetch through the data given:")
             try:
-                print(f"Serching for : {element.code_umuti}")
                 umuti_set = umutiReportSell.objects.get\
                     (code_umuti=element.code_umuti)
+                # print(f"Serching for : {element.code_umuti}")
             except umutiReportSell.DoesNotExist:
                 umuti_record = self._recordNew(umuti=element)
                 if not umuti_record:
-                    print(f"a new record is not created")
+                    pass
+                    # print(f"a new record is not created")
                 else:
-                    print("The new record is created")
+                    pass
+                    # print("The new record is created")
             else:
                 update_record = self._updateRecord(umuti_set=umuti_set,\
                                                     umuti=element)
