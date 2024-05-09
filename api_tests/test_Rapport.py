@@ -53,3 +53,24 @@ class RapportTestCase(APITestCase):
     #     umuti_sold_qs.iterator.return_value = iter((individual_obj1, individual_obj2, individual_obj3))
         response = self.instance_rapport._makeReport([ umuti_sold])
         assert response == 200
+    
+    def test_updateRecord(self):
+        """Will have to use umuti_set:umutiReportSell & umuti:UmutiSold
+        umuti_set: nb_rest, nb_vente, px_T_vente, benefice, px_T_rest
+        umuti: quantity, price_in, price_out, 
+        """
+        umuti_set = MagicMock
+        umuti_set.nb_rest = 4
+        umuti_set.nb_vente = 3
+        umuti_set.px_T_vente = 4500
+        umuti_set.benefice = 900
+        umuti_set.px_T_rest = 8000
+
+        umuti = MagicMock
+        umuti.quantity = 3
+        umuti.price_in = 1200
+        umuti.price_out = 1500
+
+        response = self.instance_rapport._updateRecord(umuti_set=umuti_set\
+                                                       , umuti=umuti)
+        print(f"umuti_set test: {response}")
