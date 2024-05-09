@@ -24,17 +24,19 @@ class RapportTestCase(APITestCase):
         self.assertAlmostEquals(self.request.status_code, 200)
 
     def test_recordNew(self):
-        """Testing the record new. umuti_new is of type umutiReportSell"""
-        umuti_new = MagicMock
-        umuti_new.code_umuti = 1
-        umuti_new.name_umuti = "test 1 umuti"
-        umuti_new.nb_vente = 3
-        umuti_new.px_T_vente = 1500
-        umuti_new.benefice = 300
-        umuti_new.nb_rest = 7
-        umuti_new.px_T_rest = 3500
+        """Testing the record new. umuti_new is of type umutiSold"""
+        umuti_sold = MagicMock
+        umuti_sold.code_umuti = 1
+        umuti_sold.name_umuti = "test 1 umuti"
+        umuti_sold.quantity = 10
+        umuti_sold.nb_vente = 3
 
-        response = self.instance_rapport._recordNew(umuti=umuti_new)
+        umuti_sold.px_T_vente = 1500
+        umuti_sold.benefice = 300
+        umuti_sold.nb_rest = 7
+        umuti_sold.px_T_rest = 3500
+
+        response = self.instance_rapport._recordNew(umuti=umuti_sold)
 
         print(f"The response is : {response}")
     
