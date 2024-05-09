@@ -57,9 +57,9 @@ class UmutiSold(models.Model):
     """This one will record all the sale and benefit as well"""
     code_umuti = models.CharField(max_length=8, default='null')
     name_umuti = models.CharField(max_length=30, default='null')
-    quantity = models.IntegerField(default=1)
-    price_out = models.IntegerField(default=0)
-    price_total = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=1) #quantity sold
+    price_out = models.IntegerField(default=0) #unit price
+    price_total = models.IntegerField(default=1) # q * p
     price_in = models.IntegerField(default=1)
     difference = models.IntegerField(default=0) #9: benefice
     code_operation_entrant = models.CharField(max_length=8, default='null') #code operation uyo muti winjiriyeko
