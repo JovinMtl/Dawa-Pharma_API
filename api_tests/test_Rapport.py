@@ -20,7 +20,7 @@ class RapportTestCase(APITestCase):
         self.instance_rapport = Rapport()
     
     def test_Rapport(self):
-        print(f"The result is : {self.request.json()}")
+        # print(f"The result is : {self.request.json()}")
         self.assertAlmostEquals(self.request.status_code, 200)
 
     def test_recordNew(self):
@@ -37,7 +37,7 @@ class RapportTestCase(APITestCase):
 
         response = self.instance_rapport._recordNew(umuti=umuti_sold)
 
-        print(f"The response is : {response.name_umuti}")
+        # print(f"The response is : {response.name_umuti}")
     
     def test_makeReport(self):
         """Works on umutiSold objects"""
