@@ -37,7 +37,7 @@ class RapportTestCase(APITestCase):
 
         response = self.instance_rapport._recordNew(umuti=umuti_sold)
 
-        print(f"The response is : {response}")
+        print(f"The response is : {response.name_umuti}")
     
     # def test_makeReport(self):
     #     umuti_sold_qs = MagicMock()
