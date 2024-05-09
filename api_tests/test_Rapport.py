@@ -67,7 +67,7 @@ class RapportTestCase(APITestCase):
         umuti_set.px_T_rest = 8000
         
         umuti_set.save = Mock()
-        umuti_set.save.return_value = 0
+        umuti_set.save.side_effect = self._save_func
 
         umuti = MagicMock
         umuti.quantity = 3
@@ -78,3 +78,6 @@ class RapportTestCase(APITestCase):
                                                        , umuti=umuti)
         # print(f"umuti_set test: {(int(umuti_set.nb_rest) - int(umuti.quantity))}")
         assert response.nb_rest == 1
+    
+    def _save_func(self):
+        print("let's say that we are saving the data passed")
