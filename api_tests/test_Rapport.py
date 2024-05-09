@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 from datetime import datetime
 from django.urls import reverse
 
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 
 #importing the class to be tested
 from api.views import Rapport
@@ -59,12 +59,15 @@ class RapportTestCase(APITestCase):
         umuti_set: nb_rest, nb_vente, px_T_vente, benefice, px_T_rest
         umuti: quantity, price_in, price_out, 
         """
-        umuti_set = MagicMock
+        umuti_set = Mock
         umuti_set.nb_rest = 4
         umuti_set.nb_vente = 3
         umuti_set.px_T_vente = 4500
         umuti_set.benefice = 900
         umuti_set.px_T_rest = 8000
+        
+        umuti_set.save = Mock()
+        umuti_set.save.return_value = 0
 
         umuti = MagicMock
         umuti.quantity = 3
@@ -73,4 +76,4 @@ class RapportTestCase(APITestCase):
 
         response = self.instance_rapport._updateRecord(umuti_set=umuti_set\
                                                        , umuti=umuti)
-        print(f"umuti_set test: {response}")
+        print(f"umuti_set test: {(response)}")
