@@ -295,7 +295,7 @@ class Rapport(viewsets.ViewSet):
         umuti_code, umuti_name, nb_vente, px_T, benefice, nb_rest, px_T_rest
         """
         
-        # print(f"_makeReport starts here")
+        print(f"_makeReport starts here with : {data}")
         # if exist, clean all the report existing
         old_report = umutiReportSell.objects.all()
         if old_report:
@@ -309,6 +309,7 @@ class Rapport(viewsets.ViewSet):
         for element in data:
             print(f"Trying to fetch through the data given:")
             try:
+                print(f"Serching for : {element.code_umuti}")
                 umuti_set = umutiReportSell.objects.get\
                     (code_umuti=element.code_umuti)
             except umutiReportSell.DoesNotExist:
@@ -351,10 +352,13 @@ class Rapport(viewsets.ViewSet):
             int(umuti.quantity)
         record_new.benefice = int(umuti.price_out * umuti.quantity) - \
                                 int(umuti.price_in * umuti.quantity)
-        current = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
-        record_new.nb_rest = int(current.quantite_restant)
-        record_new.px_T_rest = int(current.quantite_restant * \
-                                   current.price_out)
+        try:
+            current = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
+            record_new.nb_rest = int(current.quantite_restant)
+            record_new.px_T_rest = int(current.quantite_restant * \
+                                    current.price_out)
+        except ImitiSet.DoesNotExist:
+            pass
         
         record_new.save()
 
