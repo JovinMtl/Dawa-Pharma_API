@@ -6,6 +6,8 @@ from django.urls import reverse
 
 from unittest.mock import Mock
 
+from api.shared.stringToList import StringToList
+
 #importing the class to be tested
 from api.views import EntrantImiti
 
@@ -39,7 +41,10 @@ class EntrantImitiTestCase(APITestCase):
         assert reponse.name_umuti == 'amoxi'
 
     def test_StringToList(self):
-        pass
+        jove = " [{'date': '2025-04', 'qte': 4, 'code_operation': '12dxx9'}, {'date': '2024-08', 'qte': 7, 'code_operation': '23dd'}] "
+        obj = StringToList(jove=jove)
+        result = obj.toList()
+        assert type(result) == list
         
 
     def test_findLastDate(self):
