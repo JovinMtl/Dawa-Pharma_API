@@ -108,6 +108,8 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         return JsonResponse({"Things ":"well"})
     
     def _umutiMushasha(self, umuti):
+        """Creates an instance of ImitiSet, it's input is 
+        an instance of UmutiEntree"""
         umuti_new = ImitiSet.objects.create()
         umuti_new.code_umuti = str(umuti.code_umuti)
         umuti_new.name_umuti = str(umuti.name_umuti)
