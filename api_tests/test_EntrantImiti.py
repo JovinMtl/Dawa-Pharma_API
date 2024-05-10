@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from django.urls import reverse
 
 
-from unittest.mock import MagicMock, Mock
+from unittest.mock import Mock
 
 #importing the class to be tested
 from api.views import EntrantImiti
