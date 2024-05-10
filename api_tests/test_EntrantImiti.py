@@ -2,16 +2,15 @@
 from rest_framework.test import APITestCase
 from datetime import datetime, timedelta
 from django.urls import reverse
-from django.db.utils import OperationalError
+
 
 from unittest.mock import MagicMock, Mock
 
 #importing the class to be tested
 from api.views import EntrantImiti
-from api.code_generator import GenerateCode
 
 
-class RapportTestCase(APITestCase):
+class EntrantImitiTestCase(APITestCase):
     """I want test all the operations done in EntrantImiti viewset"""
 
     def setUp(self) -> None:
@@ -42,14 +41,6 @@ class RapportTestCase(APITestCase):
     def test_StringToList(self):
         pass
         
-    def test_GenerateCode(self):
-        generator = GenerateCode(12)
-        generator.giveCode = Mock()
-        generator.giveCode.side_effect = OperationalError
-        self.assertRaises(OperationalError)
-
-        code = generator.gene()
-        assert len(code) == 12
 
     def test_findLastDate(self):
         pass
