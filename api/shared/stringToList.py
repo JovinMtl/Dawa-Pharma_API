@@ -16,10 +16,14 @@ import json
 class StringToList:
     """Have to take the string and convert them into list"""
 
-    def __init__(self, jove:str) -> None:
+    def __init__(self, jove:str=None) -> None:
         self.data = jove
     
     def toList(self):
+        # in case not string is given for initialization
+        if self.data == None:
+            return None
+
         #replacing a single quote " ' " into double quote "
         try:
             double_quoted = self.data.replace("'", "\"")
