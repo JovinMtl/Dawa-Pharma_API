@@ -54,7 +54,7 @@ class EntrantImitiTestCase(APITestCase):
         result = obj.toList()
         assert result == None
 
-        # in case not string is given
+        # in case no string is given
         obj = StringToList()
         result = obj.toList()
         assert result == None
