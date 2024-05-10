@@ -2,6 +2,7 @@
 from rest_framework.test import APITestCase
 from datetime import datetime, timedelta
 from django.urls import reverse
+import json
 
 
 from unittest.mock import Mock
@@ -41,10 +42,23 @@ class EntrantImitiTestCase(APITestCase):
         assert reponse.name_umuti == 'amoxi'
 
     def test_StringToList(self):
+        # testing the right format of string to be passed in
         jove = " [{'date': '2025-04', 'qte': 4, 'code_operation': '12dxx9'}, {'date': '2024-08', 'qte': 7, 'code_operation': '23dd'}] "
         obj = StringToList(jove=jove)
         result = obj.toList()
         assert type(result) == list
+
+        # testing the wrong format of string
+        jove = "jovie"
+        obj = StringToList(jove=jove)
+        result = obj.toList()
+        assert result == None
+
+        # in case not string is given
+        obj = StringToList()
+        result = obj.toList()
+        assert result == None
+
         
 
     def test_findLastDate(self):
