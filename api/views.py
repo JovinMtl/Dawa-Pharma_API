@@ -118,9 +118,14 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         umuti_new.type_in = str(umuti.type_in)
         umuti_new.ratio_type = str(umuti.ratio_type)
         umuti_new.type_out = str(umuti.type_out)
-        last_umuti = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti).last()
-        umuti_new.price_in = int(last_umuti.price_in)
-        umuti_new.price_out = int(last_umuti.price_out)
+        try:
+            last_umuti = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti).last()
+            umuti_new.price_in = int(last_umuti.price_in)
+            umuti_new.price_out = int(last_umuti.price_out)
+        except AttributeError:
+            umuti_new.price_in = int(umuti.price_in)
+            umuti_new.price_out = int(umuti.price_out)
+            pass
         umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
