@@ -62,7 +62,16 @@ class EntrantImitiTestCase(APITestCase):
         
 
     def test_findLastDate(self):
-        pass
+        umuti = Mock()
+        UmutiSold = Mock()
+        UmutiSold.objects.filter.side_effect = self._give_umutiSold()
+        umuti.date_operation = datetime.today()
+        reponse = self.instance._findLastDate([umuti])
+
+        assert reponse.date_operation == datetime.today()
+    
+    def _give_umutiSold(self):
+        return {'date_operation': datetime.today()}
 
     def test_compileImitiSet(self):
         pass
