@@ -48,6 +48,9 @@ class RapportTestCase(APITestCase):
         generator.giveCode.side_effect = OperationalError
         self.assertRaises(OperationalError)
 
+        code = generator.gene()
+        assert len(code) == 12
+
     def test_findLastDate(self):
         pass
 
