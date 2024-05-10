@@ -21,6 +21,9 @@ class StringToList:
     
     def toList(self):
         #replacing a single quote " ' " into double quote "
-        double_quoted = self.data.replace("'", "\"")
-        toJson = json.loads(double_quoted)
-        return toJson # a list
+        try:
+            double_quoted = self.data.replace("'", "\"")
+            toJson = json.loads(double_quoted)
+            return toJson # a list
+        except json.decoder.JSONDecodeError:
+            return None
