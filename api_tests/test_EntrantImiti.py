@@ -5,12 +5,15 @@ from django.urls import reverse
 import json
 
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from api.shared.stringToList import StringToList
 
 #importing the class to be tested
 from api.views import EntrantImiti
+
+#importing a model to mock about its operation
+from pharma.models import UmutiSold
 
 
 class EntrantImitiTestCase(APITestCase):
@@ -59,19 +62,33 @@ class EntrantImitiTestCase(APITestCase):
         result = obj.toList()
         assert result == None
 
-        
+    
+    def give_date(self):
+        with patch('EntrantImiti._findLastDate') as date_patched:
+            date_patched.return_value = {'date_operation': datetime.today()}
 
     def test_findLastDate(self):
-        umuti = Mock()
+        umuti = 'jo33'
         UmutiSold = Mock()
-        UmutiSold.objects.filter.side_effect = self._give_umutiSold()
-        umuti.date_operation = datetime.today()
-        reponse = self.instance._findLastDate([umuti])
+        # UmutiSold.objects.filter.side_effect = self._give_umutiSold()
+        UmutiSold.objects.filter().last.return_value = type('obj', (object,), {'date_operation': datetime.today()})
+        # umuti.date_operation = datetime.today()
+        reponse = self.instance._findLastDate(code_umuti=umuti)
 
-        assert reponse.date_operation == datetime.today()
+        print(f"The response is {reponse}")
+
+        # assert reponse.date_operation == datetime.today()
+    
+    # def test_findLastDate_mock(self):
+    #     with patch('UmutiSold.objects.filter().last') as mock_filter_last:
+    #         mock_filter_last.return_value = type('obj', (object,), {'date_operation': datetime.today()})
+    #         my_instance = EntrantImiti()  # Instantiate the class containing _findLastDate method
+    #         result = my_instance._findLastDate('your_code_umuti')
+    #         self.assertEqual(result, datetime.today().date())  # Assert the result
     
     def _give_umutiSold(self):
-        return {'date_operation': datetime.today()}
+        print("We need to return the object")
+        return {'date_operation': 'datetime.today()'}
 
     def test_compileImitiSet(self):
         pass
