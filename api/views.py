@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 import json
 from django.utils import timezone
@@ -153,7 +153,7 @@ class ImitiOut(viewsets.ViewSet):
     or etagere"""
 
     @action(methods=['get'], detail=False,\
-             permission_classes= [IsAuthenticated])
+             permission_classes= [AllowAny])
     def dispo(self, request):
         imiti = ImitiSet.objects.all().order_by('name_umuti')
         imitiSerialized = ImitiSetSeriazer(imiti, many=True)
