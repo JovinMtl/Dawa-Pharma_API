@@ -155,7 +155,7 @@ class ImitiOut(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def dispo(self, request):
-        imiti = ImitiSet.objects.all().order_by('name_umuti')
+        imiti = ImitiSet.objects.all().order_by('-date_last_vente')
         imitiSerialized = ImitiSetSeriazer(imiti, many=True)
 
         if imitiSerialized.is_valid:
