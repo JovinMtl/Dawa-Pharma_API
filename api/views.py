@@ -60,7 +60,8 @@ class EntrantImiti(viewsets.ViewSet):
                     obj = {
                         'date': (str(umutie.date_uzohererako))[:7],
                         'qte': int(umutie.quantite_restant),
-                        'code_operation': str(umutie.code_operation)
+                        'code_operation': str(umutie.code_operation),
+                        'to_panier': 0
                     }
                     arr = []
                     arr.append(obj)
