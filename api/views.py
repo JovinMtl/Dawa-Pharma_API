@@ -86,7 +86,7 @@ class EntrantImiti(viewsets.ViewSet):
                         'date': (str(umutie.date_uzohererako))[:7],
                         'qte': int(umutie.quantite_restant),
                         'code_operation': str(umutie.code_operation),
-                        'to_panier': 1
+                        'to_panier': 0
                     }
                     i += 1
                     lot_list.append(obj)
