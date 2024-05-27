@@ -26,9 +26,9 @@ class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
     
-    # @action(methods=['get'], detail=False)
-    @action(methods=['get'], detail=False,\
-             permission_classes= [IsAuthenticated])
+    @action(methods=['post'], detail=False)
+    # @action(methods=['get'], detail=False,\
+    #          permission_classes= [IsAuthenticated])
     def kurangura(self, request):
         """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
