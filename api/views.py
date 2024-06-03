@@ -270,6 +270,7 @@ class Rapport(viewsets.ViewSet):
 
     @action(methods=['get'], detail=False)
     def reportSold(self, request):
+        """making an endpoint that will return all the umutisold entries"""
         imiti = UmutiSold.objects.all().order_by('-date_operation')
         imitiSerialized = UmutiSoldSeriazer(imiti, many=True)
 
