@@ -269,6 +269,17 @@ class Rapport(viewsets.ViewSet):
     """This class is meant to be of generating reports"""
 
     @action(methods=['get'], detail=False)
+    def reportEntree(self, request):
+        """making an endpoint that will return all the UmutiEntree entries"""
+        imiti = UmutiEntree.objects.all().order_by('-date_winjiriyeko')
+        imitiSerialized = UmutiSoldSeriazer(imiti, many=True)
+
+        if imitiSerialized.is_valid:
+            return Response(imitiSerialized.data)
+
+        return JsonResponse({"THings are":"okay"})
+
+    @action(methods=['get'], detail=False)
     def reportSold(self, request):
         """making an endpoint that will return all the umutisold entries"""
         imiti = UmutiSold.objects.all().order_by('-date_operation')
