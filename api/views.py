@@ -15,7 +15,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
-        UmutiSoldSeriazer
+        UmutiSoldSeriazer, UmutiEntreeSeriazer
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -272,7 +272,7 @@ class Rapport(viewsets.ViewSet):
     def reportEntree(self, request):
         """making an endpoint that will return all the UmutiEntree entries"""
         imiti = UmutiEntree.objects.all().order_by('-date_winjiriyeko')
-        imitiSerialized = UmutiSoldSeriazer(imiti, many=True)
+        imitiSerialized = UmutiEntreeSeriazer(imiti, many=True)
 
         if imitiSerialized.is_valid:
             return Response(imitiSerialized.data)
