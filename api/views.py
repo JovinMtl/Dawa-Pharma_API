@@ -14,7 +14,8 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell
 
 #importing the serializers
-from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer
+from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
+        UmutiSoldSeriazer
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -266,6 +267,16 @@ class ImitiOut(viewsets.ViewSet):
 
 class Rapport(viewsets.ViewSet):
     """This class is meant to be of generating reports"""
+
+    @action(methods=['get'], detail=False)
+    def reportSold(self, request):
+        imiti = UmutiSold.objects.all().order_by('-date_operation')
+        imitiSerialized = UmutiSoldSeriazer(imiti, many=True)
+
+        if imitiSerialized.is_valid:
+            return Response(imitiSerialized.data)
+
+        return JsonResponse({"THings are":"okay"})
 
     @action(methods=['post'], detail=False)
     def reportSell(self, request):
