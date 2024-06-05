@@ -33,7 +33,7 @@ class EntrantImiti(viewsets.ViewSet):
     def kurangura(self, request):
         """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
-        print(f"The data Received: {request.user}")
+        print(f"The data Received: {dataReceived}")
 
         return JsonResponse({"Things ":"well"})
     
@@ -167,15 +167,20 @@ class ImitiOut(viewsets.ViewSet):
         return JsonResponse({"THings are":"okay"})
     
 
-    @action(methods=['post'], detail=False,\
-             permission_classes= [IsAuthenticated])
+    # @action(methods=['post'], detail=False,\
+    #          permission_classes= [IsAuthenticated])
+    @action(methods=['post'], detail=False)
     def sell(self, request):
         data_query = request.data
-        bundle = []
-        bundle.append(dict(data_query))
+        print(f"The data sent is: {data_query}")
+        bundle = data_query.get('imiti')
+        # bundle.append(dict(data_query))
         for actual in bundle:
             print(f"actual: {actual}")
             code_umuti = actual.get('code_umuti')[0]
+            # code_operation = actual.get('code_operation')[0]
+            # qte = actual.get('qte')[0]
+
             code_operation = actual.get('code_operation')[0]
             qte = actual.get('qte')[0]
             try:
