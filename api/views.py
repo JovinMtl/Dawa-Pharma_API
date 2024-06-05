@@ -177,12 +177,14 @@ class ImitiOut(viewsets.ViewSet):
         # bundle.append(dict(data_query))
         for actual in bundle:
             print(f"actual: {actual}")
-            code_umuti = actual.get('code_umuti')[0]
+            code_umuti = actual.get('code_umuti')
             # code_operation = actual.get('code_operation')[0]
             # qte = actual.get('qte')[0]
 
-            code_operation = actual.get('code_operation')[0]
-            qte = actual.get('qte')[0]
+            code_operation = actual.get('lot')[0].get('code_operation')
+            qte = actual.get('lot')[0].get('qte')
+            print(f"The code gotten are: {code_umuti} and {code_operation} and {qte}")
+            # return JsonResponse({"done":"okay"})
             try:
                 umuti = UmutiEntree.objects.\
                     filter(code_umuti=code_umuti).\
