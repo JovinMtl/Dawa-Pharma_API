@@ -48,6 +48,7 @@ class ImitiSet(models.Model):
     # ]
     qte_entrant_big = models.IntegerField(default=0) #twisunga mukugira rapport y'iyisigaye
     date_last_vente = models.DateTimeField(default=timezone.now()) #aho uwo muti uheruka gusohoka ku murwayi
+    checked_imiti = models.TextField() # for tracking imitiEntree checked(array of code_operation)
 
     def __str__(self) -> str:
         return f"{self.code_umuti}:{self.quantite_restant}"
