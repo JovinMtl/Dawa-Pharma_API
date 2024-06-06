@@ -52,8 +52,6 @@ class EntrantImiti(viewsets.ViewSet):
             code = umutie.code_umuti
             try:
                 umuti_set = ImitiSet.objects.get(code_umuti=code)
-                # umuti_set.quantite_restant = 0
-                # umuti_set.qte_entrant_big = 0
             except ImitiSet.DoesNotExist:
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
@@ -71,11 +69,8 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_new.lot = jove
                     umuti_new.save()
             else:
-                # print(f"THe existing UMUTI: {umuti_set}")
                 actual_imiti_codes =  umuti_set.checked_imiti
                 converted_list = listStrToList(actual_imiti_codes)
-                # for code_ope in converted_list:
-                #     if code_ope in 
                 if umutie.code_operation in converted_list:
                     continue  # skip to treat is as new
                 else:
@@ -86,6 +81,7 @@ class EntrantImiti(viewsets.ViewSet):
                 # check that the actual code_operation has passed,
                 # i should add those code_operation in a fields in umutiSet
                 # divided by a comma.
+
                 #mugihe iyo code ihari muri Set
                 lot = umuti_set.lot
                 lot_string = StringToList(umuti_set.lot)
