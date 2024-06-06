@@ -72,15 +72,17 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_new.save()
             else:
                 # print(f"THe existing UMUTI: {umuti_set}")
-                actual_imiti_codes = umuti_set.checked_imiti
-                converted_list = (actual_imiti_codes)
+                actual_imiti_codes =  umuti_set.checked_imiti
+                converted_list = listStrToList(actual_imiti_codes)
+                # for code_ope in converted_list:
+                #     if code_ope in 
                 if umutie.code_operation in converted_list:
                     continue  # skip to treat is as new
                 else:
-                    print(f"{converted_list} : {umuti_set.checked_imiti} type {type(umuti_set.checked_imiti)}")
-                #     converted_list.append(umutie.code_operation)
-                #     umuti_set.checked_imiti = converted_list
-                print(f"the actual_imiti_code is {actual_imiti_codes}")
+                    print(f"{converted_list} : {umutie.code_operation}")
+                    converted_list.append(umutie.code_operation)
+                    umuti_set.checked_imiti = converted_list
+                print(f"the actual_imiti_code is {umuti_set.checked_imiti}")
                 # check that the actual code_operation has passed,
                 # i should add those code_operation in a fields in umutiSet
                 # divided by a comma.
