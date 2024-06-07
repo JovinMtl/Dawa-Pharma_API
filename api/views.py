@@ -73,6 +73,7 @@ class EntrantImiti(viewsets.ViewSet):
                 converted_list = listStrToList(actual_imiti_codes)
                 if umutie.code_operation in converted_list:
                     continue  # skip to treat is as new
+                    # sync quantite_restant according to umutie
                 else:
                     print(f"{converted_list} : {umutie.code_operation}")
                     converted_list.append(umutie.code_operation)
