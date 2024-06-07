@@ -68,8 +68,8 @@ class EntrantImiti(viewsets.ViewSet):
                                         qte_tracked )
                     # _check_lot()
                     print(f"already tracked into : {synced}")
-                    # synced_lot = self._sync_lot(umuti_set.lot, umutie)
-                    # umuti_set.lot = synced_lot
+                    synced_lot = self._sync_lot(umuti_set.lot, umutie)
+                    umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
                     umuti_set.save()
                     continue  # skip to treat is as new
