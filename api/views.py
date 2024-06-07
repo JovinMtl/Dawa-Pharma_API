@@ -134,7 +134,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
                             str(umutie.code_operation) : int(umutie.quantite_restant)
                         }
                 lote['code_operation'].append(obj)
-                lote['qte'] += umutie.quantite_restant
+                lote['qte'] += listDictIntSomme2(lote['code_operation'])
                 j += 1
             
         if not j:
