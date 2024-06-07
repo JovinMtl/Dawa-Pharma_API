@@ -21,7 +21,7 @@ from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
 from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
 from .shared.listStrToList import listStrToList, listIntToList,\
-      listDictIntSomme
+      listDictIntSomme, listDictIntSomme2
 
 # Create your views here.
 
@@ -113,22 +113,11 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         lot_string = StringToList(lot)
         #the string of list must be made into json
         lot_list = lot_string.toList()
-        i = 0
-        j = 0
+
         for lote in lot_list:
             if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                lote['qte'] = umutie.quantite_restant
-                j += 1
-            
-        if not j:
-            obj = {
-                'date': (str(umutie.date_uzohererako))[:7],
-                'qte': int(umutie.quantite_restant),
-                'code_operation': str(umutie.code_operation),
-                'to_panier': 0
-            }
-            i += 1
-            lot_list.append(obj)
+                if umutie['code_operation'] not in lote['code_operation']:
+                    lote['qte'] += umutie.quantite_restant
 
         return lot_list
 
@@ -141,6 +130,10 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         j = 0
         for lote in lot_list:
             if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
+                obj = { 
+                            str(umutie.code_operation) : int(umutie.quantite_restant)
+                        }
+                lote['code_operation'].append(obj)
                 lote['qte'] += umutie.quantite_restant
                 j += 1
             
@@ -148,7 +141,11 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
             obj = {
                 'date': (str(umutie.date_uzohererako))[:7],
                 'qte': int(umutie.quantite_restant),
-                'code_operation': [str(umutie.code_operation),],
+                'code_operation': [
+                        { 
+                            str(umutie.code_operation) : int(umutie.quantite_restant)
+                        }
+                    ],
                 'to_panier': 0
             }
             i += 1
