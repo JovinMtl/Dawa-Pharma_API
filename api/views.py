@@ -72,17 +72,19 @@ class EntrantImiti(viewsets.ViewSet):
             else:
                 qte_saved =  StringToList(umuti_set.checked_qte)
                 qte_tracked = qte_saved.toList()
-                print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
+                # print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
                 converted_list = listStrToList(umuti_set.checked_imiti)
                 if umutie.code_operation in converted_list:
                     synced = self._check_qte(umutie.code_operation, \
                                         umutie.quantite_restant, \
                                         qte_tracked )
                     print(f"already tracked into : {synced}")
+                    umuti_set.checked_qte = synced
+                    umuti_set.save()
                     continue  # skip to treat is as new
                     # sync quantite_restant according to umutie
                 else:
-                    print(f"{converted_list} : {umutie.code_operation}")
+                    # print(f"{converted_list} : {umutie.code_operation}")
                     converted_list.append(umutie.code_operation)
                     qte_tracked.append(
                         {'code_operation':umutie.code_operation, 
