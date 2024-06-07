@@ -76,7 +76,7 @@ class EntrantImiti(viewsets.ViewSet):
                 converted_list = listStrToList(umuti_set.checked_imiti)
                 if umutie.code_operation in converted_list:
                     print("already tracked")
-                    # _check_qte(umutie.code_operation, umutie.quantite_restant, umutiset_new )
+                    synced = _check_qte(umutie.code_operation, umutie.quantite_restant, umuti_set )
                     continue  # skip to treat is as new
                     # sync quantite_restant according to umutie
                 else:
@@ -133,7 +133,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
 
         return JsonResponse({"Things ":"well"})
     
-    def _check_qte(self, code_operation:str, quantite_restant:int, umutiset_new):
+    def _check_qte(self, code_operation:str, quantite_restant:int, umutiset_new:ImitiSet):
         checked_qte = listStrToList(umuti_set.checked_qte)
         cloned_qte = checked_qte
         i = 0
