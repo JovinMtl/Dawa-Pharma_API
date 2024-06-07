@@ -149,8 +149,11 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         umuti_new.date_last_vente = umuti.date_winjiriyeko
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
         checked = []
+        checked_qte = []
+        checked_qte.append(umuti_new.quantite_restant)
         checked.append(umuti.code_operation)
         umuti_new.checked_imiti = checked
+        umuti_new.checked_qte = checked_qte
 
         umuti_new.save()
 
