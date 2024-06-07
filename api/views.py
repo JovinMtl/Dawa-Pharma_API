@@ -233,8 +233,7 @@ class ImitiOut(viewsets.ViewSet):
         write a new instance of UmutiSell"""
 
         print(f"The umuti to work on is : {umuti} with qte: {qte} found with {umuti.quantite_restant}")
-
-        reference_umuti = ImitiSet.objects.get(code_umuti='AMT23')
+        reference_umuti = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
         new_vente = UmutiSold.objects.create()
         new_vente.code_umuti = umuti.code_umuti
         new_vente.name_umuti = umuti.name_umuti
