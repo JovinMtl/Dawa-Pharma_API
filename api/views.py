@@ -166,9 +166,9 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
 
         obj = {
-            'date': (str(umutie.date_uzohererako))[:7],
-            'qte': int(umutie.quantite_restant),
-            'code_operation': str(umutie.code_operation),
+            'date': (str(umuti.date_uzohererako))[:7],
+            'qte': int(umuti.quantite_restant),
+            'code_operation': str(umuti.code_operation),
             'to_panier': 0
         }
         lot = []
