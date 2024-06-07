@@ -86,26 +86,6 @@ class EntrantImiti(viewsets.ViewSet):
                 # divided by a comma.
 
                 #mugihe iyo code ihari muri Set
-                # lot = umuti_set.lot
-                # lot_string = StringToList(umuti_set.lot)
-                # #the string of list must be made into json
-                # lot_list = lot_string.toList()
-                # i = 0
-                # j = 0
-                # for lote in lot_list:
-                #     if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                #         lote['qte'] += umutie.quantite_restant
-                #         j += 1
-                    
-                # if not j:
-                #     obj = {
-                #         'date': (str(umutie.date_uzohererako))[:7],
-                #         'qte': int(umutie.quantite_restant),
-                #         'code_operation': str(umutie.code_operation),
-                #         'to_panier': 0
-                #     }
-                #     i += 1
-                #     lot_list.append(obj)
                 lot_list = self._check_lot(umuti_set.lot)
                 umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
                 # umuti_set.quantite_restant += umutie.quantite_restant
