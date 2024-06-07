@@ -21,7 +21,7 @@ from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
 from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
 from .shared.listStrToList import listStrToList, listIntToList,\
-      listIntSomme
+      listDictIntSomme
 
 # Create your views here.
 
