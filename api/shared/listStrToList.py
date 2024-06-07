@@ -49,8 +49,23 @@ def listDictIntSomme(data:list):
             data2 += int (dat['qte_restant'])
     return (data2)
 
+def listDictIntSomme2(data:list)->int:
+    """ THis function will return the sum of the int values contained 
+    in a list of dict of type:
+    data = [
+        {'a': 5},
+        {'b': 81}
+    ]
+    """
+    dict_val = 0
+    for dat in data:
+        if int((str(dat.values())).split('[')[1].split(']')[0]):
+            dict_val += int((str(dat.values())).split('[')[1].split(']')[0])
+    print(dict_val)
+
 
 # listStrToList()
 # listIntToList()
 # listIntSomme()
 # listDictIntSomme()
+listDictIntSomme2()
