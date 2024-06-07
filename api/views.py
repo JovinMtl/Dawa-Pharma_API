@@ -20,7 +20,7 @@ from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
 #importing my additional code
 from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
-from .shared.listStrToList import listStrToList
+from .shared.listStrToList import listStrToList, listIntToList
 
 # Create your views here.
 
@@ -69,8 +69,9 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_new.lot = jove
                     umuti_new.save()
             else:
-                actual_imiti_codes =  umuti_set.checked_imiti
-                converted_list = listStrToList(actual_imiti_codes)
+                qte_tracked =  listStrToList(umuti_set.checked_qte)
+                print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
+                converted_list = listStrToList(umuti_set.checked_imiti)
                 if umutie.code_operation in converted_list:
                     print("already tracked")
                     continue  # skip to treat is as new
@@ -78,8 +79,10 @@ class EntrantImiti(viewsets.ViewSet):
                 else:
                     print(f"{converted_list} : {umutie.code_operation}")
                     converted_list.append(umutie.code_operation)
+                    qte_tracked.append(umutie.quantite_restant)
                     umuti_set.checked_imiti = converted_list
-                print(f"the actual_imiti_code is {umuti_set.checked_imiti}")
+                    umuti_set.checked_qte = qte_tracked
+                # print(f"the actual_qte_tracked is {umuti_set.checked_qte}")
                 # check that the actual code_operation has passed,
                 # i should add those code_operation in a fields in umutiSet
                 # divided by a comma.
