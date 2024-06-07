@@ -35,6 +35,22 @@ def listIntSomme(data: list):
             data2 += dat
     return (data2)
 
+def listDictIntSomme(data:list):
+    """This function returns the sum of the Int keys contained in
+    a dictionary.
+    data = [{'code_operation': 'xt10', 'qte_restant': 5}, 
+            {'code_operation': 'xt11', 'qte_restant': 5}, 
+            {'code_operation': 'xt12', 'qte_restant': 4}]
+    """
+    data2 = 0
+    
+    for dat in data:
+        if int(dat['qte_restant']):
+            data2 += int (dat['qte_restant'])
+    return (data2)
+
+
 # listStrToList()
 # listIntToList()
 # listIntSomme()
+listDictIntSomme()
