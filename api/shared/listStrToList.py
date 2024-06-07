@@ -57,11 +57,13 @@ def listDictIntSomme2(data:list)->int:
         {'b': 81}
     ]
     """
-    print(f"The code operation is : {data}")
+    
     dict_val = 0
     for dat in data:
         if int((str(dat.values())).split('[')[1].split(']')[0]):
             dict_val += int((str(dat.values())).split('[')[1].split(']')[0])
+    
+    print(f"The code operation is : {data} and the answer is {dict_val}")
     return (dict_val)
 
 

@@ -116,8 +116,14 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
 
         for lote in lot_list:
             if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                if umutie['code_operation'] not in lote['code_operation']:
-                    lote['qte'] += umutie.quantite_restant
+                jove = StringToList(lote['code_operation'])
+                jov = jove.toList()
+                for lot in jov:
+                    if umutie.code_operation in lot:
+                        lot['code_operation'] = umutie.quantite_restant
+
+                print(f"THe changed lot is now: {jov}")
+                lote = jove
 
         return lot_list
 
@@ -134,7 +140,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
                             str(umutie.code_operation) : int(umutie.quantite_restant)
                         }
                 lote['code_operation'].append(obj)
-                lote['qte'] += int(listDictIntSomme2(lote['code_operation']))
+                lote['qte'] = int(listDictIntSomme2(lote['code_operation']))
                 j += 1
             
         if not j:
