@@ -133,14 +133,14 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
 
         return JsonResponse({"Things ":"well"})
     
-    def _check_qte(self, code_operation, quantite_restant, umutiset_new):
+    def _check_qte(self, code_operation:str, quantite_restant:int, umutiset_new):
         checked_qte = listStrToList(umuti_set.checked_qte)
         cloned_qte = checked_qte
         i = 0
         for obj in checked_qte:
             if obj['code_operation'] == code_operation:
                 cloned_qte[i].get('qte_restant') = quantite_restant
-                
+
         return cloned_qte
     
     def _umutiMushasha(self, umuti):
