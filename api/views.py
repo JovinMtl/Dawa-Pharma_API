@@ -21,7 +21,7 @@ from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
 from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
 from .shared.listStrToList import listStrToList, listIntToList,\
-      listDictIntSomme, listDictIntSomme2
+      listDictIntSomme, listDictIntSomme2, listDictIntSomme3
 
 # Create your views here.
 
@@ -136,6 +136,8 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
                 lote['qte'] = somme_operation
             else:
                 print(f"not equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
+
+        somme_lot = listDictIntSomme3(lot_list)
 
         return lot_list
 
