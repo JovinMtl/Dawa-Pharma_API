@@ -27,7 +27,14 @@ def listIntToList(data:str):
 
     return(data3)
     
-
+def listIntSomme(data: list):
+    """This function returns the sum of the Int list"""
+    data2 = 0
+    for dat in data:
+        if int(dat):
+            data2 += dat
+    return (data2)
 
 # listStrToList()
 # listIntToList()
+# listIntSomme()
