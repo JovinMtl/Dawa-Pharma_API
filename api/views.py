@@ -70,7 +70,8 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_new.lot = jove
                     umuti_new.save()
             else:
-                qte_tracked =  listIntToList(umuti_set.checked_qte)
+                qte_saved =  StringToList(umuti_set.checked_qte)
+                qte_tracked = qte_saved.toList()
                 print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
                 converted_list = listStrToList(umuti_set.checked_imiti)
                 if umutie.code_operation in converted_list:
@@ -81,7 +82,9 @@ class EntrantImiti(viewsets.ViewSet):
                 else:
                     print(f"{converted_list} : {umutie.code_operation}")
                     converted_list.append(umutie.code_operation)
-                    qte_tracked.append(umutie.quantite_restant)
+                    qte_tracked.append(
+                        {'code_operation':umutie.code_operation, 
+                         'qte_restant': umutie.quantite_restant})
                     umuti_set.checked_imiti = converted_list
                     umuti_set.checked_qte = qte_tracked
                 # print(f"the actual_qte_tracked is {umuti_set.checked_qte}")
@@ -111,8 +114,8 @@ class EntrantImiti(viewsets.ViewSet):
                     i += 1
                     lot_list.append(obj)
                 umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
-                # umuti_set.quantite_restant += umutie.quantite_restant
-                umuti_set.quantite_restant = listIntSomme(umuti_set.checked_qte)
+                umuti_set.quantite_restant += umutie.quantite_restant
+                # umuti_set.quantite_restant = listIntSomme(umuti_set.checked_qte)
                 umuti_set.lot = lot_list
                 last_date = self._findLastDate(code_umuti=umuti_set.code_umuti)
                 if last_date:
