@@ -72,6 +72,7 @@ class EntrantImiti(viewsets.ViewSet):
                 actual_imiti_codes =  umuti_set.checked_imiti
                 converted_list = listStrToList(actual_imiti_codes)
                 if umutie.code_operation in converted_list:
+                    print("already tracked")
                     continue  # skip to treat is as new
                     # sync quantite_restant according to umutie
                 else:
