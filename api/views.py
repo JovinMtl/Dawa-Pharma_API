@@ -138,6 +138,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
                 print(f"not equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
 
         somme_lot = listDictIntSomme3(lot_list)
+        print(f"La toute somme vaut : {somme_lot}")
 
         return lot_list
 

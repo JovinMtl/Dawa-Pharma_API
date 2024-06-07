@@ -94,4 +94,4 @@ def listDictIntSomme3( data:list):
 # listIntSomme()
 # listDictIntSomme()
 # listDictIntSomme2()
-listDictIntSomme3()
+# listDictIntSomme3()
