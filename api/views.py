@@ -67,9 +67,9 @@ class EntrantImiti(viewsets.ViewSet):
                                         umutie.quantite_restant, \
                                         qte_tracked )
                     # _check_lot()
-                    print(f"already tracked into : {synced}")
-                    # synced_lot = self._sync_lot(umuti_set.lot, umutie)
-                    # umuti_set.lot = synced_lot
+                    # print(f"already tracked into : {synced}")
+                    synced_lot = self._sync_lot(umuti_set.lot, umutie)
+                    umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
                     umuti_set.save()
                     continue  # skip to treat is as new
@@ -113,17 +113,29 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         lot_string = StringToList(lot)
         #the string of list must be made into json
         lot_list = lot_string.toList()
+        i = 0
 
         for lote in lot_list:
             if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                jove = StringToList(lote['code_operation'])
-                jov = jove.toList()
-                for lot in jov:
-                    if umutie.code_operation in lot:
-                        lot['code_operation'] = umutie.quantite_restant
-
-                print(f"THe changed lot is now: {jov}")
-                lote = jove
+                # jove = StringToList(lote['code_operation'])
+                # jov = jove.toList()
+                print(f"Found: {lote.get('date')}  and {(str(umutie.date_uzohererako))[:7]}")
+                operation = lote.get('code_operation')
+                # print(f"Operation: {len(operation)}")
+                for lot in operation:
+                    print(f"exe: {lot}")
+                    i += 1
+                    try:
+                        print(f"exo: {lot[umutie.code_operation]} to {umutie.quantite_restant}")
+                    except KeyError:
+                        pass
+                    else:
+                        lot[umutie.code_operation] = umutie.quantite_restant
+                somme_operation = listDictIntSomme2(lote['code_operation'])
+                print(f"La somme est : {somme_operation}")
+                lote['qte'] = somme_operation
+            else:
+                print(f"not equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
 
         return lot_list
 
