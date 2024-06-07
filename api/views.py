@@ -77,7 +77,7 @@ class EntrantImiti(viewsets.ViewSet):
                 if umutie.code_operation in converted_list:
                     synced = self._check_qte(umutie.code_operation, \
                                         umutie.quantite_restant, \
-                                        umuti_set )
+                                        qte_tracked )
                     print(f"already tracked into : {synced}")
                     continue  # skip to treat is as new
                     # sync quantite_restant according to umutie
@@ -135,15 +135,19 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
 
         return JsonResponse({"Things ":"well"})
     
-    def _check_qte(self, code_operation:str, quantite_restant:int, umutiset_new:ImitiSet):
-        checked_qte = listStrToList(umuti_set.checked_qte)
-        cloned_qte = checked_qte
+    def _check_qte(self, code_operation:str, quantite_restant:int,\
+                    qte_tracked:list)-> list:
+        # checked_qte = listStrToList(umutiset_new.checked_qte)
+        cloned_qte = qte_tracked
         i = 0
-        for obj in checked_qte:
-            if obj['code_operation'] == code_operation:
-                cloned_qte[i]['qte_restant'] = quantite_restant
+        for obj in qte_tracked:
+            if obj.get('code_operation') == code_operation:
+                if obj['qte_restant'] != quantite_restant:
+                    obj['qte_restant'] = quantite_restant
+                else:
+                    print(f"\n{obj['qte_restant']} === {quantite_restant}\n\n\n")
 
-        return cloned_qte
+        return qte_tracked
     
     def _umutiMushasha(self, umuti):
         """Creates an instance of ImitiSet, it's input is 
