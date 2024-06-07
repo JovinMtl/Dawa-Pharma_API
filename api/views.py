@@ -75,6 +75,7 @@ class EntrantImiti(viewsets.ViewSet):
                 converted_list = listStrToList(umuti_set.checked_imiti)
                 if umutie.code_operation in converted_list:
                     print("already tracked")
+                    # check_qte(umutie.code_operation, )
                     continue  # skip to treat is as new
                     # sync quantite_restant according to umutie
                 else:
@@ -154,8 +155,12 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         umuti_new.date_last_vente = umuti.date_winjiriyeko
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
         checked = []
+        qte_obj= {
+            'code_operation': umuti.code_operation,
+            'qte_restant': umuti_new.quantite_restant
+        }
         checked_qte = []
-        checked_qte.append(umuti_new.quantite_restant)
+        checked_qte.append(qte_obj)
         checked.append(umuti.code_operation)
         umuti_new.checked_imiti = checked
         umuti_new.checked_qte = checked_qte
