@@ -69,7 +69,7 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_new.lot = jove
                     umuti_new.save()
             else:
-                qte_tracked =  listStrToList(umuti_set.checked_qte)
+                qte_tracked =  listIntToList(umuti_set.checked_qte)
                 print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
                 converted_list = listStrToList(umuti_set.checked_imiti)
                 if umutie.code_operation in converted_list:
