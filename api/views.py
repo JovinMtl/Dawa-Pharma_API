@@ -68,8 +68,8 @@ class EntrantImiti(viewsets.ViewSet):
                                         qte_tracked )
                     # _check_lot()
                     print(f"already tracked into : {synced}")
-                    synced_lot = self._check_lot(umuti_set.lot)
-                    umuti_set.lot = synced_lot
+                    # synced_lot = self._sync_lot(umuti_set.lot, umutie)
+                    # umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
                     umuti_set.save()
                     continue  # skip to treat is as new
@@ -88,7 +88,7 @@ class EntrantImiti(viewsets.ViewSet):
                 # divided by a comma.
 
                 #mugihe iyo code ihari muri Set
-                lot_list = self._check_lot(umuti_set.lot)
+                lot_list = self._check_lot(umuti_set.lot, umutie)
                 umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
                 # umuti_set.quantite_restant += umutie.quantite_restant
                 umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
@@ -108,6 +108,30 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
                 umuti_set.save()
 
         return JsonResponse({"Things ":"well"})
+    
+    def _sync_lot(self, lot:str, umutie):
+        lot_string = StringToList(lot)
+        #the string of list must be made into json
+        lot_list = lot_string.toList()
+        i = 0
+        j = 0
+        for lote in lot_list:
+            if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
+                lote['qte'] = umutie.quantite_restant
+                j += 1
+            
+        if not j:
+            obj = {
+                'date': (str(umutie.date_uzohererako))[:7],
+                'qte': int(umutie.quantite_restant),
+                'code_operation': str(umutie.code_operation),
+                'to_panier': 0
+            }
+            i += 1
+            lot_list.append(obj)
+
+        return lot_list
+
     
     def _check_lot(self, lot:str, umutie:UmutiEntree):
         lot_string = StringToList(lot)
