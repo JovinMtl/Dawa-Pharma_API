@@ -69,6 +69,9 @@ class EntrantImiti(viewsets.ViewSet):
                     # _check_lot()
                     # print(f"already tracked into : {synced}")
                     synced_lot = self._sync_lot(umuti_set.lot, umutie)
+                    somme_lot = listDictIntSomme3(synced_lot)
+                    # print(f"La toute somme vaut : {somme_lot}")
+                    umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
                     umuti_set.save()
@@ -137,8 +140,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
             else:
                 print(f"not equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
 
-        somme_lot = listDictIntSomme3(lot_list)
-        print(f"La toute somme vaut : {somme_lot}")
+        
 
         return lot_list
 
