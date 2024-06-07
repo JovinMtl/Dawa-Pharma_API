@@ -57,18 +57,6 @@ class EntrantImiti(viewsets.ViewSet):
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
                 umuti_new = self._umutiMushasha(umutie)
-                if str(type(umuti_new)) == "<class 'pharma.models.ImitiSet'>":
-                    obj = {
-                        'date': (str(umutie.date_uzohererako))[:7],
-                        'qte': int(umutie.quantite_restant),
-                        'code_operation': str(umutie.code_operation),
-                        'to_panier': 0
-                    }
-                    arr = []
-                    arr.append(obj)
-                    jove = json.dumps(obj=arr)
-                    umuti_new.lot = jove
-                    umuti_new.save()
             else:
                 qte_saved =  StringToList(umuti_set.checked_qte)
                 qte_tracked = qte_saved.toList()
@@ -78,6 +66,7 @@ class EntrantImiti(viewsets.ViewSet):
                     synced = self._check_qte(umutie.code_operation, \
                                         umutie.quantite_restant, \
                                         qte_tracked )
+                    # _check_lot()
                     print(f"already tracked into : {synced}")
                     umuti_set.checked_qte = synced
                     umuti_set.save()
@@ -175,6 +164,16 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         umuti_new.lot = str('')
         umuti_new.date_last_vente = umuti.date_winjiriyeko
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
+
+        obj = {
+            'date': (str(umutie.date_uzohererako))[:7],
+            'qte': int(umutie.quantite_restant),
+            'code_operation': str(umutie.code_operation),
+            'to_panier': 0
+        }
+        lot = []
+        lot.append(obj)
+
         checked = []
         qte_obj= {
             'code_operation': umuti.code_operation,
@@ -185,6 +184,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         checked.append(umuti.code_operation)
         umuti_new.checked_imiti = checked
         umuti_new.checked_qte = checked_qte
+        umuti_new.lot = lot
 
         umuti_new.save()
 
