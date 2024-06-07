@@ -134,7 +134,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
                             str(umutie.code_operation) : int(umutie.quantite_restant)
                         }
                 lote['code_operation'].append(obj)
-                lote['qte'] += listDictIntSomme2(lote['code_operation'])
+                lote['qte'] += int(listDictIntSomme2(lote['code_operation']))
                 j += 1
             
         if not j:
@@ -195,7 +195,11 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
         obj = {
             'date': (str(umuti.date_uzohererako))[:7],
             'qte': int(umuti.quantite_restant),
-            'code_operation': str(umuti.code_operation),
+            'code_operation': [
+                        { 
+                            str(umuti.code_operation) : int(umuti.quantite_restant)
+                        }
+                    ],
             'to_panier': 0
         }
         lot = []
