@@ -20,7 +20,8 @@ from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
 #importing my additional code
 from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
-from .shared.listStrToList import listStrToList, listIntToList
+from .shared.listStrToList import listStrToList, listIntToList,\
+      listIntSomme
 
 # Create your views here.
 
@@ -109,7 +110,8 @@ class EntrantImiti(viewsets.ViewSet):
                     i += 1
                     lot_list.append(obj)
                 umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
-                umuti_set.quantite_restant += umutie.quantite_restant
+                # umuti_set.quantite_restant += umutie.quantite_restant
+                umuti_set.quantite_restant = listIntSomme(umuti_set.checked_qte)
                 umuti_set.lot = lot_list
                 last_date = self._findLastDate(code_umuti=umuti_set.code_umuti)
                 if last_date:
