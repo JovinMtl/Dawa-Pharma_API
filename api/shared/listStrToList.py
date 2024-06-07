@@ -66,9 +66,32 @@ def listDictIntSomme2(data:list)->int:
     print(f"The code operation is : {data} and the answer is {dict_val}")
     return (dict_val)
 
+def listDictIntSomme3( data:list):
+    """ This function returns the sum of the list of dict of this type:
+
+        data = [{'date': '2024-06', 'qte': 9, 
+                'code_operation': [{'xt10': 4}, 
+                {'xt11': 5}], 'to_panier': 0}, 
+                {'date': '2025-08', 'qte': 6, 
+                'code_operation': [{'xt12': 6}], 'to_panier': 0}]
+    
+    """
+    data2 = 0
+    for dat in data:
+        try:
+            print(dat['qte'])
+        except KeyError:
+            pass
+        else:
+            data2 += dat['qte']
+    
+    return (data2)
+    
+
 
 # listStrToList()
 # listIntToList()
 # listIntSomme()
 # listDictIntSomme()
 # listDictIntSomme2()
+listDictIntSomme3()
