@@ -106,6 +106,7 @@ class EntrantImiti(viewsets.ViewSet):
                 #     }
                 #     i += 1
                 #     lot_list.append(obj)
+                lot_list = self._check_lot(umuti_set.lot)
                 umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
                 # umuti_set.quantite_restant += umutie.quantite_restant
                 umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
@@ -146,7 +147,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
             }
             i += 1
             lot_list.append(obj)
-            
+
         return lot_list
     
     def _check_qte(self, code_operation:str, quantite_restant:int,\
