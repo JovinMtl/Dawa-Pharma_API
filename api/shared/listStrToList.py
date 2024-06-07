@@ -68,4 +68,4 @@ def listDictIntSomme2(data:list)->int:
 # listIntToList()
 # listIntSomme()
 # listDictIntSomme()
-listDictIntSomme2()
+# listDictIntSomme2()
