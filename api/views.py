@@ -103,6 +103,9 @@ class EntrantImiti(viewsets.ViewSet):
                     }
                     i += 1
                     lot_list.append(obj)
+                    print(f"the new lot is now : {lot_list}")
+                print(f"J is : {j}")
+                umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
                 umuti_set.quantite_restant += umutie.quantite_restant
                 umuti_set.lot = lot_list
                 last_date = self._findLastDate(code_umuti=umuti_set.code_umuti)
