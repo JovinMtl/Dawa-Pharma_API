@@ -53,4 +53,4 @@ def listDictIntSomme(data:list):
 # listStrToList()
 # listIntToList()
 # listIntSomme()
-listDictIntSomme()
+# listDictIntSomme()
