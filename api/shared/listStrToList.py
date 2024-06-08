@@ -106,9 +106,15 @@ def _assess_order(code_umuti:str, code_operation:list) -> list:
         
         return data
 
-def __place_order() -> list:
-    qte = 1
-    data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
+def __place_order(data:list, qte:int) -> list:
+    """ The function takes a list of order and make a repartition of qte
+    based on input data of this type:
+        data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
+
+        with: qte = 1
+
+    and return :  [['AL123', 'xt10', 1], ['AL123', 'xt11', 0]]
+    """
     reste = 0
     if qte < 1:
         return []
