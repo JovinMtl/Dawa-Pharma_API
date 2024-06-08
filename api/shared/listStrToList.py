@@ -1,4 +1,5 @@
 
+import os
 
 def listStrToList(data:str):
     """ THis function takes a String of list of Str and converts it into
@@ -79,7 +80,7 @@ def listDictIntSomme3( data:list):
     data2 = 0
     for dat in data:
         try:
-            print(dat['qte'])
+            print(dat['qte'],  file=open(os.devnull, 'w'))
         except KeyError:
             pass
         else:
