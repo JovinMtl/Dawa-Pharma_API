@@ -116,11 +116,8 @@ class EntrantImiti(viewsets.ViewSet):
 
         for lote in lot_list:
             if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                # jove = StringToList(lote['code_operation'])
-                # jov = jove.toList()
                 print(f"Found: {lote.get('date')}  and {(str(umutie.date_uzohererako))[:7]}")
                 operation = lote.get('code_operation')
-                # print(f"Operation: {len(operation)}")
                 for lot in operation:
                     print(f"exe: {lot}")
                     i += 1
