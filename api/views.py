@@ -63,29 +63,24 @@ class EntrantImiti(viewsets.ViewSet):
                 # print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
                 converted_list = listStrToList(umuti_set.checked_imiti)
                 if umutie.code_operation in converted_list:
+                    # sync quantite_restant according to umutie
                     synced = self._check_qte(umutie.code_operation, \
                                         umutie.quantite_restant, \
                                         qte_tracked )
-                    # _check_lot()
-                    # print(f"already tracked into : {synced}")
                     synced_lot = self._sync_lot(umuti_set.lot, umutie)
                     somme_lot = listDictIntSomme3(synced_lot)
-                    # print(f"La toute somme vaut : {somme_lot}")
                     umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
                     umuti_set.save()
                     continue  # skip to treat is as new
-                    # sync quantite_restant according to umutie
                 else:
-                    # print(f"{converted_list} : {umutie.code_operation}")
                     converted_list.append(umutie.code_operation)
                     qte_tracked.append(
                         {'code_operation':umutie.code_operation, 
                          'qte_restant': umutie.quantite_restant})
                     umuti_set.checked_imiti = converted_list
                     umuti_set.checked_qte = qte_tracked
-                # print(f"the actual_qte_tracked is {umuti_set.checked_qte}")
                 # check that the actual code_operation has passed,
                 # i should add those code_operation in a fields in umutiSet
                 # divided by a comma.
@@ -112,6 +107,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
 
         return JsonResponse({"Things ":"well"})
     
+
     def _sync_lot(self, lot:str, umutie):
         lot_string = StringToList(lot)
         #the string of list must be made into json
@@ -139,8 +135,6 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
                 lote['qte'] = somme_operation
             else:
                 print(f"not equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
-
-        
 
         return lot_list
 
@@ -176,6 +170,7 @@ isn't bigger than {umuti_set.qte_entrant_big}.")
 
         return lot_list
     
+
     def _check_qte(self, code_operation:str, quantite_restant:int,\
                     qte_tracked:list)-> list:
         # checked_qte = listStrToList(umutiset_new.checked_qte)
