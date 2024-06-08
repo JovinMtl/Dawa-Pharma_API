@@ -59,10 +59,28 @@ class EntrantImiti(viewsets.ViewSet):
         """THis method is in charge of creating and filling a new instance
         of UmutiEntree.
         """
-        obj = {'code_umuti': '', 'date_winjiriyeko': '2024-06-08T09:01:18.785Z', 'date_uzohererako': '12:00:00 AM', 'name_umuti': 'AMINOPHYLLINE', 'description_umuti': 'Uvura uburuhe', 'type_umuti': 'Ovule', 'type_in': 'Carton', 'ratio_type': '10', 'type_out': 'Piece', 'price_in': '1500', 'price_out': '1800', 'quantite_initial': '15', 'location': ''}
+        obj = {'code_umuti': '', 'date_winjiriyeko': '2024-06-08T09:01:18.785Z', 
+               'date_uzohererako': '12:00:00 AM', 'name_umuti': 'AMINOPHYLLINE', 
+               'description_umuti': 'Uvura uburuhe', 'type_umuti': 'Ovule', 
+               'type_in': 'Carton', 'ratio_type': '10', 'type_out': 'Piece', 
+               'price_in': '1500', 'price_out': '1800', 
+               'quantite_initial': '15', 'location': ''}
         umuti_new = UmutiEntree.objects.create()
+        umuti_new.name_umuti = obj.name_umuti
         umuti_new.code_umuti = code_umuti
         umuti_new.code_operation = code_operation
+        umuti_new.quantite_initial = obj.quantite_initial
+        umuti_new.price_in = obj.price_in
+        umuti_new.price_out = obj.price_out
+        umuti_new.date_uzohererako = obj.date_uzohererako
+        umuti_new.date_winjiriyeko = obj.date_winjiriyeko
+        umuti_new.description_umuti = obj.description_umuti
+        umuti_new.type_umuti = obj.type_umuti
+        umuti_new.type_in = obj.type_in
+        umuti_new.ratio_type = obj.ratio_type 
+        umuti_new.type_out = obj.type_out 
+        umuti_new.location = obj.location 
+
 
     
     # @action(methods=['get'], detail=False,\
