@@ -97,8 +97,8 @@ def _assess_order() -> list:
         for obj in code_operation:
             code = (str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(',')[1]
-            qte = (str(obj)).replace('[',"").replace(']','').\
-                replace("'",",", -1).split(" ")[1].split('}')[0]
+            qte = int((str(obj)).replace('[',"").replace(']','').\
+                replace("'",",", -1).split(" ")[1].split('}')[0])
             print(qte)
             
     
