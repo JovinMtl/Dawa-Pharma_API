@@ -123,7 +123,7 @@ class EntrantImiti(viewsets.ViewSet):
                     # print(f"exe: {lot}")
                     i += 1
                     try:
-                        print(f"exo: {lot[umutie.code_operation]} to {umutie.quantite_restant}")
+                        print(f"exo: {lot[umutie.code_operation]} to {umutie.quantite_restant}",  file=open(os.devnull, 'w'))
                     except KeyError:
                         pass
                     else:
