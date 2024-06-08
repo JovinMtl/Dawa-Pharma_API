@@ -110,6 +110,8 @@ def __place_order():
     qte = -1
     data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
     reste = 0
+    if qte < 1:
+        return []
     for dat in data:
         if (qte > dat[2]) and (reste == 0):
             reste = qte - dat[2]
