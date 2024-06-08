@@ -45,7 +45,8 @@ class EntrantImiti(viewsets.ViewSet):
         i = 0
         for obj in dataReceived:
             code_umuti = code_6.giveCode()
-            reponse = self._addUmuti(obj,code_umuti, code_operation) # 200 if ok
+            reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
+                                      code_operation=code_operation) # 200 if ok
             if reponse != 200:
                 error_list.append(i)
         
@@ -53,6 +54,8 @@ class EntrantImiti(viewsets.ViewSet):
             return JsonResponse({"Finished with errors ": error_list})
 
         return JsonResponse({"Things ":"well"})
+    
+    # def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str)
     
     # @action(methods=['get'], detail=False,\
     #          permission_classes= [IsAuthenticated])
