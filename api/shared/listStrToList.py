@@ -143,4 +143,4 @@ def __place_order(data:list, qte:int) -> list:
 # listDictIntSomme2()
 # listDictIntSomme3()
 # _assess_order()
-__place_order()
+# __place_order()

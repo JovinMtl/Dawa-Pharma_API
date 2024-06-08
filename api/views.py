@@ -333,6 +333,33 @@ class ImitiOut(viewsets.ViewSet):
             data.append([code_umuti, code, qte])
         
         return data
+    
+    def __place_order(self, data:list, qte:int) -> list:
+        """ The function takes a list of order and make a repartition of qte
+        based on input data of this type:
+            data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
+
+            with: qte = 1
+
+        and return :  [['AL123', 'xt10', 1], ['AL123', 'xt11', 0]]
+        """
+        reste = 0
+        if qte < 1:
+            return []
+        for dat in data:
+            if (qte > dat[2]) and (reste == 0):
+                reste = qte - dat[2]
+                qte = reste
+            elif (qte <= dat[2]) and (reste != -1):
+                dat[2] = qte
+                reste = -1
+                qte = 0
+            elif reste == -1:
+                dat[2] = 0
+            else:
+                return ['Empty',]
+        
+        return data
 
     
     def _imitiSell(self, umuti:UmutiEntree, qte:int, operator:str):
