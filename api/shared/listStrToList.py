@@ -86,6 +86,18 @@ def listDictIntSomme3( data:list):
             data2 += dat['qte']
     
     return (data2)
+
+def _assess_order() -> list:
+        """ THis function will take a list of object and return a 
+        list of str and int"""
+        code_umuti = 'AL123'
+        code_operation = [{'xt10': 2}, {'xt11': 5}]
+        # return object([['AL123','xt10', '2']])
+        data = []
+        for obj in code_operation:
+            # print(obj)
+            code = obj.replace('[',"").replace(']','').replace("'",",", -1)
+            
     
 
 
@@ -95,3 +107,4 @@ def listDictIntSomme3( data:list):
 # listDictIntSomme()
 # listDictIntSomme2()
 # listDictIntSomme3()
+_assess_order()
