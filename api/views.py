@@ -73,13 +73,13 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.price_in = obj.price_in
         umuti_new.price_out = obj.price_out
         umuti_new.date_uzohererako = obj.date_uzohererako
-        umuti_new.date_winjiriyeko = obj.date_winjiriyeko
-        umuti_new.description_umuti = obj.description_umuti
-        umuti_new.type_umuti = obj.type_umuti
-        umuti_new.type_in = obj.type_in
-        umuti_new.ratio_type = obj.ratio_type 
-        umuti_new.type_out = obj.type_out 
-        umuti_new.location = obj.location 
+        umuti_new.date_winjiriyeko = obj.date_winjiriyeko | umuti_new.date_winjiriyeko
+        umuti_new.description_umuti = obj.description_umuti | umuti_new.description_umuti
+        umuti_new.type_umuti = obj.type_umuti | umuti_new.type_umuti
+        umuti_new.type_in = obj.type_in | umuti_new.type_in
+        umuti_new.ratio_type = obj.ratio_type | umuti_new.ratio_type
+        umuti_new.type_out = obj.type_out | umuti_new.type_out
+        umuti_new.location = obj.location | umuti_new.location
 
         umuti_new.save()
         
