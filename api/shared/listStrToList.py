@@ -99,7 +99,10 @@ def _assess_order() -> list:
                 replace("'",",", -1).split(',')[1]
             qte = int((str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(" ")[1].split('}')[0])
-            print(qte)
+            
+            data.append([code_umuti, code, qte])
+        
+        print(f"The data gotten is {data}")
             
     
 
