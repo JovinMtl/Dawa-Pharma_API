@@ -95,8 +95,11 @@ def _assess_order() -> list:
         # return object([['AL123','xt10', '2']])
         data = []
         for obj in code_operation:
-            # print(obj)
-            code = obj.replace('[',"").replace(']','').replace("'",",", -1)
+            code = (str(obj)).replace('[',"").replace(']','').\
+                replace("'",",", -1).split(',')[1]
+            # qte = (str(obj)).replace('[',"").replace(']','').\
+            #     replace("'",",", -1).split(',')[1]
+            print(code)
             
     
 
