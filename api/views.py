@@ -330,10 +330,10 @@ class ImitiOut(viewsets.ViewSet):
         for obj in code_operation:
             code = (str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(',')[1]
-            qte = int((str(obj)).replace('[',"").replace(']','').\
+            qtee = int((str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(" ")[1].split('}')[0])
             
-            data.append([code_umuti, code, qte])
+            data.append([code_umuti, code, qtee])
         
         orders = self.__place_order(data=data, qte=qte)
         
