@@ -107,7 +107,7 @@ def _assess_order(code_umuti:str, code_operation:list) -> list:
         return data
 
 def __place_order():
-    qte = 6
+    qte = -1
     data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
     reste = 0
     for dat in data:
