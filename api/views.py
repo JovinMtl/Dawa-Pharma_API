@@ -348,7 +348,7 @@ class ImitiOut(viewsets.ViewSet):
 
         and return :  [['AL123', 'xt10', 1], ['AL123', 'xt11', 0]]
         """
-        print(f"The qte received: {qte}")
+        print(f"The qte received: {qte}") 
         reste = 0
         if qte < 1:
             return []
