@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
 from django.utils import timezone
 from datetime import timedelta, datetime
+import os
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
