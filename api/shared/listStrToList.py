@@ -104,7 +104,7 @@ def _assess_order(code_umuti:str, code_operation:list) -> list:
             
             data.append([code_umuti, code, qte])
         
-        print(f"The data gotten is {data}")
+        return data
             
     
 
