@@ -36,14 +36,15 @@ class EntrantImiti(viewsets.ViewSet):
     def kurangura(self, request):
         """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
-        print(f"The data Received: {dataReceived}")
+        data = dataReceived.get('jov')
+        print(f"The data Received: {data}")
         # first of all, generate the codes
         code_12 = GenerateCode()
         code_6 = GenerateCode(6)
         code_operation = code_12.giveCode()
         error_list = []
         i = 0
-        for obj in dataReceived:
+        for obj in data:
             code_umuti = code_6.giveCode()
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
                                       code_operation=code_operation) # 200 if ok
@@ -71,16 +72,19 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.code_umuti = code_umuti
         umuti_new.code_operation = code_operation
         umuti_new.quantite_initial = obj.get('quantite_initial')
+        umuti_new.quantite_restant = umuti_new.quantite_initial
         umuti_new.price_in = obj.get('price_in')
         umuti_new.price_out = obj.get('price_out')
+        print(f"\n\n1. Date Uzohererako : {obj.get('date_uzohererako')}\n")
         umuti_new.date_uzohererako = obj.get('date_uzohererako')
-        umuti_new.date_winjiriyeko = obj.get('date_winjiriyeko') | umuti_new.date_winjiriyeko
-        umuti_new.description_umuti = obj.get('description_umuti') | umuti_new.description_umuti
-        umuti_new.type_umuti = obj.get('type_umuti') | umuti_new.type_umuti
-        umuti_new.type_in = obj.get('type_in') | umuti_new.type_in
-        umuti_new.ratio_type = obj.get('ratio_type') | umuti_new.ratio_type
-        umuti_new.type_out = obj.get('type_out') | umuti_new.type_out
-        umuti_new.location = obj.get('location') | umuti_new.location
+        print(f"2. Date Winjiriyeko : {obj.get('date_winjiriyeko')}\n")
+        umuti_new.date_winjiriyeko = (obj.get('date_winjiriyeko'))
+        umuti_new.description_umuti = (obj.get('description_umuti'))
+        umuti_new.type_umuti = obj.get('type_umuti') 
+        umuti_new.type_in = obj.get('type_in') 
+        umuti_new.ratio_type = obj.get('ratio_type')
+        umuti_new.type_out = obj.get('type_out')
+        umuti_new.location = obj.get('location')
 
         umuti_new.save()
         
