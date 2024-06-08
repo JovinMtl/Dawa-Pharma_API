@@ -115,4 +115,4 @@ def _assess_order(code_umuti:str, code_operation:list) -> list:
 # listDictIntSomme()
 # listDictIntSomme2()
 # listDictIntSomme3()
-_assess_order()
+# _assess_order()
