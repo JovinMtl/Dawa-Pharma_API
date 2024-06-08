@@ -82,6 +82,8 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.location = obj.location 
 
         umuti_new.save()
+        
+        return 200
 
 
     
