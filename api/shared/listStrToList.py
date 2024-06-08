@@ -111,12 +111,22 @@ def __place_order():
     data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
     reste = 0
     for dat in data:
-        if qte >= dat[2]:
+        if (qte > dat[2]) and (reste == 0):
+            reste = qte - dat[2]
+            # dat[2] = dat[2]
+            print(f"To: {qte} : {dat[2]} = {reste}")
+            qte = reste
+        elif (qte <= dat[2]) and (reste == 0):
+            print(f"{dat[2]}: {qte} = {qte == dat[2]}")
             dat[2] = qte
+            reste = -1
+            qte = 0
+            continue
             #should return data right now
+        elif reste == -1:
+            dat[2] = 0
         else:
-            reste =  qte - dat[2]
-            dat[2] = qte
+            print(f"found qte:{qte} and dat:{dat[2]} and reste:{reste}")
     
     print(data)
             
@@ -130,3 +140,4 @@ def __place_order():
 # listDictIntSomme2()
 # listDictIntSomme3()
 # _assess_order()
+__place_order()
