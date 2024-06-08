@@ -105,6 +105,20 @@ def _assess_order(code_umuti:str, code_operation:list) -> list:
             data.append([code_umuti, code, qte])
         
         return data
+
+def __place_order():
+    qte = 2
+    data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
+    reste = 0
+    for dat in data:
+        if qte >= dat[2]:
+            dat[2] = qte
+            #should return data right now
+        else:
+            reste =  qte - dat[2]
+            dat[2] = qte
+    
+    print(data)
             
     
 
