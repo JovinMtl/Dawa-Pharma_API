@@ -97,12 +97,12 @@ class EntrantImiti(viewsets.ViewSet):
                 #checking if there is qte_entrant bigger than before
                 if (int(umuti_set.qte_entrant_big)) < (int(umutie.quantite_initial)):
                     umuti_set.qte_entrant_big = int(umutie.quantite_initial)
-                    print(f"The Umutie is bigger {umutie.quantite_initial}\
- out of {umuti_set.qte_entrant_big}")
-                else:
-                    print(f"The Existing UmutiSet :\
- {umutie.quantite_initial}  \
-isn't bigger than {umuti_set.qte_entrant_big}.")
+#                     print(f"The Umutie is bigger {umutie.quantite_initial}\
+#  out of {umuti_set.qte_entrant_big}")
+                # else:
+#                     print(f"The Existing UmutiSet :\
+#  {umutie.quantite_initial}  \
+# isn't bigger than {umuti_set.qte_entrant_big}.")
                 umuti_set.save()
 
         return JsonResponse({"Things ":"well"})
