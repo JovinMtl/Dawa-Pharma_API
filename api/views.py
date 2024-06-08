@@ -294,6 +294,8 @@ class ImitiOut(viewsets.ViewSet):
             # print(f"The code gotten are: {code_umuti} and {code_operation} and {qte}")
             # return JsonResponse({"done":"okay"})
                 for order in orders:
+                    if order[2] == 0:
+                        continue
                     try:
                         umuti = UmutiEntree.objects.\
                             filter(code_umuti=code_umuti).\
