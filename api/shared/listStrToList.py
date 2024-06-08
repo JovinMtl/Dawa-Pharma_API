@@ -115,20 +115,15 @@ def __place_order() -> list:
     for dat in data:
         if (qte > dat[2]) and (reste == 0):
             reste = qte - dat[2]
-            # dat[2] = dat[2]
-            print(f"To: {qte} : {dat[2]} = {reste}")
             qte = reste
         elif (qte <= dat[2]) and (reste != -1):
-            print(f"{dat[2]}: {qte} = {qte == dat[2]}")
             dat[2] = qte
             reste = -1
             qte = 0
-            continue
-            #should return data right now
         elif reste == -1:
             dat[2] = 0
         else:
-            return ['Empty'm]
+            return ['Empty',]
     
     return data
             
