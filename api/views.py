@@ -37,6 +37,20 @@ class EntrantImiti(viewsets.ViewSet):
         """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
         print(f"The data Received: {dataReceived}")
+        # ibanze igire code_operation(obj)
+        code_12 = GenerateCode()
+        code_6 = GenerateCode(6)
+        code_operation = code_12.giveCode()
+        error_list = []
+        i = 0
+        for obj in dataReceived:
+            code_umuti = code_6.giveCode()
+            reponse = self._addUmuti(obj,code_umuti, code_operation) # 200 if ok
+            if reponse != 200:
+                error_list.append(i)
+        
+        if len(error_list):
+            return JsonResponse({"Finished with errors ": error_list})
 
         return JsonResponse({"Things ":"well"})
     
