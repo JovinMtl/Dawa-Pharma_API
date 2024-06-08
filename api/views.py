@@ -281,9 +281,11 @@ class ImitiOut(viewsets.ViewSet):
             for lote in lot:
                 code_operation = lote.get('code_operation')
                 qte = lote.get('qte')
+                print(f"working on qte:{qte}")
                 orders = self._assess_order(code_umuti=code_umuti,\
                                          code_operation=code_operation,\
                                              qte=qte)
+                print(f"ACTUAL ORDERS: {orders}")
                 # qte = lote.get('qte')
 
             # code_operation = actual.get('lot')[0].get('code_operation')
