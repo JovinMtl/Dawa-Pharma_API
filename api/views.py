@@ -81,6 +81,8 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.type_out = obj.type_out 
         umuti_new.location = obj.location 
 
+        umuti_new.save()
+
 
     
     # @action(methods=['get'], detail=False,\
