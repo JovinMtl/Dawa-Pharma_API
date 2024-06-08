@@ -87,12 +87,14 @@ def listDictIntSomme3( data:list):
     
     return (data2)
 
-def _assess_order() -> list:
-        """ THis function will take a list of object and return a 
-        list of str and int"""
-        code_umuti = 'AL123'
-        code_operation = [{'xt10': 2}, {'xt11': 5}]
-        # return object([['AL123','xt10', '2']])
+def _assess_order(code_umuti:str, code_operation:list) -> list:
+        """ THis function will take a list of object of this kind:
+    
+                    code_operation = [{'xt10': 2}, {'xt11': 5}]
+            coupled with :  code_umuti = 'AL123'
+           and return a  list of str and int of this kind:
+            [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
+        """
         data = []
         for obj in code_operation:
             code = (str(obj)).replace('[',"").replace(']','').\
