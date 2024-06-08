@@ -333,7 +333,9 @@ class ImitiOut(viewsets.ViewSet):
             
             data.append([code_umuti, code, qte])
         
-        return data
+        orders = self.__place_order(data=data, qte=qte)
+        
+        return orders
     
     def __place_order(self, data:list, qte:int) -> list:
         """ The function takes a list of order and make a repartition of qte
