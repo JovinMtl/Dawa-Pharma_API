@@ -293,21 +293,22 @@ class ImitiOut(viewsets.ViewSet):
             # qte = actual.get('lot')[0].get('qte')
             # print(f"The code gotten are: {code_umuti} and {code_operation} and {qte}")
             # return JsonResponse({"done":"okay"})
-                try:
-                    umuti = UmutiEntree.objects.\
-                        filter(code_umuti=code_umuti).\
-                        filter(code_operation=code_operation)
-                except UmutiEntree.DoesNotExist:
-                    pass
-                else:
-                    #can now perfom the Vente operation
-                    print(f"The Umuti found : {umuti}")
-                    if not umuti:
-                        return JsonResponse({"Umuti":"does not exist"})
-                    sold = self._imitiSell(umuti=umuti[0], qte=qte, operator=request.user)
-                    if sold == 200:
-                        print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
-                        print(f"The rest qte is {umuti[0].quantite_restant}")
+                for order in orders:
+                    try:
+                        umuti = UmutiEntree.objects.\
+                            filter(code_umuti=code_umuti).\
+                            filter(code_operation=order[1])
+                    except UmutiEntree.DoesNotExist:
+                        pass
+                    else:
+                        #can now perfom the Vente operation
+                        print(f"The Umuti found : {umuti}")
+                        if not umuti:
+                            return JsonResponse({"Umuti":"does not exist"})
+                        sold = self._imitiSell(umuti=umuti[0], qte=order[2], operator=request.user)
+                        if sold == 200:
+                            print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
+                            print(f"The rest qte is {umuti[0].quantite_restant}")
 
         #  after sell then call compile
         imiti = EntrantImiti()
