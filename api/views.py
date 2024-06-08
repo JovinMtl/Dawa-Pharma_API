@@ -283,6 +283,7 @@ class ImitiOut(viewsets.ViewSet):
             # qte = actual.get('qte')[0]
             lot = actual.get('lot')
             for lote in lot:
+                # _assess_order(lote) return object([['AL123','xt10', '2']])
                 code_operation = lote.get('code_operation')
                 qte = lote.get('qte')
 
@@ -312,6 +313,16 @@ class ImitiOut(viewsets.ViewSet):
         print(f"La reponse de vente est: {jove}")
 
         return JsonResponse({"It is":"Okay"})
+    
+    def _assess_order(self) -> list:
+        """ THis function will take a list of object and return a 
+        list of str and int"""
+        code_umuti = 'AL123'
+        code_operation = [{'xt10': 2}, {'xt11': 5}]
+        # return object([['AL123','xt10', '2']])
+        data = []
+        for obj in code_operation:
+            
     
     def _imitiSell(self, umuti:UmutiEntree, qte:int, operator:str):
         """Will substract the quantite_restante in UmutiEntree and
