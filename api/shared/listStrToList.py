@@ -106,8 +106,8 @@ def _assess_order(code_umuti:str, code_operation:list) -> list:
         
         return data
 
-def __place_order():
-    qte = -1
+def __place_order() -> list:
+    qte = 1
     data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
     reste = 0
     if qte < 1:
@@ -128,9 +128,9 @@ def __place_order():
         elif reste == -1:
             dat[2] = 0
         else:
-            print(f"found qte:{qte} and dat:{dat[2]} and reste:{reste}")
+            return ['Empty'm]
     
-    print(data)
+    return data
             
     
 
