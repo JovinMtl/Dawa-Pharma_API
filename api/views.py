@@ -55,7 +55,15 @@ class EntrantImiti(viewsets.ViewSet):
 
         return JsonResponse({"Things ":"well"})
     
-    # def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str)
+    def _addUmuti(self, obje:dict, code_umuti:str, code_operation:str):
+        """THis method is in charge of creating and filling a new instance
+        of UmutiEntree.
+        """
+        obj = {'code_umuti': '', 'date_winjiriyeko': '2024-06-08T09:01:18.785Z', 'date_uzohererako': '12:00:00 AM', 'name_umuti': 'AMINOPHYLLINE', 'description_umuti': 'Uvura uburuhe', 'type_umuti': 'Ovule', 'type_in': 'Carton', 'ratio_type': '10', 'type_out': 'Piece', 'price_in': '1500', 'price_out': '1800', 'quantite_initial': '15', 'location': ''}
+        umuti_new = UmutiEntree.objects.create()
+        umuti_new.code_umuti = code_umuti
+        umuti_new.code_operation = code_operation
+
     
     # @action(methods=['get'], detail=False,\
     #          permission_classes= [IsAuthenticated])
