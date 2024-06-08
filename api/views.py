@@ -130,8 +130,7 @@ class EntrantImiti(viewsets.ViewSet):
                 somme_operation = listDictIntSomme2(lote['code_operation'])
                 # print(f"La somme est : {somme_operation}")
                 lote['qte'] = somme_operation
-            # else:
-            #     print(f"not equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
+            # else:s equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
 
         return lot_list
 
@@ -177,8 +176,8 @@ class EntrantImiti(viewsets.ViewSet):
             if obj.get('code_operation') == code_operation:
                 if obj['qte_restant'] != quantite_restant:
                     obj['qte_restant'] = quantite_restant
-                else:
-                    print(f"\n{obj['qte_restant']} === {quantite_restant}\n\n\n")
+                # else:
+                #     print(f"\n{obj['qte_restant']} === {quantite_restant}\n\n\n")
 
         return qte_tracked
     
