@@ -106,6 +106,7 @@ class EntrantImiti(viewsets.ViewSet):
 # isn't bigger than {umuti_set.qte_entrant_big}.")
                 umuti_set.save()
 
+        print("compileImitiSet: SYNC done.")
         return JsonResponse({"Things ":"well"})
     
 
