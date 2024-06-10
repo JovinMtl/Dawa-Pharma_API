@@ -79,7 +79,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.price_in = obj.get('price_in')
         umuti_new.price_out = obj.get('price_out')
         print(f"\n\n1. Date Uzohererako : {obj.get('date_uzohererako')}\n")
-        umuti_new.date_uzohererako = obj.get('date_uzohererako')
+        umuti_new.date_uzohererako = self._giveDate_exp(obj.get('date_uzohererako')) 
         print(f"2. Date Winjiriyeko : {obj.get('date_winjiriyeko')}\n")
         umuti_new.date_winjiriyeko = self._giveDate_entree(obj.get('date_winjiriyeko'))
         umuti_new.description_umuti = (obj.get('description_umuti'))
@@ -94,13 +94,16 @@ class EntrantImiti(viewsets.ViewSet):
         return 200
     
     def _giveDate_exp(self, date_uzohererako:str)->str:
+        """ This function checks the expiring date sent in the format:
+            "04/01/27" and return datetime.datetime(2027, 4, 1, 0, 0)
+        """
         if date_uzohererako:
             return datetime.strptime(date_uzohererako, "%m/%d/%y")
         else:
             return datetime.today()
 
     def _giveDate_entree(self, date_winjiriyeko:str)-> str:
-        """THis function checkes that an date isoString is given 
+        """THis function checks that an date isoString is given 
         from Javascript and then converts it to real python date object."""
         if date_winjiriyeko:
             return datetime(date_winjiriyeko)
