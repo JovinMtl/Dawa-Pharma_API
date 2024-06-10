@@ -78,7 +78,7 @@ class EntrantImiti(viewsets.ViewSet):
         print(f"\n\n1. Date Uzohererako : {obj.get('date_uzohererako')}\n")
         umuti_new.date_uzohererako = obj.get('date_uzohererako')
         print(f"2. Date Winjiriyeko : {obj.get('date_winjiriyeko')}\n")
-        umuti_new.date_winjiriyeko = (obj.get('date_winjiriyeko'))
+        umuti_new.date_winjiriyeko = self._giveDate(obj.get('date_winjiriyeko'))
         umuti_new.description_umuti = (obj.get('description_umuti'))
         umuti_new.type_umuti = obj.get('type_umuti') 
         umuti_new.type_in = obj.get('type_in') 
