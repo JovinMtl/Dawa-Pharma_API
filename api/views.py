@@ -93,6 +93,12 @@ class EntrantImiti(viewsets.ViewSet):
         
         return 200
     
+    def _giveDate_exp(self, date_uzohererako:str)->str:
+        if date_uzohererako:
+            return datetime.strptime(date_uzohererako, "%m/%d/%y")
+        else:
+            return datetime.today()
+
     def _giveDate_entree(self, date_winjiriyeko:str)-> str:
         """THis function checkes that an date isoString is given 
         from Javascript and then converts it to real python date object."""
