@@ -53,7 +53,8 @@ class EntrantImiti(viewsets.ViewSet):
                 single = True
             code_umuti = code_6.giveCode()
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
-                                      code_operation=code_operation) # 200 if ok
+                                      code_operation=code_operation, \
+                                        single=single) # 200 if ok
             if reponse != 200:
                 error_list.append(i)
         
@@ -62,7 +63,7 @@ class EntrantImiti(viewsets.ViewSet):
 
         return JsonResponse({"Things ":"well"})
     
-    def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str):
+    def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str, single:bool):
         """THis method is in charge of creating and filling a new instance
         of UmutiEntree, of this type: 
 
