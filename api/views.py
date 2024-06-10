@@ -89,6 +89,15 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.save()
         
         return 200
+    
+    def _giveDate(self, date_winjiriyeko:str)-> str:
+        """THis function checkes that an date isoString is given 
+        from Javascript and then converts it to real python date object."""
+        if date_winjiriyeko:
+            return datetime(date_winjiriyeko)
+        else:
+            today = datetime.now()
+            return today
 
 
     

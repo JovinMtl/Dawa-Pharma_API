@@ -1,5 +1,6 @@
 
 import os
+from datetime import date, datetime
 
 def listStrToList(data:str):
     """ THis function takes a String of list of Str and converts it into
@@ -134,6 +135,16 @@ def __place_order(data:list, qte:int) -> list:
             return ['Empty',]
     
     return data
+
+
+def _giveDate(date_winjiriyeko:str)-> str:
+        """THis function checkes that an date isoString is given 
+        from Javascript and then converts it to real python date object."""
+        if date_winjiriyeko:
+            return datetime(date_winjiriyeko)
+        else:
+            today = datetime.now()
+            return today
             
     
 
@@ -146,3 +157,5 @@ def __place_order(data:list, qte:int) -> list:
 # listDictIntSomme3()
 # _assess_order()
 # __place_order()
+
+_giveDate('')
