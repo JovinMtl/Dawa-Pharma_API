@@ -46,6 +46,7 @@ class EntrantImiti(viewsets.ViewSet):
         i = 0
         for obj in data:
             if not i:
+                i += 1
                 continue
             code_umuti = code_6.giveCode()
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
