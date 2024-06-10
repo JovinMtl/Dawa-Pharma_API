@@ -81,7 +81,7 @@ class EntrantImiti(viewsets.ViewSet):
         print(f"\n\n1. Date Uzohererako : {obj.get('date_uzohererako')}\n")
         umuti_new.date_uzohererako = obj.get('date_uzohererako')
         print(f"2. Date Winjiriyeko : {obj.get('date_winjiriyeko')}\n")
-        umuti_new.date_winjiriyeko = self._giveDate(obj.get('date_winjiriyeko'))
+        umuti_new.date_winjiriyeko = self._giveDate_entree(obj.get('date_winjiriyeko'))
         umuti_new.description_umuti = (obj.get('description_umuti'))
         umuti_new.type_umuti = obj.get('type_umuti') 
         umuti_new.type_in = obj.get('type_in') 
@@ -93,7 +93,7 @@ class EntrantImiti(viewsets.ViewSet):
         
         return 200
     
-    def _giveDate(self, date_winjiriyeko:str)-> str:
+    def _giveDate_entree(self, date_winjiriyeko:str)-> str:
         """THis function checkes that an date isoString is given 
         from Javascript and then converts it to real python date object."""
         if date_winjiriyeko:
