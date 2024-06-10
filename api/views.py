@@ -44,10 +44,13 @@ class EntrantImiti(viewsets.ViewSet):
         code_operation = code_12.giveCode()
         error_list = []
         i = 0
+        single = False
         for obj in data:
-            if not i:
+            if (len(data) > 2) and (i == 0):
                 i += 1
                 continue
+            elif (len(data) == 1):
+                single = True
             code_umuti = code_6.giveCode()
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
                                       code_operation=code_operation) # 200 if ok
