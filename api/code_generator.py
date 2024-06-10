@@ -43,7 +43,7 @@ class GenerateCode:
                 self.choices.append(choice2)
         for element in self.choices[:self.max]:
                 self.code += str(element)
-        print(f"The length is {len(self.code)} / {self.max}")
+        # print(f"The length is {len(self.code)} / {self.max}")
         return self.code
     
 
