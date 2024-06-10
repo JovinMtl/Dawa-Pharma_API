@@ -83,7 +83,10 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.price_in = obj.get('price_in')
         umuti_new.price_out = obj.get('price_out')
         print(f"\n\n1. Date Uzohererako : {obj.get('date_uzohererako')}\n")
-        umuti_new.date_uzohererako = self._giveDate_exp(obj.get('date_uzohererako')) 
+        if not single:
+            umuti_new.date_uzohererako = self._giveDate_exp(obj.get('date_uzohererako'))
+        else:
+            umuti_new.date_uzohererako = obj.get('date_uzohererako')
         print(f"2. Date Winjiriyeko : {obj.get('date_winjiriyeko')}\n")
         umuti_new.date_winjiriyeko = self._giveDate_entree(obj.get('date_winjiriyeko'))
         umuti_new.description_umuti = (obj.get('description_umuti'))
