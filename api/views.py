@@ -15,8 +15,8 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell
 
 #importing the serializers
-from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
-        UmutiSoldSeriazer, UmutiEntreeSeriazer
+from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
+      UmutiEntreeSeriazer, ImitiSuggestSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -629,7 +629,12 @@ class Rapport(viewsets.ViewSet):
                     final_imiti.append(umuti)
         
         if final_imiti:
-            print(f"The final recommandation: {final_imiti}")
+            result = ImitiSuggestSeria(instance=final_imiti, many=True)
+            if result.is_valid:
+                print(f"The final recommandation: {final_imiti}")
+                return Response(result.data)
+            else:
+                print(f"Things are not well serialized")
         else:
             print(f"There are no recommandations")
             
