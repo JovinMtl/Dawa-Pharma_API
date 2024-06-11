@@ -624,8 +624,9 @@ class Rapport(viewsets.ViewSet):
             i = 0
             for umuti in imiti:
                 umuti_exist_15 = ventes_15.filter(code_umuti=umuti['code_umuti'])
+                # check that the actual umuti is among one sold within the past two weeks.
                 if umuti_exist_15:
-                    final_imiti.append(imiti[i])
+                    final_imiti.append(umuti)
         
         if final_imiti:
             print(f"The final recommandation: {final_imiti}")
