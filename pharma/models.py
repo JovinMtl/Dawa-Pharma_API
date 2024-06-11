@@ -22,7 +22,7 @@ class UmutiEntree(models.Model):
     quantite_initial = models.IntegerField(default=0) # izinjiye ubwambere
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
-    code_operation = models.CharField(max_length=8, default='null') #code yo kwinjiza uwo muti(miti):commune
+    code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
 
     def __str__(self) -> str:
         return f"{self.code_umuti} {(str(self.date_winjiriyeko))[:7]}"
@@ -48,6 +48,8 @@ class ImitiSet(models.Model):
     # ]
     qte_entrant_big = models.IntegerField(default=0) #twisunga mukugira rapport y'iyisigaye
     date_last_vente = models.DateTimeField(default=timezone.now()) #aho uwo muti uheruka gusohoka ku murwayi
+    checked_imiti = models.TextField() # for tracking imitiEntree checked(array of code_operation)
+    checked_qte = models.TextField() # for tracking qte on each umutiEntree
 
     def __str__(self) -> str:
         return f"{self.code_umuti}:{self.quantite_restant}"
