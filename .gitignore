@@ -1,3 +1,4 @@
 dawa
 api/consumeAPI.py
 api/wsgi.py
+db.sqlite3
