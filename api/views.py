@@ -611,6 +611,7 @@ class Rapport(viewsets.ViewSet):
         return record_new
     
     
+    @action(methods=['get'], detail=False)
     def workOn35(self, request):
         """THis one works on imitiSet with  less than 35% of
           remaining quantity and return among them the sold
