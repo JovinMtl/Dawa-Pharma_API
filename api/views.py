@@ -474,47 +474,6 @@ class ImitiOut(viewsets.ViewSet):
         
         return 200
     
-    def _getLess35(self):
-        """THis one returns a list of objects from imitiSet with less than
-          35% of the remaining quantity"""
-        imiti = ImitiSet.objects.all()
-        less_35 = []
-        for umuti in imiti:
-            if (umuti.qte_entrant_big / umuti.quantite_restant) < 3.5:
-                obj = {
-                    'code_umuti': umuti.code_umuti,
-                    'name_umuti' : umuti.name_umuti,
-                    'quantite_restant' : umuti.quantite_restant
-                }
-                less_35.append(obj)
-        
-        if less_35:
-            return less_35
-        else:
-            return None
-    
-    def workOn35(self, request):
-        """THis one works on imitiSet with  less than 35% of
-          remaining quantity and return among them the sold
-            within past 15days"""
-        imiti = self._getLess35()
-        days_15 = timezone.now().date() - timedelta(days=15)
-        ventes_15 = UmutiSold.objects.filter(date_operation__gte=days_15)
-        final_imiti = []
-        if imiti:
-            i = 0
-            for umuti in imiti:
-                umuti_exist_15 = ventes_15.filter(code_umuti=umuti.code_umuti)
-                if umuti_exist_15:
-                    final_imiti.append(imiti[i])
-        
-        if final_imiti:
-            print(f"The final recommandation: {final_imiti}")
-        else:
-            print(f"There are no recommandations")
-            
-        return JsonResponse({"Things are ":"well"})
-    
 
 
 class Rapport(viewsets.ViewSet):
@@ -651,4 +610,46 @@ class Rapport(viewsets.ViewSet):
 
         return record_new
     
+    
+    def workOn35(self, request):
+        """THis one works on imitiSet with  less than 35% of
+          remaining quantity and return among them the sold
+            within past 15days"""
+        imiti = self._getLess35()
+        days_15 = timezone.now().date() - timedelta(days=15)
+        ventes_15 = UmutiSold.objects.filter(date_operation__gte=days_15)
+        final_imiti = []
+        if imiti:
+            i = 0
+            for umuti in imiti:
+                umuti_exist_15 = ventes_15.filter(code_umuti=umuti.code_umuti)
+                if umuti_exist_15:
+                    final_imiti.append(imiti[i])
+        
+        if final_imiti:
+            print(f"The final recommandation: {final_imiti}")
+        else:
+            print(f"There are no recommandations")
+            
+        return JsonResponse({"Things are ":"well"})
+    
+
+    def _getLess35(self):
+        """THis one returns a list of objects from imitiSet with less than
+          35% of the remaining quantity"""
+        imiti = ImitiSet.objects.all()
+        less_35 = []
+        for umuti in imiti:
+            if (umuti.qte_entrant_big / umuti.quantite_restant) < 3.5:
+                obj = {
+                    'code_umuti': umuti.code_umuti,
+                    'name_umuti' : umuti.name_umuti,
+                    'quantite_restant' : umuti.quantite_restant
+                }
+                less_35.append(obj)
+        
+        if less_35:
+            return less_35
+        else:
+            return None
     
