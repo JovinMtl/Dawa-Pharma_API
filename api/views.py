@@ -188,7 +188,7 @@ class EntrantImiti(viewsets.ViewSet):
                 umuti_set.save()
 
         print("compileImitiSet: SYNC done.")
-        return JsonResponse({"Things ":"well"})
+        return JsonResponse({"Things went":"well"})
     
 
     def _sync_lot(self, lot:str, umutie):
