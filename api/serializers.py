@@ -23,3 +23,8 @@ class UmutiEntreeSeriazer(serializers.ModelSerializer):
     class Meta:
         model = UmutiEntree
         fields = '__all__'
+
+class ImitiSuggestSeria(serializers.Serializer):
+    code_umuti = serializers.CharField(required=True, max_length=6)
+    name_umuti = serializers.CharField(required=True)
+    quantite_restant = serializers.IntegerField(required=True)
