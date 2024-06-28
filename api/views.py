@@ -662,14 +662,14 @@ class Rapport(viewsets.ViewSet):
             return None
     
     @action(methods=['post'], detail=False)
-    def selector(self, request):
+    def beneficeEval(self, request):
         dataReceived = request.data
         date1 = dataReceived.get('date1')
         date2 = dataReceived.get('date2')
         
         # deleting all the instances of imitiSuggest
         imitiSuggest.objects.all().delete()
-        
+
         # checking that there are keys as date1 and date2
         if not (date1 and date2):
             print(f"The data sent is wrong formatted")
@@ -700,7 +700,8 @@ class Rapport(viewsets.ViewSet):
                         instance.quantity,
                 'previous_date': instance.date_operation
             }             
-        
+            print(f"The obj is: {obj}")
+
             add_suggest = self._addSuggestion(obj)
         
         # Now query all the instances of imitiSuggest according to benefice
