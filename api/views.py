@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 import json
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from datetime import timedelta, datetime
 import os
 
@@ -673,12 +674,13 @@ class Rapport(viewsets.ViewSet):
             # yesterday and today
             date1 = datetime.today() - timedelta(days=2) # before yesterday
             date2 = date1 + timedelta(days=2) # tomorrow, I know date2 would have today() but more tierce would be added, to be precise.
+        try:
         
         print(f"THe dates are: {date1} and {date2}")
         # now read the UmutiSold table with parameters of date1 & date2
-        queryset = UmutiSold.filter(date_operation__gte=date1).\
+        queryset = UmutiSold.objects.filter(date_operation__gte=date1).\
             filter(date_operation__lte=date2)
-        
+        print(f"THe queryset is: {queryset}")                
 
 
         return JsonResponse({"Everyone is": "right"})
