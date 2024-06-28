@@ -699,6 +699,9 @@ class Rapport(viewsets.ViewSet):
             }             
         
             add_suggest = self._addSuggestion(obj)
+        
+        # Now query all the instances of imitiSuggest according to benefice
+        suggestion = imitiSuggest.objects.allobjects.all().order_by('-benefice')
 
         return JsonResponse({"Everyone is": "right"})
     
