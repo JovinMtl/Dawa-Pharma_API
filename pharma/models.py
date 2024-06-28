@@ -64,8 +64,8 @@ class UmutiSold(models.Model):
     price_total = models.IntegerField(default=1) # q * p
     price_in = models.IntegerField(default=1)
     difference = models.IntegerField(default=0) #9: benefice
-    code_operation_entrant = models.CharField(max_length=8, default='null') #code operation uyo muti winjiriyeko
-    code_operation = models.CharField(max_length=8, default='null') #common with other sold together
+    code_operation_entrant = models.CharField(max_length=12, default='null') #code operation uyo muti winjiriyeko
+    code_operation = models.CharField(max_length=12, default='null') #common with other sold together
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now())
 
