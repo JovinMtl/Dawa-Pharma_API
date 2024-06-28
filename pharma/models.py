@@ -79,4 +79,14 @@ class umutiReportSell(models.Model):
     nb_rest = models.IntegerField(default=0)
     px_T_rest = models.IntegerField(default=0)
 
+class imitiSuggest(models.Model):
+    """This table contains temporary imiti suggestion. 
+    on each completion of endpoint's execution, it gets reinitialized.
+    """
+    code_umuti = models.CharField(max_length=8, default='null')
+    name_umuti = models.CharField(max_length=30, default='null')
+    qte = models.IntegerField(default=0)
+    p_achat = models.IntegerField(default=0)
+    p_vente = models.IntegerField(default=0)
+    benefice = models.IntegerField(default=0)
 
