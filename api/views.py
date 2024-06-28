@@ -695,8 +695,34 @@ class Rapport(viewsets.ViewSet):
                 'p_vente' : instance.price_out * instance.quantity,
                 'benefice' : (instance.price_out - instance.price_in) * \
                         instance.quantity,
+                'previous_date': instance.date_operation
             }             
         
             add_suggest = self._addSuggestion(obj)
 
         return JsonResponse({"Everyone is": "right"})
+    
+    def _addSuggestion(self, obj):
+        """This method receives an obj and adds it on imitiSuggest Model.
+        """
+        # checking the existence of obj in imitiSuggest
+        try:
+            exist_suggest = imitiSuggest.objects.get(code_umuti=obj.\
+                                                     get('code_umuti'))
+        except imitiSuggest.DoesNotExist:
+            new_suggest = imitiSuggest.objects.create()
+            new_suggest.code_umuti = obj.get('code_umuti')
+            new_suggest.name_umuti = obj.get('name_umuti')
+            new_suggest.qte = obj.get('qte')
+            new_suggest.p_achat = obj.get('p_achat')
+            new_suggest.p_vente = obj.get('p_vente')
+            new_suggest.benefice = obj.get('benefice')
+            new_suggest.previous_date = obj.get('previous_date')
+            new_suggest.save()
+
+            return 200
+        else:
+            exist_suggest.qte += int(obj.get('qte'))
+            exist_suggest.p_achat += int(obj.get('p_achat'))
+            exist_suggest.p_vente += int(obj.get('p_vente'))
+            exist_suggest.benefice += int(obj.get('benefice'))
