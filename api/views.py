@@ -691,9 +691,9 @@ class Rapport(viewsets.ViewSet):
                 'name_umuti' : instance.name_umuti,
                 'code_umuti' : instance.code_umuti,
                 'qte' : instance.quantity,
-                'pa' : instance.price_in * instance.quantity,
-                'pv' : instance.price_out * instance.quantity,
-                'ben' : (instance.price_out - instance.price_in) * \
+                'p_achat' : instance.price_in * instance.quantity,
+                'p_vente' : instance.price_out * instance.quantity,
+                'benefice' : (instance.price_out - instance.price_in) * \
                         instance.quantity,
             }             
 
