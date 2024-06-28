@@ -89,4 +89,5 @@ class imitiSuggest(models.Model):
     p_achat = models.IntegerField(default=0)
     p_vente = models.IntegerField(default=0)
     benefice = models.IntegerField(default=0)
+    previous_date = models.DateTimeField(default=timezone.now())
 
