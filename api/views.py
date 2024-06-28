@@ -667,6 +667,9 @@ class Rapport(viewsets.ViewSet):
         date1 = dataReceived.get('date1')
         date2 = dataReceived.get('date2')
         
+        # deleting all the instances of imitiSuggest
+        imitiSuggest.objects.all().delete()
+        
         # checking that there are keys as date1 and date2
         if not (date1 and date2):
             print(f"The data sent is wrong formatted")
@@ -701,9 +704,12 @@ class Rapport(viewsets.ViewSet):
             add_suggest = self._addSuggestion(obj)
         
         # Now query all the instances of imitiSuggest according to benefice
-        suggestion = imitiSuggest.objects.allobjects.all().order_by('-benefice')
+        suggestion = imitiSuggest.objects.all().order_by('-benefice')
         suggestion_seria = imitiSuggestSeria(suggestion, many=True)
+        
         if suggestion_seria.is_valid:
+            # deleting all the instances of imitiSuggest
+            # imitiSuggest.objects.all().delete()
             return Response(suggestion_seria.data)
         
         return JsonResponse({"Everyone is": "right"})
