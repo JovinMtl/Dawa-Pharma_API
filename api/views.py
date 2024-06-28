@@ -13,7 +13,7 @@ import os
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
-    umutiReportSell
+    umutiReportSell, imitiSuggest
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -696,6 +696,7 @@ class Rapport(viewsets.ViewSet):
                 'benefice' : (instance.price_out - instance.price_in) * \
                         instance.quantity,
             }             
-
+        
+            add_suggest = self._addSuggestion(obj)
 
         return JsonResponse({"Everyone is": "right"})
