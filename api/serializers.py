@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from pharma.models import ImitiSet, umutiReportSell, UmutiSold,\
-      UmutiEntree
+      UmutiEntree, imitiSuggest
 
 
 class ImitiSetSeriazer(serializers.ModelSerializer):
@@ -28,3 +28,9 @@ class ImitiSuggestSeria(serializers.Serializer):
     code_umuti = serializers.CharField(required=True, max_length=6)
     name_umuti = serializers.CharField(required=True)
     quantite_restant = serializers.IntegerField(required=True)
+
+class imitiSuggestSeria(serializers.ModelSerializer):
+    class Meta:
+        model = imitiSuggest
+        fields = '__all__'
+
