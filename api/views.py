@@ -663,6 +663,10 @@ class Rapport(viewsets.ViewSet):
     
     @action(methods=['post'], detail=False)
     def beneficeEval(self, request):
+        """THis endpoint returns the all imitiSold according to the 
+        benefice.
+        It works on date1 and date2, yesterday and today instead of None.
+        """
         dataReceived = request.data
         date1 = dataReceived.get('date1')
         date2 = dataReceived.get('date2')
