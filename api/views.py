@@ -663,5 +663,17 @@ class Rapport(viewsets.ViewSet):
     @action(methods=['post'], detail=False)
     def selector(self, request):
         dataReceived = request.data
+        date1 = dataReceived.get('date1')
+        date2 = dataReceived.get('date2')
+        
+        # checking that there are keys as date1 and date2
+        if not (date1 and date2):
+            print(f"The data sent is wrong formatted")
+            # The assign date1 and date2 with a default values of 
+            # yesterday and today
+            date1 = datetime.today() - timedelta(days=1) # yesterday
+            date2 = datetime.today()
+        
+
 
         return JsonResponse({"Everyone is": "right"})
