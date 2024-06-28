@@ -726,3 +726,7 @@ class Rapport(viewsets.ViewSet):
             exist_suggest.p_achat += int(obj.get('p_achat'))
             exist_suggest.p_vente += int(obj.get('p_vente'))
             exist_suggest.benefice += int(obj.get('benefice'))
+            exist_suggest.previous_date = obj.get('previous_date')
+            exist_suggest.save()
+            
+            return 200
