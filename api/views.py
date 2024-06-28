@@ -664,8 +664,8 @@ class Rapport(viewsets.ViewSet):
     @action(methods=['post'], detail=False)
     def selector(self, request):
         dataReceived = request.data
-        date1 = dataReceived.get('date1')
-        date2 = dataReceived.get('date2')
+        date1 = dataReceived.get('dat')
+        date2 = dataReceived.get('date')
         
         # checking that there are keys as date1 and date2
         if not (date1 and date2):
@@ -674,7 +674,12 @@ class Rapport(viewsets.ViewSet):
             # yesterday and today
             date1 = datetime.today() - timedelta(days=2) # before yesterday
             date2 = date1 + timedelta(days=2) # tomorrow, I know date2 would have today() but more tierce would be added, to be precise.
-        try:
+        
+        # try:
+        #     date1 = datetime(date1)
+        #     date2 = datetime(date2)
+        # except ValidationError:
+        #     return JsonResponse({"Format Date":"Incorrect"})
         
         print(f"THe dates are: {date1} and {date2}")
         # now read the UmutiSold table with parameters of date1 & date2
