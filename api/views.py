@@ -683,7 +683,19 @@ class Rapport(viewsets.ViewSet):
         except ValidationError:
             return JsonResponse({"Format Date":"Incorrect"})
         
-        print(f"THe queryset is: {queryset}")                
+        print(f"THe queryset is: {queryset}")   
+
+        # parcourir le queryset
+        for instance in queryset:
+            obj = {
+                'name_umuti' : instance.name_umuti,
+                'code_umuti' : instance.code_umuti,
+                'qte' : instance.quantity,
+                'pa' : instance.price_in * instance.quantity,
+                'pv' : instance.price_out * instance.quantity,
+                'ben' : (instance.price_out - instance.price_in) * \
+                        instance.quantity,
+            }             
 
 
         return JsonResponse({"Everyone is": "right"})
