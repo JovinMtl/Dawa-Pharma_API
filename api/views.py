@@ -710,7 +710,7 @@ class Rapport(viewsets.ViewSet):
         
         # Add qte_big and qte_restant in case there is 'rest' key in request
         if dataReceived.get('rest'):
-            add_qte = self.addQte()
+            add_qte = self._addQte()
         
         # Now query all the instances of imitiSuggest according to benefice
         suggestion = imitiSuggest.objects.all().order_by('-benefice')
@@ -723,6 +723,20 @@ class Rapport(viewsets.ViewSet):
         
         return JsonResponse({"Everyone is": "right"})
     
+    def _addQte(self):
+        """This method adds qte_big and qte_restant."""
+        suggestion = imitiSuggest.objects.all()
+        for element in suggestion:
+            try:
+                selected = ImitiSet.objects.\
+                    get(code_umuti=element.code_umuti)
+            except ImitiSet.DoesNotExist:
+                pass
+            else:
+                element.qte_big = selected.qte_entrant_big
+                element.qte_restant = selected.quantite_restant
+                element.save()
+        return 200
     def _addSuggestion(self, obj):
         """This method receives an obj and adds it on imitiSuggest Model.
         """
