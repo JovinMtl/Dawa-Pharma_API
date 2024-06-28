@@ -17,7 +17,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
-      UmutiEntreeSeriazer, ImitiSuggestSeria
+      UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -702,7 +702,10 @@ class Rapport(viewsets.ViewSet):
         
         # Now query all the instances of imitiSuggest according to benefice
         suggestion = imitiSuggest.objects.allobjects.all().order_by('-benefice')
-
+        suggestion_seria = imitiSuggestSeria(suggestion, many=True)
+        if suggestion_seria.is_valid:
+            return Response(suggestion_seria.data)
+        
         return JsonResponse({"Everyone is": "right"})
     
     def _addSuggestion(self, obj):
