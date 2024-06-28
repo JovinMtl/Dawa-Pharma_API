@@ -660,3 +660,8 @@ class Rapport(viewsets.ViewSet):
         else:
             return None
     
+    @action(methods=['post'], detail=False)
+    def selector(self, request):
+        dataReceived = request.data
+
+        return JsonResponse({"Everyone is": "right"})
