@@ -7,16 +7,17 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 import json
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from datetime import timedelta, datetime
 import os
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
-    umutiReportSell
+    umutiReportSell, imitiSuggest
 
 #importing the serializers
-from .serializers import ImitiSetSeriazer, umutiReportSellSeriazer,\
-        UmutiSoldSeriazer, UmutiEntreeSeriazer
+from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
+      UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -629,7 +630,12 @@ class Rapport(viewsets.ViewSet):
                     final_imiti.append(umuti)
         
         if final_imiti:
-            print(f"The final recommandation: {final_imiti}")
+            result = ImitiSuggestSeria(instance=final_imiti, many=True)
+            if result.is_valid:
+                print(f"The final recommandation: {final_imiti}")
+                return Response(result.data)
+            else:
+                print(f"Things are not well serialized")
         else:
             print(f"There are no recommandations")
             
@@ -655,3 +661,107 @@ class Rapport(viewsets.ViewSet):
         else:
             return None
     
+    @action(methods=['post'], detail=False)
+    def beneficeEval(self, request):
+        """THis endpoint returns the all imitiSold according to the 
+        benefice.
+        It works on date1 and date2, yesterday and today instead of None.
+        """
+        dataReceived = request.data
+        date1 = dataReceived.get('date1')
+        date2 = dataReceived.get('date2')
+        
+        # deleting all the instances of imitiSuggest
+        imitiSuggest.objects.all().delete()
+
+        # checking that there are keys as date1 and date2
+        if not (date1 and date2):
+            print(f"The data sent is wrong formatted")
+            # The assign date1 and date2 with a default values of 
+            # yesterday and today
+            date1 = datetime.today() - timedelta(days=2) # before yesterday
+            date2 = date1 + timedelta(days=2) # tomorrow, I know date2 would have today() but more tierce would be added, to be precise.
+                
+        print(f"THe dates are: {date1} and {type(date2)}")
+        # now read the UmutiSold table with parameters of date1 & date2
+        try:
+            queryset = UmutiSold.objects.filter(date_operation__gte=date1).\
+                filter(date_operation__lte=date2)
+        except ValidationError:
+            return JsonResponse({"Format Date":"Incorrect"})
+        
+        print(f"THe queryset is: {queryset}")   
+
+        # parcourir le queryset
+        for instance in queryset:
+            obj = {
+                'name_umuti' : instance.name_umuti,
+                'code_umuti' : instance.code_umuti,
+                'qte' : instance.quantity,
+                'p_achat' : instance.price_in * instance.quantity,
+                'p_vente' : instance.price_out * instance.quantity,
+                'benefice' : (instance.price_out - instance.price_in) * \
+                        instance.quantity,
+                'previous_date': instance.date_operation
+            }             
+            print(f"The obj is: {obj}")
+
+            add_suggest = self._addSuggestion(obj)
+        
+        # Add qte_big and qte_restant in case there is 'rest' key in request
+        if dataReceived.get('rest'):
+            add_qte = self._addQte()
+        
+        # Now query all the instances of imitiSuggest according to benefice
+        suggestion = imitiSuggest.objects.all().order_by('-benefice')
+        suggestion_seria = imitiSuggestSeria(suggestion, many=True)
+        
+        if suggestion_seria.is_valid:
+            # deleting all the instances of imitiSuggest
+            # imitiSuggest.objects.all().delete()
+            return Response(suggestion_seria.data)
+        
+        return JsonResponse({"Everyone is": "right"})
+    
+    def _addQte(self):
+        """This method adds qte_big and qte_restant."""
+        suggestion = imitiSuggest.objects.all()
+        for element in suggestion:
+            try:
+                selected = ImitiSet.objects.\
+                    get(code_umuti=element.code_umuti)
+            except ImitiSet.DoesNotExist:
+                pass
+            else:
+                element.qte_big = selected.qte_entrant_big
+                element.qte_restant = selected.quantite_restant
+                element.save()
+        return 200
+    def _addSuggestion(self, obj):
+        """This method receives an obj and adds it on imitiSuggest Model.
+        """
+        # checking the existence of obj in imitiSuggest
+        try:
+            exist_suggest = imitiSuggest.objects.get(code_umuti=obj.\
+                                                     get('code_umuti'))
+        except imitiSuggest.DoesNotExist:
+            new_suggest = imitiSuggest.objects.create()
+            new_suggest.code_umuti = obj.get('code_umuti')
+            new_suggest.name_umuti = obj.get('name_umuti')
+            new_suggest.qte = obj.get('qte')
+            new_suggest.p_achat = obj.get('p_achat')
+            new_suggest.p_vente = obj.get('p_vente')
+            new_suggest.benefice = obj.get('benefice')
+            new_suggest.previous_date = obj.get('previous_date')
+            new_suggest.save()
+
+            return 200
+        else:
+            exist_suggest.qte += int(obj.get('qte'))
+            exist_suggest.p_achat += int(obj.get('p_achat'))
+            exist_suggest.p_vente += int(obj.get('p_vente'))
+            exist_suggest.benefice += int(obj.get('benefice'))
+            exist_suggest.previous_date = obj.get('previous_date')
+            exist_suggest.save()
+            
+            return 200

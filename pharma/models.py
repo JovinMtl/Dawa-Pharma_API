@@ -64,8 +64,8 @@ class UmutiSold(models.Model):
     price_total = models.IntegerField(default=1) # q * p
     price_in = models.IntegerField(default=1)
     difference = models.IntegerField(default=0) #9: benefice
-    code_operation_entrant = models.CharField(max_length=8, default='null') #code operation uyo muti winjiriyeko
-    code_operation = models.CharField(max_length=8, default='null') #common with other sold together
+    code_operation_entrant = models.CharField(max_length=12, default='null') #code operation uyo muti winjiriyeko
+    code_operation = models.CharField(max_length=12, default='null') #common with other sold together
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now())
 
@@ -79,4 +79,17 @@ class umutiReportSell(models.Model):
     nb_rest = models.IntegerField(default=0)
     px_T_rest = models.IntegerField(default=0)
 
+class imitiSuggest(models.Model):
+    """This table contains temporary imiti suggestion. 
+    on each completion of endpoint's execution, it gets reinitialized.
+    """
+    code_umuti = models.CharField(max_length=8, default='null')
+    name_umuti = models.CharField(max_length=30, default='null')
+    qte = models.IntegerField(default=0)
+    p_achat = models.IntegerField(default=0)
+    p_vente = models.IntegerField(default=0)
+    benefice = models.IntegerField(default=0)
+    previous_date = models.DateTimeField(default=timezone.now())
+    qte_big = models.IntegerField(default=0)
+    qte_restant = models.IntegerField(default=0)
 
