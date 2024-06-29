@@ -1,8 +1,12 @@
 dawa
 api/consumeAPI.py
 api/wsgi.py
+<<<<<<< HEAD
+db.sqlite3
+=======
 
 
 Dawa_Pharma_API
 api_tests
 
+>>>>>>> refs/remotes/origin/main
