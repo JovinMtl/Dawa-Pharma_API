@@ -712,7 +712,7 @@ class Rapport(viewsets.ViewSet):
         if dataReceived.get('rest'):
             add_qte = self._addQte()
         
-        # Now query all the instances of imitiSuggest according to benefice
+        # Now query all the instances of imitiSuggest  according to benefice
         suggestion = imitiSuggest.objects.all().order_by('-benefice')
         suggestion_seria = imitiSuggestSeria(suggestion, many=True)
         
