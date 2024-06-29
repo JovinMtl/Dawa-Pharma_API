@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-meckr@sct=b!#71^b$7m677r6t1zkuc%*&=&c1*7_x1nv1h2*=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['muteule.pythonanywhere.com', ]
+ALLOWED_HOSTS = ['muteule.pythonanywhere.com', '127.0.0.1' ]
 
 
 # Application definition
