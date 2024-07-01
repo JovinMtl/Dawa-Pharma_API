@@ -639,7 +639,7 @@ class Rapport(viewsets.ViewSet):
             else:
                 print(f"Things are not well serialized")
         else:
-            print(f"There are no recommandations")
+            print(f"There are no recommandations.")
             return JsonResponse({"response":"empty"})
             
         return JsonResponse({"Things are ":"well"})
