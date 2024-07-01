@@ -630,7 +630,9 @@ class Rapport(viewsets.ViewSet):
                     final_imiti.append(umuti)
         
         if final_imiti:
-            result = ImitiSuggestSeria(instance=final_imiti, many=True)
+            # result = ImitiSuggestSeria(instance=final_imiti, many=True)
+            result = ImitiSuggestSeria(final_imiti, many=True)
+            print(f"THe imitiFinal : {final_imiti} ")
             if result.is_valid:
                 print(f"The final recommandation: {final_imiti}")
                 return Response(result.data)
@@ -638,6 +640,7 @@ class Rapport(viewsets.ViewSet):
                 print(f"Things are not well serialized")
         else:
             print(f"There are no recommandations")
+            return JsonResponse({"response":"empty"})
             
         return JsonResponse({"Things are ":"well"})
     
