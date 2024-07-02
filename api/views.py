@@ -31,7 +31,8 @@ class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
     
-    @action(methods=['post'], detail=False)
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
     # @action(methods=['get'], detail=False,\
     #          permission_classes= [IsAuthenticated])
     def kurangura(self, request):
@@ -124,7 +125,8 @@ class EntrantImiti(viewsets.ViewSet):
     
     # @action(methods=['get'], detail=False,\
     #          permission_classes= [IsAuthenticated])
-    @action(methods=['get'], detail=False)
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def compileImitiSet(self, request=None):
         """Compile all the list of the Medicament procured, according
         the Code_umuti and date_echeance"""
@@ -336,7 +338,7 @@ class ImitiOut(viewsets.ViewSet):
     or etagere"""
 
     @action(methods=['get'], detail=False,\
-             permission_classes= [AllowAny])
+             permission_classes= [IsAuthenticated])
     def dispo(self, request):
         # return JsonResponse({"THings are":"okay"})
         imiti = ImitiSet.objects.all().order_by('-date_last_vente')
