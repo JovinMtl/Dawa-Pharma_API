@@ -33,8 +33,6 @@ class EntrantImiti(viewsets.ViewSet):
     
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
-    # @action(methods=['get'], detail=False,\
-    #          permission_classes= [IsAuthenticated])
     def kurangura(self, request):
         """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
@@ -352,7 +350,8 @@ class ImitiOut(viewsets.ViewSet):
 
     # @action(methods=['post'], detail=False,\
     #          permission_classes= [IsAuthenticated])
-    @action(methods=['post'], detail=False)
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def sell(self, request):
         data_query = request.data
         print(f"The data sent is: {data_query}")
@@ -482,7 +481,8 @@ class ImitiOut(viewsets.ViewSet):
 class Rapport(viewsets.ViewSet):
     """This class is meant to be of generating reports"""
 
-    @action(methods=['get'], detail=False)
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def reportEntree(self, request):
         """making an endpoint that will return all the UmutiEntree entries"""
         imiti = UmutiEntree.objects.all().order_by('-date_winjiriyeko')
@@ -493,7 +493,8 @@ class Rapport(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
 
-    @action(methods=['get'], detail=False)
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def reportSold(self, request):
         """making an endpoint that will return all the umutisold entries"""
         imiti = UmutiSold.objects.all().order_by('-date_operation')
@@ -504,7 +505,8 @@ class Rapport(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
 
-    @action(methods=['post'], detail=False)
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def reportSell(self, request):
         """Will receive criteria from the form passed via request.
         Accepted criteria: today(default), date1, date2
@@ -614,7 +616,8 @@ class Rapport(viewsets.ViewSet):
         return record_new
     
     
-    @action(methods=['get'], detail=False)
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def workOn35(self, request):
         """THis one works on imitiSet with  less than 35% of
           remaining quantity and return among them the sold
@@ -666,7 +669,8 @@ class Rapport(viewsets.ViewSet):
         else:
             return None
     
-    @action(methods=['post'], detail=False)
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def beneficeEval(self, request):
         """THis endpoint returns the all imitiSold according to the 
         benefice.
