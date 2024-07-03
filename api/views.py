@@ -121,8 +121,6 @@ class EntrantImiti(viewsets.ViewSet):
 
 
     
-    # @action(methods=['get'], detail=False,\
-    #          permission_classes= [IsAuthenticated])
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def compileImitiSet(self, request=None):
