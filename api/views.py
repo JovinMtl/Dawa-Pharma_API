@@ -56,6 +56,8 @@ class EntrantImiti(viewsets.ViewSet):
             print(f"using code: {code_umuti}")
             # We should check the existence of umuti with that code or name_umuti
             check_exist = self._doesExist(obj=obj)
+            if len(check_exist) == 6:
+                code_umuti = check_exist # in case there is a match.
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
                                       code_operation=code_operation, \
                                         single=single) # 200 if ok
@@ -74,7 +76,7 @@ class EntrantImiti(viewsets.ViewSet):
         then return that code_umuti."""
         name_umuti = obj.get('name_umuti')
         code_umuti = obj.get('code_umuti')
-        if code_umuti:
+        if len(code_umuti) == 6:
             return code_umuti
         try:
             umuti_exist = UmutiEntree.objects.get(name_umuti=name_umuti)
