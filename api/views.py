@@ -46,7 +46,7 @@ class EntrantImiti(viewsets.ViewSet):
         single = False
         for obj in data:
             if (len(data) > 2) and (i == 0):
-                i += 1
+                i += 1 #to skip the title string
                 continue
             elif (len(data) == 1):
                 single = True
@@ -54,6 +54,8 @@ class EntrantImiti(viewsets.ViewSet):
             code_6 = GenerateCode(6)
             code_umuti = code_6.giveCode()
             print(f"using code: {code_umuti}")
+            # We should check the existence of umuti with that code or name_umuti
+            check_exist = self._doesExist(obj=obj, code_operation=code_operation)
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
                                       code_operation=code_operation, \
                                         single=single) # 200 if ok
