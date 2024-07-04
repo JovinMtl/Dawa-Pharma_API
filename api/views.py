@@ -93,7 +93,8 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.description_umuti = (obj.get('description_umuti'))
         umuti_new.type_umuti = obj.get('type_umuti') 
         umuti_new.type_in = obj.get('type_in') 
-        umuti_new.ratio_type = obj.get('ratio_type')
+        if obj.get('ratio_type'):
+            umuti_new.ratio_type = obj.get('ratio_type')
         umuti_new.type_out = obj.get('type_out')
         umuti_new.location = obj.get('location')
 
@@ -772,3 +773,14 @@ class Rapport(viewsets.ViewSet):
             exist_suggest.save()
             
             return 200
+    
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def isAdmin(self, request):
+        """This endpoint asks that an authenticated user is an Admin 
+        or not."""
+        user = request.user
+        print(f"THe user connected: {user}")
+
+        return JsonResponse({"isAdmin":"looking"})
