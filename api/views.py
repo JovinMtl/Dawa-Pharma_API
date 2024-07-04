@@ -781,6 +781,6 @@ class Rapport(viewsets.ViewSet):
         """This endpoint asks that an authenticated user is an Admin 
         or not."""
         user = request.user
-        print(f"THe user connected: {user}")
+        print(f"THe user connected is Admin: {user.is_superuser}")
 
-        return JsonResponse({"isAdmin":"looking"})
+        return JsonResponse({"isAdmin": user.is_superuser})
