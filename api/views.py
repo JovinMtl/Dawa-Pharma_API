@@ -55,7 +55,7 @@ class EntrantImiti(viewsets.ViewSet):
             code_umuti = code_6.giveCode()
             print(f"using code: {code_umuti}")
             # We should check the existence of umuti with that code or name_umuti
-            check_exist = self._doesExist(obj=obj, code_operation=code_operation)
+            check_exist = self._doesExist(obj=obj)
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
                                       code_operation=code_operation, \
                                         single=single) # 200 if ok
@@ -67,12 +67,21 @@ class EntrantImiti(viewsets.ViewSet):
 
         return JsonResponse({"Things ":"well"})
     
-    def _doesExist(self, obj:dict, code_operation:str):
+    def _doesExist(self, obj:dict):
         """This method checks if the umuti already exist with the same
         name_umuti in order to share the code_umuti.
         In case there is a match of name_umuti or obj.code_umuti,
         then return that code_umuti."""
         name_umuti = obj.get('name_umuti')
+        code_umuti = obj.get('code_umuti')
+        if code_umuti:
+            return code_umuti
+        try:
+            umuti_exist = UmutiEntree.objects.get(name_umuti=name_umuti)
+        except UmutiEntree.DoesNotExist:
+            return None
+        else:
+            return umuti_exist.code_umuti
     
     def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str, single:bool):
         """THis method is in charge of creating and filling a new instance
