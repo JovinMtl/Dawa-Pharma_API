@@ -67,6 +67,13 @@ class EntrantImiti(viewsets.ViewSet):
 
         return JsonResponse({"Things ":"well"})
     
+    def _doesExist(self, obj:dict, code_operation:str):
+        """This method checks if the umuti already exist with the same
+        name_umuti in order to share the code_umuti.
+        In case there is a match of name_umuti or obj.code_umuti,
+        then return that code_umuti."""
+        name_umuti = obj.get('name_umuti')
+    
     def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str, single:bool):
         """THis method is in charge of creating and filling a new instance
         of UmutiEntree, of this type: 
