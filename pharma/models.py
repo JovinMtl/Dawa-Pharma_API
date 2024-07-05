@@ -23,6 +23,7 @@ class UmutiEntree(models.Model):
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
+    operator = models.CharField(max_length=15, default='null')
 
     def __str__(self) -> str:
         return f"{self.code_umuti} {(str(self.date_winjiriyeko))[:7]}"
@@ -44,6 +45,7 @@ class UmutiEntreeBackup(models.Model):
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
+    operator = models.CharField(max_length=15, default='null')
 
     def __str__(self) -> str:
         return f"{self.code_umuti} {(str(self.date_winjiriyeko))[:7]}"
