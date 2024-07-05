@@ -60,7 +60,7 @@ class EntrantImiti(viewsets.ViewSet):
                 code_umuti = check_exist # in case there is a match.
             reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
                                       code_operation=code_operation, \
-                                        single=single) # 200 if ok
+                                        single=single, operator=request.user.username) # 200 if ok
             if reponse != 200:
                 error_list.append(i)
         
@@ -85,7 +85,8 @@ class EntrantImiti(viewsets.ViewSet):
         else:
             return umuti_exist.code_umuti
     
-    def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str, single:bool):
+    def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str,\
+                   single:bool, operator:str):
         """THis method is in charge of creating and filling a new instance
         of UmutiEntree, of this type: 
 
@@ -96,6 +97,7 @@ class EntrantImiti(viewsets.ViewSet):
                'price_in': '1500', 'price_out': '1800', 
                'quantite_initial': '15', 'location': ''}
         """
+        print(f"THe operator is : {operator}")
         umuti_new = UmutiEntree.objects.create()
         umuti_new.name_umuti = obj.get('name_umuti')
         umuti_new.code_umuti = code_umuti
@@ -117,6 +119,7 @@ class EntrantImiti(viewsets.ViewSet):
             umuti_new.ratio_type = obj.get('ratio_type')
         umuti_new.type_out = obj.get('type_out')
         umuti_new.location = obj.get('location')
+        umuti_new.operator = operator
 
         # Creating a backup of UmutiEntree which will keep unchanged initial state.
         # This is to copy each new instance of UmutiEntree into backup.
@@ -145,6 +148,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_backup.ratio_type = instance.ratio_type
         umuti_backup.type_out = instance.type_out
         umuti_backup.location = instance.location
+        umuti_backup.operator = instance.operator
         umuti_backup.save()
 
         return 200
