@@ -511,7 +511,7 @@ class Rapport(viewsets.ViewSet):
              permission_classes= [IsAuthenticated])
     def reportEntree(self, request):
         """making an endpoint that will return all the UmutiEntree entries"""
-        imiti = UmutiEntree.objects.all().order_by('-date_winjiriyeko')
+        imiti = UmutiEntreeBackup.objects.all().order_by('-date_winjiriyeko')
         imitiSerialized = UmutiEntreeSeriazer(imiti, many=True)
 
         if imitiSerialized.is_valid:
