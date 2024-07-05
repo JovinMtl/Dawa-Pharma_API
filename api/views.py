@@ -13,7 +13,7 @@ import os
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
-    umutiReportSell, imitiSuggest
+    umutiReportSell, imitiSuggest, UmutiEntreeBackup
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -119,6 +119,12 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.location = obj.get('location')
 
         umuti_new.save()
+
+        # Creating a backup of UmutiEntree which will keep unchanged initial state.
+        # This is to copy each new instance of UmutiEntree into backup.
+        umuti_backup = UmutiEntreeBackup.objects.create()
+        umuti_backup = umuti_new
+        umuti_backup.save()
         
         return 200
     
