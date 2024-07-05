@@ -482,6 +482,7 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.code_umuti = umuti.code_umuti
         new_vente.name_umuti = umuti.name_umuti
         new_vente.quantity = qte
+        new_vente.price_in = reference_umuti.price_in
         new_vente.price_out = reference_umuti.price_out
         new_vente.code_operation_entrant = umuti.code_operation
         code = GenerateCode(12)
