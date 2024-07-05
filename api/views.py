@@ -122,10 +122,34 @@ class EntrantImiti(viewsets.ViewSet):
 
         # Creating a backup of UmutiEntree which will keep unchanged initial state.
         # This is to copy each new instance of UmutiEntree into backup.
-        umuti_backup = UmutiEntreeBackup.objects.create()
-        umuti_backup = umuti_new
-        umuti_backup.save()
+    
+        reponse = self._duplicateUmutiEntree(instance=umuti_new)
+        # umuti_backup = umuti_new
+        # umuti_backup.save()
         
+        return 200
+    
+    def _duplicateUmutiEntree(self, instance):
+        """This method duplicated UmutiEntree instance into 
+        UmutiEntreeBackup."""
+        umuti_backup = UmutiEntreeBackup.objects.create()
+        umuti_backup.name_umuti = instance.name_umuti
+        umuti_backup.code_umuti = instance.code_umuti
+        umuti_backup.code_operation = instance.code_operation
+        umuti_backup.quantite_initial = instance.quantite_initial
+        umuti_backup.quantite_restant = instance.quantite_initial
+        umuti_backup.price_in = instance.price_in
+        umuti_backup.price_out = instance.price_out
+        umuti_backup.date_uzohererako = instance.date_uzohererako
+        umuti_backup.date_winjiriyeko = instance.date_winjiriyeko
+        umuti_backup.description_umuti = instance.date_winjiriyeko
+        umuti_backup.type_umuti = instance.type_umuti
+        umuti_backup.type_in = instance.type_in
+        umuti_backup.ratio_type = instance.ratio_type
+        umuti_backup.type_out = instance.type_out
+        umuti_backup.location = instance.location
+        umuti_backup.save()
+
         return 200
     
     def _giveDate_exp(self, date_uzohererako:str)->str:
