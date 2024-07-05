@@ -118,11 +118,11 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.type_out = obj.get('type_out')
         umuti_new.location = obj.get('location')
 
-        umuti_new.save()
-
         # Creating a backup of UmutiEntree which will keep unchanged initial state.
         # This is to copy each new instance of UmutiEntree into backup.
         reponse = self._duplicateUmutiEntree(instance=umuti_new)
+
+        umuti_new.save()
         
         return 200
     
