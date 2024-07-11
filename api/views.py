@@ -17,7 +17,8 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
-      UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria
+      UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
+      LastIndexSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
