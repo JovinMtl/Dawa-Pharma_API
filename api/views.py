@@ -847,5 +847,8 @@ class Rapport(viewsets.ViewSet):
         2. UmutiEntreeBackup;
         3. UmutiSold.
         """
+        last_umutiEntree = UmutiEntree.objects.last()
+        last_umutiEntree_backup = UmutiEntreeBackup.objects.last()
+        last_umutiSold = UmutiSold.objects.last()
 
         return JsonResponse({"done":"ok"})
