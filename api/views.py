@@ -858,5 +858,8 @@ class Rapport(viewsets.ViewSet):
             'last_umutiSold' : last_umutiSold.id
         }
         print(f"THe obj : {obj}")
+        obj_serialized = LastIndexSeria(obj)
+        if obj_serialized.is_valid:
+            return Response(obj_serialized.data)
 
         return JsonResponse({"done":"ok"})
