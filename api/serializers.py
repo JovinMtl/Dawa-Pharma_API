@@ -24,13 +24,20 @@ class UmutiEntreeSeriazer(serializers.ModelSerializer):
         model = UmutiEntree
         fields = '__all__'
 
+class imitiSuggestSeria(serializers.ModelSerializer):
+    class Meta:
+        model = imitiSuggest
+        fields = '__all__'
+
 class ImitiSuggestSeria(serializers.Serializer):
     code_umuti = serializers.CharField(required=True, max_length=6)
     name_umuti = serializers.CharField(required=True)
     quantite_restant = serializers.IntegerField(required=True)
 
-class imitiSuggestSeria(serializers.ModelSerializer):
-    class Meta:
-        model = imitiSuggest
-        fields = '__all__'
+class LastIndexSeria(serializers.Serializer):
+    last_umutiEntree = serializers.IntegerField(default=0)
+    last_umutiEntree_backup = serializers.IntegerField(default=0)
+    last_umutiSold = serializers.IntegerField(default=0)
+
+
 
