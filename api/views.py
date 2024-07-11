@@ -851,4 +851,11 @@ class Rapport(viewsets.ViewSet):
         last_umutiEntree_backup = UmutiEntreeBackup.objects.last()
         last_umutiSold = UmutiSold.objects.last()
 
+        obj = {
+            'last_umutiEntree': last_umutiEntree.id,
+            'last_umutiEntree_backup': last_umutiEntree_backup.id,
+            'last_umutiSold' : last_umutiSold.id
+        }
+        print(f"THe obj : {obj}")
+
         return JsonResponse({"done":"ok"})
