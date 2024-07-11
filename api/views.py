@@ -837,3 +837,15 @@ class Rapport(viewsets.ViewSet):
         print(f"THe user connected is Admin: {user.is_superuser}")
 
         return JsonResponse({"isAdmin": user.is_superuser})
+    
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def giveLastIndex(self, request):
+        """This endpoint returns the last ID in the following models:
+        1. UmutiEntree;
+        2. UmutiEntreeBackup;
+        3. UmutiSold.
+        """
+
+        return JsonResponse({"done":"ok"})
