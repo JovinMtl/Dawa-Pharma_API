@@ -863,3 +863,31 @@ class Rapport(viewsets.ViewSet):
             return Response(obj_serialized.data)
 
         return JsonResponse({"done":"ok"})
+    
+
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def syncFromLocal(self, request):
+        """This endpoint will write records according to the index."""
+        data_sent = request.data
+        last_umutiSold = data_sent.get('last_umutiSold')
+        rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
+
+        return JsonResponse({"done":""})
+    
+    def _entree_sold(self, sold:list)->int:
+        """ Will work imitiEntree and UmutiSold"""
+        for umutisold in sold:
+            code_operation = umutisold.get('code_operation')
+            code_operation_entrant = umutisold.get('code_operation_entrant')
+            code_umuti = umutisold.get('code_umuti')
+            # check the equality of remaining
+            now_umuti = UmutiEntree.objects.filter(code_operation=\
+                code_operation_entrant).filter(code_umuti=code_umuti)
+            if not len(now_umuti): 
+                continue
+            now_umuti[0].quantite_restant -= umutisold.quantity
+
+            # creating UmutiSold instance and clone umutisold
+            umuti_new = self.__cloneUmutisold(instance=umutisold)
+
