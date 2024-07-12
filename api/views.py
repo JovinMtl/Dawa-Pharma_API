@@ -890,4 +890,21 @@ class Rapport(viewsets.ViewSet):
 
             # creating UmutiSold instance and clone umutisold
             umuti_new = self.__cloneUmutisold(instance=umutisold)
+    
+    def __cloneUmutisold(self, instance):
+        """manage creating UmutiSold instance and clone umutisold."""
+        new_umuti = UmutiSold.objects.create()
+        new_umuti.code_operation = instance.code_operation
+        new_umuti.code_umuti = instance.code_umuti
+        new_umuti.name_umuti = instance.name_umuti
+        new_umuti.quantity = instance.quantity
+        new_umuti.price_out = instance.price_out
+        new_umuti.price_total = instance.price_total
+        new_umuti.price_in = instance.price_in
+        new_umuti.difference = instance.difference
+        new_umuti.code_operation_entrant = instance.code_operation_entrant
+        new_umuti.operator = instance.operator
+        new_umuti.date_operation = instance.date_operation
+
+        return 200
 
