@@ -890,8 +890,10 @@ class Rapport(viewsets.ViewSet):
 
             # creating UmutiSold instance and clone umutisold
             umuti_new = self.__cloneUmutisold(instance=umutisold)
+            if not umuti_new:
+                pass # should signal that things didn't go well.
     
-    def __cloneUmutisold(self, instance):
+    def __cloneUmutisold(self, instance)->int:
         """manage creating UmutiSold instance and clone umutisold."""
         new_umuti = UmutiSold.objects.create()
         new_umuti.code_operation = instance.code_operation
