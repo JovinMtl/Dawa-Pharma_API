@@ -875,8 +875,8 @@ class Rapport(viewsets.ViewSet):
         # Mimic the last_umutiEntree
         last_umutiEntree = [
             {
-                'date_winjiriyeko': "2027-04-01",
-                'date_uzohererako': "2024-07-05T08:38:34.519033Z",
+                'date_winjiriyeko': "2024-07-05T08:38:34.519033Z",
+                'date_uzohererako': "2027-04-01",
                 'code_umuti': "4X6768",
                 'name_umuti': "AMINOPHYLLINE",
                 'description_umuti': "2024-07-05 08:38:34.519033",
@@ -894,7 +894,7 @@ class Rapport(viewsets.ViewSet):
                 'operator': "User1",
             }
         ]
-        # rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
+        rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
 
         last_umutiSold = data_sent.get('last_umutiSold')
         # Mimic a list of UmutiSold
