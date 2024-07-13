@@ -892,7 +892,7 @@ class Rapport(viewsets.ViewSet):
 
             },
         ]
-        rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
+        # rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
 
 
         return JsonResponse({"done":""})
