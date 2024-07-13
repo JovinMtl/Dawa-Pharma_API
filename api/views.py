@@ -892,6 +892,9 @@ class Rapport(viewsets.ViewSet):
             umuti_new = self.__cloneUmutisold(instance=umutisold)
             if not umuti_new:
                 pass # should signal that things didn't go well.
+            
+            # saving/updating  the existing UmutiEntree
+            now_umuti[0].save
     
     def __cloneUmutisold(self, instance)->int:
         """manage creating UmutiSold instance and clone umutisold."""
@@ -907,6 +910,8 @@ class Rapport(viewsets.ViewSet):
         new_umuti.code_operation_entrant = instance.code_operation_entrant
         new_umuti.operator = instance.operator
         new_umuti.date_operation = instance.date_operation
+
+        new_umuti.save()
 
         return 200
 
