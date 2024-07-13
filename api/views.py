@@ -919,6 +919,9 @@ class Rapport(viewsets.ViewSet):
 
         return JsonResponse({"done":""})
     
+    def _entree(self, entree:list)->int:
+        """This method will populate new instances of UmutiEntree."""
+    
     def _entree_sold(self, sold:list)->int:
         """ Will work imitiEntree and UmutiSold"""
         for umutisold in sold:
