@@ -870,6 +870,10 @@ class Rapport(viewsets.ViewSet):
     def syncFromLocal(self, request):
         """This endpoint will write records according to the index."""
         data_sent = request.data
+        # first take the new umutiEntree instances.
+        last_umutiEntree = data_sent.get('last_umutiEntree')
+        rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
+
         last_umutiSold = data_sent.get('last_umutiSold')
         rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
 
