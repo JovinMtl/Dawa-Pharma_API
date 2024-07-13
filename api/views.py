@@ -921,6 +921,27 @@ class Rapport(viewsets.ViewSet):
     
     def _entree(self, entree:list)->int:
         """This method will populate new instances of UmutiEntree."""
+        for umuti_entree in entree:
+            umuti_new = UmutiEntree.objects.create()
+            umuti_new.date_winjiriyeko = umuti_entree.get('date_winjiriyeko')
+            umuti_new.date_uzohererako = umuti_entree.get('date_uzohererako')
+            umuti_new.code_umuti = umuti_entree.get('code_umuti')
+            umuti_new.name_umuti = umuti_entree.get('name_umuti')
+            umuti_new.description_umuti = umuti_entree.get('description_umuti')
+            umuti_new.type_umuti = umuti_entree.get('type_umuti')
+            umuti_new.type_in = umuti_entree.get('type_in')
+            umuti_new.ratio_type = umuti_entree.get('ratio_type')
+            umuti_new.type_out = umuti_entree.get('type_out')
+            umuti_new.price_in = umuti_entree.get('price_in')
+            umuti_new.price_out = umuti_entree.get('price_out')
+            umuti_new.difference = umuti_entree.get('difference')
+            umuti_new.quantite_initial = umuti_entree.get('quantite_initial')
+            umuti_new.quantite_restant = umuti_entree.get('quantite_restant')
+            umuti_new.location = umuti_entree.get('location')
+            umuti_new.code_operation = umuti_entree.get('code_operation')
+            umuti_new.operator = umuti_entree.get('operator')
+
+            umuti_new.save()
     
     def _entree_sold(self, sold:list)->int:
         """ Will work imitiEntree and UmutiSold"""
