@@ -895,6 +895,7 @@ class Rapport(viewsets.ViewSet):
             }
         ]
         rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
+        rep = self._entree(entree=last_umutiEntree, sort=2) # write these new instances into UmutiEntreeBackup model.
 
         last_umutiSold = data_sent.get('last_umutiSold')
         # Mimic a list of UmutiSold
@@ -922,23 +923,23 @@ class Rapport(viewsets.ViewSet):
     def _entree(self, entree:list, sort:int=1)->int:
         """This method will populate new instances of UmutiEntree."""
         for umuti_entree in entree:
-            if sort == 1:
+            # make distinction where to write
+            if sort == 1: #for UmutiEntree
                 check = UmutiEntree.objects.filter(code_operation=\
                     umuti_entree.get('code_operation')).filter(code_umuti=\
                     umuti_entree.get('code_umuti'))
                 if not len(check):
                     continue # In case there is such instance
-
                 umuti_new = UmutiEntree.objects.create()
-            elif sort == 2:
+
+            elif sort == 2:   #for UmutiEntreeBackup
                 check = UmutiEntreeBackup.objects.filter(code_operation=\
                     umuti_entree.get('code_operation')).filter(code_umuti=\
                     umuti_entree.get('code_umuti'))
                 if not len(check):
                     continue # In case there is such instance
-
                 umuti_new = UmutiEntreeBackup.objects.create()
-                
+
             umuti_new.date_winjiriyeko = umuti_entree.get('date_winjiriyeko')
             umuti_new.date_uzohererako = umuti_entree.get('date_uzohererako')
             umuti_new.code_umuti = umuti_entree.get('code_umuti')
