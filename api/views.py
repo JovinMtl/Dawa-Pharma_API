@@ -875,6 +875,23 @@ class Rapport(viewsets.ViewSet):
         # rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
 
         last_umutiSold = data_sent.get('last_umutiSold')
+        # Mimic a list of UmutiSold
+        last_umutiSold = [
+            {
+                'code_umuti': '055AWL',
+                'name_umuti': 'Quinine',
+                'quantity': 1,
+                'price_out': 2500,
+                'price_total': 1,
+                'price_in': 2200,
+                'difference': 0,
+                'code_operation_entrant': 'kUyVk390907W',
+                'code_operation': '875mOdv17417',
+                'operator': 'User1',
+                'date_operation': "2024-07-05T08:15:33.182874Z",
+
+            },
+        ]
         rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
 
         return JsonResponse({"done":""})
