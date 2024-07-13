@@ -927,7 +927,7 @@ class Rapport(viewsets.ViewSet):
                 umuti_entree.get('code_umuti'))
             if not len(check):
                 continue # In case there is such instance
-            
+
             umuti_new = UmutiEntree.objects.create()
             umuti_new.date_winjiriyeko = umuti_entree.get('date_winjiriyeko')
             umuti_new.date_uzohererako = umuti_entree.get('date_uzohererako')
@@ -948,6 +948,7 @@ class Rapport(viewsets.ViewSet):
             umuti_new.operator = umuti_entree.get('operator')
 
             umuti_new.save()
+        return 200
     
     def _entree_sold(self, sold:list)->int:
         """ Will work imitiEntree and UmutiSold"""
