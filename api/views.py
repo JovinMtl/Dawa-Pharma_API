@@ -919,16 +919,26 @@ class Rapport(viewsets.ViewSet):
 
         return JsonResponse({"done":""})
     
-    def _entree(self, entree:list)->int:
+    def _entree(self, entree:list, sort:int=1)->int:
         """This method will populate new instances of UmutiEntree."""
         for umuti_entree in entree:
-            check = UmutiEntree.objects.filter(code_operation=\
-                umuti_entree.get('code_operation')).filter(code_umuti=\
-                umuti_entree.get('code_umuti'))
-            if not len(check):
-                continue # In case there is such instance
+            if sort == 1:
+                check = UmutiEntree.objects.filter(code_operation=\
+                    umuti_entree.get('code_operation')).filter(code_umuti=\
+                    umuti_entree.get('code_umuti'))
+                if not len(check):
+                    continue # In case there is such instance
 
-            umuti_new = UmutiEntree.objects.create()
+                umuti_new = UmutiEntree.objects.create()
+            elif sort == 2:
+                check = UmutiEntreeBackup.objects.filter(code_operation=\
+                    umuti_entree.get('code_operation')).filter(code_umuti=\
+                    umuti_entree.get('code_umuti'))
+                if not len(check):
+                    continue # In case there is such instance
+
+                umuti_new = UmutiEntreeBackup.objects.create()
+                
             umuti_new.date_winjiriyeko = umuti_entree.get('date_winjiriyeko')
             umuti_new.date_uzohererako = umuti_entree.get('date_uzohererako')
             umuti_new.code_umuti = umuti_entree.get('code_umuti')
