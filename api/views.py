@@ -872,6 +872,28 @@ class Rapport(viewsets.ViewSet):
         data_sent = request.data
         # first take the new umutiEntree instances.
         # last_umutiEntree = data_sent.get('last_umutiEntree')
+        # Mimic the last_umutiEntree
+        last_umutiEntree = [
+            {
+                'date_winjiriyeko': "2027-04-01",
+                'date_uzohererako': "2024-07-05T08:38:34.519033Z",
+                'code_umuti': "4X6768",
+                'name_umuti': "AMINOPHYLLINE",
+                'description_umuti': "2024-07-05 08:38:34.519033",
+                'type_umuti': "Ovule",
+                'type_in': "Carton",
+                'ratio_type': 10,
+                'type_out': "Piece",
+                'price_in': 1500,
+                'price_out': 1800,
+                'difference': 0,
+                'quantite_initial': 15,
+                'quantite_restant': 15,
+                'location': "",
+                'code_operation': "fVobVV41Dbkt",
+                'operator': "User1",
+            }
+        ]
         # rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
 
         last_umutiSold = data_sent.get('last_umutiSold')
