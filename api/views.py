@@ -928,7 +928,7 @@ class Rapport(viewsets.ViewSet):
                 check = UmutiEntree.objects.filter(code_operation=\
                     umuti_entree.get('code_operation')).filter(code_umuti=\
                     umuti_entree.get('code_umuti'))
-                if not len(check):
+                if not len(check): # will remove 'not' when on real data.
                     continue # In case there is such instance
                 umuti_new = UmutiEntree.objects.create()
 
@@ -936,7 +936,7 @@ class Rapport(viewsets.ViewSet):
                 check = UmutiEntreeBackup.objects.filter(code_operation=\
                     umuti_entree.get('code_operation')).filter(code_umuti=\
                     umuti_entree.get('code_umuti'))
-                if not len(check):
+                if not len(check): # will remove 'not' when on real data.
                     continue # In case there is such instance
                 umuti_new = UmutiEntreeBackup.objects.create()
 
