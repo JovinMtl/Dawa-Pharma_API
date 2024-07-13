@@ -869,7 +869,6 @@ class Rapport(viewsets.ViewSet):
              permission_classes= [IsAuthenticated])
     def syncFromLocal(self, request):
         """This endpoint will write records according to the index."""
-        print(f"asking syncFromLocal")
         data_sent = request.data
         # first take the new umutiEntree instances.
         # last_umutiEntree = data_sent.get('last_umutiEntree')
@@ -889,20 +888,18 @@ class Rapport(viewsets.ViewSet):
                 'code_operation_entrant': 'kUyVk390907W',
                 'code_operation': '875mOdv17417',
                 'operator': 'User1',
-                'date_operation': "2024-07-05T08:15:33.182874Z",
+                'date_operation': "2024-07-05T08:08:24.138300Z",
 
             },
         ]
         rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
 
-        print(f"It is done.")
 
         return JsonResponse({"done":""})
     
     def _entree_sold(self, sold:list)->int:
         """ Will work imitiEntree and UmutiSold"""
         for umutisold in sold:
-            code_operation = umutisold.get('code_operation')
             code_operation_entrant = umutisold.get('code_operation_entrant')
             code_umuti = umutisold.get('code_umuti')
             # check the equality of remaining
@@ -910,7 +907,8 @@ class Rapport(viewsets.ViewSet):
                 code_operation_entrant).filter(code_umuti=code_umuti)
             if not len(now_umuti): 
                 continue
-            now_umuti[0].quantite_restant -= umutisold.get('quantity')
+            
+            now_umuti[0].quantite_restant -= umutisold.get('quantity')         
 
             # creating UmutiSold instance and clone umutisold
             umuti_new = self.__cloneUmutisold(instance=umutisold)
@@ -918,7 +916,7 @@ class Rapport(viewsets.ViewSet):
                 pass # should signal that things didn't go well.
             
             # saving/updating  the existing UmutiEntree
-            now_umuti[0].save
+            now_umuti[0].save()
     
     def __cloneUmutisold(self, instance)->int:
         """manage creating UmutiSold instance and clone umutisold."""
