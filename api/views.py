@@ -865,10 +865,11 @@ class Rapport(viewsets.ViewSet):
         return JsonResponse({"done":"ok"})
     
 
-    @action(methods=['post'], detail=False,\
+    @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def syncFromLocal(self, request):
         """This endpoint will write records according to the index."""
+        print(f"asking syncFromLocal")
         data_sent = request.data
         # first take the new umutiEntree instances.
         # last_umutiEntree = data_sent.get('last_umutiEntree')
@@ -894,6 +895,8 @@ class Rapport(viewsets.ViewSet):
         ]
         rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
 
+        print(f"It is done.")
+
         return JsonResponse({"done":""})
     
     def _entree_sold(self, sold:list)->int:
@@ -907,7 +910,7 @@ class Rapport(viewsets.ViewSet):
                 code_operation_entrant).filter(code_umuti=code_umuti)
             if not len(now_umuti): 
                 continue
-            now_umuti[0].quantite_restant -= umutisold.quantity
+            now_umuti[0].quantite_restant -= umutisold.get('quantity')
 
             # creating UmutiSold instance and clone umutisold
             umuti_new = self.__cloneUmutisold(instance=umutisold)
@@ -920,17 +923,17 @@ class Rapport(viewsets.ViewSet):
     def __cloneUmutisold(self, instance)->int:
         """manage creating UmutiSold instance and clone umutisold."""
         new_umuti = UmutiSold.objects.create()
-        new_umuti.code_operation = instance.code_operation
-        new_umuti.code_umuti = instance.code_umuti
-        new_umuti.name_umuti = instance.name_umuti
-        new_umuti.quantity = instance.quantity
-        new_umuti.price_out = instance.price_out
-        new_umuti.price_total = instance.price_total
-        new_umuti.price_in = instance.price_in
-        new_umuti.difference = instance.difference
-        new_umuti.code_operation_entrant = instance.code_operation_entrant
-        new_umuti.operator = instance.operator
-        new_umuti.date_operation = instance.date_operation
+        new_umuti.code_operation = instance.get('code_operation')
+        new_umuti.code_umuti = instance.get('code_umuti')
+        new_umuti.name_umuti = instance.get('name_umuti')
+        new_umuti.quantity = instance.get('quantity')
+        new_umuti.price_out = instance.get('price_out')
+        new_umuti.price_total = instance.get('price_total')
+        new_umuti.price_in = instance.get('price_in')
+        new_umuti.difference = instance.get('difference')
+        new_umuti.code_operation_entrant = instance.get('code_operation_entrant')
+        new_umuti.operator = instance.get('operator')
+        new_umuti.date_operation = instance.get('date_operation')
 
         new_umuti.save()
 
