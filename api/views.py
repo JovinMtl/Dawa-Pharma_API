@@ -1000,4 +1000,18 @@ class Rapport(viewsets.ViewSet):
         new_umuti.save()
 
         return 200
+    
 
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def getInstances(self, request):
+        """Will query the instances requested."""
+        data_sent = request.data
+        imiti_entree = UmutiEntree.objects.filter(id__gte=\
+                    data_sent.get(last_umutiEntree))
+        imiti_sold = UmutiSold.objects.filter(id__gte=\
+                    data_sent.get(last_umutiSold))
+        
+        imiti_entree_serialized = UmutiEntreeSeriazer(imiti_entree,\
+                                     many=True)
+        imiti_sold_serialized = UmutiSoldSeriazer(imiti_sold, many=True)
