@@ -36,7 +36,6 @@ class ImitiSuggestSeria(serializers.Serializer):
 
 class LastIndexSeria(serializers.Serializer):
     last_umutiEntree = serializers.IntegerField(default=0)
-    last_umutiEntree_backup = serializers.IntegerField(default=0)
     last_umutiSold = serializers.IntegerField(default=0)
 
 
