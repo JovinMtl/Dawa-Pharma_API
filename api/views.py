@@ -457,10 +457,10 @@ class ImitiOut(viewsets.ViewSet):
         today_number = datetime.today().day
         year_start = datetime.today() - timedelta(\
             days=((30*elapsed_month)+today_number))
-        number_sold = UmutiSold.objects.filter(\
+        imiti_sold = UmutiSold.objects.filter(\
             date_operation__gte=year_start)
 
-        return JsonResponse({"sold":number_sold})
+        return JsonResponse({"sold": len(imiti_sold)})
     
     def _assess_order(self, code_umuti:str, code_operation:list, qte:int) -> list:
         """ THis function will take a list of object of this kind:
