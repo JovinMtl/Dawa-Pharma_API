@@ -452,6 +452,12 @@ class ImitiOut(viewsets.ViewSet):
         jove = imiti.compileImitiSet()
         print(f"La reponse de vente est: {jove}")
 
+        # should calculate the number of sold in this year
+        elapsed_month = datetime.today().month
+        today_number = datetime.today().day
+        year_start = datetime.today() - timedelta(\
+            days=((30*elapsed_month)+today_number))
+
         return JsonResponse({"It is":"Okay"})
     
     def _assess_order(self, code_umuti:str, code_operation:list, qte:int) -> list:
