@@ -1024,3 +1024,5 @@ class Rapport(viewsets.ViewSet):
                 'last_umutiSold': imiti_sold_serialized.data
             }
             return Response(data=obj)
+        # in case it didn't pass
+        return JsonResponse({"It didn't":"pass"})
