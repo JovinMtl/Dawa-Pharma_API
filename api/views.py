@@ -1026,3 +1026,27 @@ class Rapport(viewsets.ViewSet):
             return Response(data=obj)
         # in case it didn't pass
         return JsonResponse({"It didn't":"pass"})
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getInstance(self, request):
+        """Will query the instances requested."""
+        data_sent = request.data
+        imiti_entree = UmutiEntree.objects.filter(id__gte=1)
+        imiti_sold = UmutiSold.objects.filter(id__gte=1)
+        
+        imiti_entree_serialized = UmutiEntreeSeriazer(imiti_entree,\
+                                     many=True)
+        imiti_sold_serialized = UmutiSoldSeriazer(imiti_sold, many=True)
+
+        if imiti_entree_serialized.is_valid \
+              and imiti_sold_serialized.is_valid:
+            # the obj to send to the server.
+            obj = {
+                'last_umutiEntree': imiti_entree_serialized.data,
+                'last_umutiSold': imiti_sold_serialized.data
+            }
+            return Response(data=obj)
+        # in case it didn't pass
+        return JsonResponse({"It didn't":"pass"})
+
