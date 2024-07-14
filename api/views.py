@@ -845,16 +845,13 @@ class Rapport(viewsets.ViewSet):
     def giveLastIndex(self, request):
         """This endpoint returns the last ID in the following models:
         1. UmutiEntree;
-        2. UmutiEntreeBackup;
-        3. UmutiSold.
+        2. UmutiSold.
         """
         last_umutiEntree = UmutiEntree.objects.last()
-        last_umutiEntree_backup = UmutiEntreeBackup.objects.last()
         last_umutiSold = UmutiSold.objects.last()
 
         obj = {
             'last_umutiEntree': last_umutiEntree.id,
-            'last_umutiEntree_backup': last_umutiEntree_backup.id,
             'last_umutiSold' : last_umutiSold.id
         }
         print(f"THe obj : {obj}")
