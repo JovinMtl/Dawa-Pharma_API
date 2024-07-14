@@ -1015,3 +1015,12 @@ class Rapport(viewsets.ViewSet):
         imiti_entree_serialized = UmutiEntreeSeriazer(imiti_entree,\
                                      many=True)
         imiti_sold_serialized = UmutiSoldSeriazer(imiti_sold, many=True)
+
+        if imiti_entree_serialized.is_valid \
+              and imiti_sold_serialized.is_valid:
+            # the obj to send to the server.
+            obj = {
+                'last_umutiEntree': imiti_entree_serialized.data,
+                'last_umutiSold': imiti_sold_serialized.data
+            }
+            return Response(data=obj)
