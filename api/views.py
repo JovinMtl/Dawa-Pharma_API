@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 import json
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from datetime import timedelta, datetime
 import os
 
