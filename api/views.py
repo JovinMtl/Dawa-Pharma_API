@@ -401,6 +401,7 @@ class ImitiOut(viewsets.ViewSet):
         imiti = ImitiSet.objects.all().order_by('-date_last_vente')
         # numbering total/syntesis
         syntesis = self.__make_syntesis(imiti=imiti)
+        syntesis['page_number'] = page
         syntesis_serialized = SyntesiSeria(syntesis)
         if page > 0:
             paginated = Paginator(imiti, 15)
