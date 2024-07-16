@@ -401,7 +401,7 @@ class ImitiOut(viewsets.ViewSet):
         # return JsonResponse({"THings are":"okay"})
         imiti = ImitiSet.objects.all().order_by('-date_last_vente')
         # numbering total/syntesis
-        syntesis = self.__make_syntesis(obj=imiti)
+        syntesis = self.__make_syntesis(imiti=imiti)
         if page > 0:
             paginated = Paginator(imiti, 10)
             imiti = paginated.get_page(int(page))
@@ -412,8 +412,24 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
     
-    def __make_syntesis(self, obj:list)->dict:
+    def __make_syntesis(self, imiti:list)->dict:
         """This method will calculate the sum and benefice."""
+        syntesis = {
+            'qte':0,
+            'pa_t': 0,
+            'pv_t': 0,
+            'benefice': 0,
+        }
+        for umuti in imiti:
+            syntesis['qte'] = umuti.get('quantite_restant')
+            syntesis['pa_t'] += int(umuti.get('quantite_restant') * \
+                                umuti.get('price_in'))
+            syntesis['pv_t'] += int(umuti.get('quantite_restant') * \
+                                umuti.get('price_out'))
+            syntesis['benefice'] += int (umuti.get('quantite_restant') *\
+                        (umuti.get('price_out') - umuti.get('price_in')))
+        
+        return syntesis
     
 
     # @action(methods=['post'], detail=False,\
