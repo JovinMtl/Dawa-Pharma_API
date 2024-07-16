@@ -394,7 +394,7 @@ class ImitiOut(viewsets.ViewSet):
         page = 0
         if get_data:
             # print(f"Your queryParams: {get_data}")
-            page = get_data.get('page')
+            page = int(get_data.get('page'))
         else:
             # print(f"No param")
             pass
@@ -403,7 +403,7 @@ class ImitiOut(viewsets.ViewSet):
         syntesis = self.__make_syntesis(imiti=imiti)
         syntesis_serialized = SyntesiSeria(syntesis)
         if page > 0:
-            paginated = Paginator(imiti, 10)
+            paginated = Paginator(imiti, 15)
             imiti = paginated.get_page(int(page))
 
         imitiSerialized = ImitiSetSeriazer(imiti, many=True)

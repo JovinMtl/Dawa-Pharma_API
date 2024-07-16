@@ -43,6 +43,7 @@ class SyntesiSeria(serializers.Serializer):
     pa_t = serializers.IntegerField(default=0)
     pv_t = serializers.IntegerField(default=0)
     benefice = serializers.IntegerField(default=0)
+    page_number = serializers.IntegerField(default=0)
 
 
 
