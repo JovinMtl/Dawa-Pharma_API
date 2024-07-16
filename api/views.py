@@ -425,7 +425,7 @@ class ImitiOut(viewsets.ViewSet):
             'benefice': 0,
         }
         for umuti in imiti:
-            syntesis['qte'] = umuti.quantite_restant
+            syntesis['qte'] += int(umuti.quantite_restant)
             syntesis['pa_t'] += int(umuti.quantite_restant * \
                                 umuti.price_in)
             syntesis['pv_t'] += int(umuti.quantite_restant * \
