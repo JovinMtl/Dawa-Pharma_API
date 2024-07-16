@@ -412,6 +412,9 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
     
+    def __make_syntesis(self, obj:list)->dict:
+        """This method will calculate the sum and benefice."""
+    
 
     # @action(methods=['post'], detail=False,\
     #          permission_classes= [IsAuthenticated])
