@@ -389,6 +389,14 @@ class ImitiOut(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def dispo(self, request):
+        get_data = request.query_params
+        page = 0
+        if get_data:
+            print(f"Your queryParams: {get_data}")
+            page = get_data.get('page')
+        else:
+            # print(f"No param")
+            pass
         # return JsonResponse({"THings are":"okay"})
         imiti = ImitiSet.objects.all().order_by('-date_last_vente')
         imitiSerialized = ImitiSetSeriazer(imiti, many=True)
