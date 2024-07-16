@@ -19,7 +19,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
-      LastIndexSeria
+      LastIndexSeria, SyntesiSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -398,17 +398,21 @@ class ImitiOut(viewsets.ViewSet):
         else:
             # print(f"No param")
             pass
-        # return JsonResponse({"THings are":"okay"})
         imiti = ImitiSet.objects.all().order_by('-date_last_vente')
         # numbering total/syntesis
         syntesis = self.__make_syntesis(imiti=imiti)
+        syntesis_serialized = SyntesiSeria(syntesis)
         if page > 0:
             paginated = Paginator(imiti, 10)
             imiti = paginated.get_page(int(page))
+
         imitiSerialized = ImitiSetSeriazer(imiti, many=True)
 
-        if imitiSerialized.is_valid:
-            return Response(imitiSerialized.data)
+        if imitiSerialized.is_valid and syntesis_serialized.is_valid:
+            return JsonResponse({
+                'data': imitiSerialized.data,
+                'syntesis': syntesis_serialized.data
+            })
 
         return JsonResponse({"THings are":"okay"})
     
