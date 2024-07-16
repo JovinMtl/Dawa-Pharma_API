@@ -400,6 +400,9 @@ class ImitiOut(viewsets.ViewSet):
             pass
         # return JsonResponse({"THings are":"okay"})
         imiti = ImitiSet.objects.all().order_by('-date_last_vente')
+        if page > 0:
+            paginated = Paginator(imiti, 10)
+            imiti = paginated.get_page(int(page))
         imitiSerialized = ImitiSetSeriazer(imiti, many=True)
 
         if imitiSerialized.is_valid:
