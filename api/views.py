@@ -393,7 +393,7 @@ class ImitiOut(viewsets.ViewSet):
         get_data = request.query_params
         page = 0
         if get_data:
-            print(f"Your queryParams: {get_data}")
+            # print(f"Your queryParams: {get_data}")
             page = get_data.get('page')
         else:
             # print(f"No param")
@@ -425,13 +425,13 @@ class ImitiOut(viewsets.ViewSet):
             'benefice': 0,
         }
         for umuti in imiti:
-            syntesis['qte'] = umuti.get('quantite_restant')
-            syntesis['pa_t'] += int(umuti.get('quantite_restant') * \
-                                umuti.get('price_in'))
-            syntesis['pv_t'] += int(umuti.get('quantite_restant') * \
-                                umuti.get('price_out'))
-            syntesis['benefice'] += int (umuti.get('quantite_restant') *\
-                        (umuti.get('price_out') - umuti.get('price_in')))
+            syntesis['qte'] = umuti.quantite_restant
+            syntesis['pa_t'] += int(umuti.quantite_restant * \
+                                umuti.price_in)
+            syntesis['pv_t'] += int(umuti.quantite_restant * \
+                                umuti.price_out)
+            syntesis['benefice'] += int (umuti.quantite_restant *\
+                        (umuti.price_out - umuti.price_in))
         
         return syntesis
     
