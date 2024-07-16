@@ -38,5 +38,11 @@ class LastIndexSeria(serializers.Serializer):
     last_umutiEntree = serializers.IntegerField(default=0)
     last_umutiSold = serializers.IntegerField(default=0)
 
+class SyntesiSeria(serializers.Serializer):
+    qte = serializers.IntegerField(default=0)
+    pa_t = serializers.IntegerField(default=0)
+    pv_t = serializers.IntegerField(default=0)
+    benefice = serializers.IntegerField(default=0)
+
 
 
