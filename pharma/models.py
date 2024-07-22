@@ -120,3 +120,9 @@ class imitiSuggest(models.Model):
     qte_big = models.IntegerField(default=0)
     qte_restant = models.IntegerField(default=0)
 
+
+class UsdToBif(models.Model):
+    """This table will contain only one field indicating the actual value
+    of Usd into Bif.
+    """
+    actualExchangeRate = models.IntegerField(default=0)
