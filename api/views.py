@@ -222,7 +222,11 @@ class EntrantImiti(viewsets.ViewSet):
 
                 #mugihe iyo code ihari muri Set
                 lot_list = self._check_lot(umuti_set.lot, umutie)
-                umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
+                # umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
+                usd_to_bif = UsdToBif.objects.get(id=1)
+                umuti_new.price_out = int(umutie.price_out_usd) * \
+                usd_to_bif.actualExchangeRate
+                # 
                 # umuti_set.quantite_restant += umutie.quantite_restant
                 umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
                 umuti_set.lot = lot_list
@@ -332,12 +336,14 @@ class EntrantImiti(viewsets.ViewSet):
         try:
             last_umuti = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti).last()
             umuti_new.price_in = int(last_umuti.price_in)
-            umuti_new.price_out = int(last_umuti.price_out)
+            # umuti_new.price_out = int(last_umuti.price_out)
             umuti_new.price_out = int(last_umuti.price_out_usd) * \
                 usd_to_bif.actualExchangeRate
         except AttributeError:
             umuti_new.price_in = int(umuti.price_in)
-            umuti_new.price_out = int(umuti.price_out)
+            # umuti_new.price_out = int(umuti.price_out)
+            umuti_new.price_out = int(last_umuti.price_out_usd) * \
+                usd_to_bif.actualExchangeRate
             pass
         umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
