@@ -130,4 +130,4 @@ class UsdToBif(models.Model):
     effect_date = models.DateTimeField(default=timezone.now())
 
     def __str__(self) -> str:
-        return f"1$ = {self.actualExchangeRate} Bif."
+        return f"1$ = {self.actualExchangeRate} Bif. From {str(self.effect_date)[:7]}."
