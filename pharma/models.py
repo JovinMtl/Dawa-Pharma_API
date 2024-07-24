@@ -18,7 +18,7 @@ class UmutiEntree(models.Model):
     type_out = models.CharField(max_length=10, default='null') #kudetailla
     price_in = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe
     price_out = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
-    price_in_usd = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
+    price_in_usd = models.FloatField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
     price_out_usd = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza muri usd
     difference = models.IntegerField(default=0) #9: benefice
     quantite_initial = models.IntegerField(default=0) # izinjiye ubwambere
@@ -42,7 +42,7 @@ class UmutiEntreeBackup(models.Model):
     type_out = models.CharField(max_length=10, default='null') #kudetailla
     price_in = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe
     price_out = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
-    price_in_usd = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
+    price_in_usd = models.FloatField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
     price_out_usd = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza muri usd
     difference = models.IntegerField(default=0) #9: benefice
     quantite_initial = models.IntegerField(default=0) # izinjiye ubwambere
@@ -65,7 +65,7 @@ class ImitiSet(models.Model):
     type_out = models.CharField(max_length=10, default='null') #kudetailla
     price_in = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe
     price_out = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
-    price_out_usd = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza muri usd
+    price_out_usd = models.FloatField(default=0) #8: ayo plaquette tuyidandaza muri usd
     difference = models.IntegerField(default=0) #9: benefice ONY ADMIN
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
