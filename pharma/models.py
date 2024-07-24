@@ -127,3 +127,6 @@ class UsdToBif(models.Model):
     of Usd into Bif.
     """
     actualExchangeRate = models.IntegerField(default=0)
+
+    def __str__(self) -> str:
+        return f"1$ = {self.actualExchangeRate}Bif."
