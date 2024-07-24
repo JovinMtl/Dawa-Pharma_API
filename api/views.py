@@ -231,8 +231,9 @@ class EntrantImiti(viewsets.ViewSet):
                 lot_list = self._check_lot(umuti_set.lot, umutie)
                 # umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
                 usd_to_bif = UsdToBif.objects.get(id=1)
-                umuti_new.price_out = int(umutie.price_out_usd) * \
-                usd_to_bif.actualExchangeRate
+                umuti_set.price_out = float(umutie.price_out_usd) * \
+                        usd_to_bif.actualExchangeRate
+                umuti_set.price_out_usd = float(umutie.price_out_usd)
                 # 
                 # umuti_set.quantite_restant += umutie.quantite_restant
                 umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
