@@ -328,12 +328,13 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.type_in = str(umuti.type_in)
         umuti_new.ratio_type = str(umuti.ratio_type)
         umuti_new.type_out = str(umuti.type_out)
-        usd_to_bif = UsdToBif.objects.filter(id=1)
+        usd_to_bif = UsdToBif.objects.get(id=1)
         try:
             last_umuti = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti).last()
             umuti_new.price_in = int(last_umuti.price_in)
             umuti_new.price_out = int(last_umuti.price_out)
-            umuti_new.price_out = int(last_umuti.price_out_usd) * 
+            umuti_new.price_out = int(last_umuti.price_out_usd) * \
+                usd_to_bif.actualExchangeRate
         except AttributeError:
             umuti_new.price_in = int(umuti.price_in)
             umuti_new.price_out = int(umuti.price_out)
