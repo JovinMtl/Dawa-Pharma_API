@@ -206,7 +206,7 @@ class EntrantImiti(viewsets.ViewSet):
                     somme_lot = listDictIntSomme3(synced_lot)
                     usd_to_bif = UsdToBif.objects.get(id=1)
                     print(f"The new price_out : {umutie.price_out_usd} times {usd_to_bif.actualExchangeRate} of {umutie.code_umuti}")
-                    umuti_set.price_out = int(umuti_set.price_out_usd) * \
+                    umuti_set.price_out = float(umutie.price_out_usd) * \
                                         usd_to_bif.actualExchangeRate
                     umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
