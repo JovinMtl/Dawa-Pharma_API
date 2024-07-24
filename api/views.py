@@ -106,8 +106,11 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.code_operation = code_operation
         umuti_new.quantite_initial = obj.get('quantite_initial')
         umuti_new.quantite_restant = umuti_new.quantite_initial
+        usd_to_bif = UsdToBif.objects.get(id=1)
         umuti_new.price_in = obj.get('price_in')
         umuti_new.price_out = obj.get('price_out')
+        umuti_new.price_in_usd = obj.get('price_in') / usd_to_bif.actualExchangeRate
+        umuti_new.price_out_usd = obj.get('price_out') / usd_to_bif.actualExchangeRate
         if not single:
             umuti_new.date_uzohererako = self._giveDate_exp(obj.get('date_uzohererako'))
             umuti_new.date_winjiriyeko = self._giveDate_entree(obj.get('date_winjiriyeko'))
