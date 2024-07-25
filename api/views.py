@@ -935,8 +935,8 @@ class Rapport(viewsets.ViewSet):
         print(f"getForSync, The data gotten {data_gotten}")
         last_umutiEntree = int(data_gotten.get('last_umutiEntree'))
         last_umutiSold = int(data_gotten.get('last_umutiSold'))
-        imitiEntree = UmutiEntree.objects.filter(id__gte=last_umutiEntree)
-        imitiSold = UmutiSold.objects.filter(id__gte=last_umutiSold)
+        imitiEntree = UmutiEntree.objects.filter(id__gt=last_umutiEntree)
+        imitiSold = UmutiSold.objects.filter(id__gt=last_umutiSold)
 
         imitiEntree_serialized = UmutiEntreeSeriazer(imitiEntree,\
                                                       many=True)
