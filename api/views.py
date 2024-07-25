@@ -981,8 +981,8 @@ class Rapport(viewsets.ViewSet):
             }
         ]
         last_umutiEntree = data_sent.get('last_umutiEntree')
-        # rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
-        # rep = self._entree(entree=last_umutiEntree, sort=2) # write these new instances into UmutiEntreeBackup model.
+        rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
+        rep = self._entree(entree=last_umutiEntree, sort=2) # write these new instances into UmutiEntreeBackup model.
 
         # Mimic a list of UmutiSold
         last_umutiSold = [
@@ -1002,7 +1002,7 @@ class Rapport(viewsets.ViewSet):
             },
         ]
         last_umutiSold = data_sent.get('last_umutiSold')
-        # rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
+        rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
 
 
         return JsonResponse({"done":""})
