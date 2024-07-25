@@ -926,6 +926,17 @@ class Rapport(viewsets.ViewSet):
 
         return JsonResponse({"done":"ok"})
     
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def getForSync(self, request):
+        """This endpoint will retrieve the above instances from 
+        parameters."""
+        data_gotten = request.data
+        last_umutiEntree = int(data_gotten.get('last_umutiEntree'))
+        last_umutiSold = int(data_gotten.get('last_umutiSold'))
+        imitiEntree = UmutiEntree.objects.filter(id__gte=last_umutiEntree)
+        imitiSold = UmutiSold.objects.filter(id__gte=last_umutiSold)
+    
 
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
