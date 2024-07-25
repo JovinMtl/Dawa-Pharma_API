@@ -926,12 +926,14 @@ class Rapport(viewsets.ViewSet):
 
         return JsonResponse({"done":"ok"})
     
-    @action(methods=['get'], detail=False,\
+    @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def getForSync(self, request):
         """This endpoint will retrieve the above instances from 
         parameters."""
         data_gotten = request.data
+        data_gotten = data_gotten.get('imiti')
+        print(f"getForSync, The data gotten {data_gotten}")
         last_umutiEntree = int(data_gotten.get('last_umutiEntree'))
         last_umutiSold = int(data_gotten.get('last_umutiSold'))
         imitiEntree = UmutiEntree.objects.filter(id__gte=last_umutiEntree)
@@ -946,10 +948,11 @@ class Rapport(viewsets.ViewSet):
         if imitiSold_serialized.is_valid:
             obj['last_umutiSold'] = imitiSold_serialized.data
 
+        # return JsonResponse({"done":"ok"})
         return Response(obj)
     
 
-    @action(methods=['get'], detail=False,\
+    @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def syncFromLocal(self, request):
         """This endpoint will write records according to the index."""
@@ -957,6 +960,7 @@ class Rapport(viewsets.ViewSet):
         # first take the new umutiEntree instances.
         # last_umutiEntree = data_sent.get('last_umutiEntree')
         # Mimic the last_umutiEntree
+        print(f"syncFromLocal, The data sent: {data_sent}")
         last_umutiEntree = [
             {
                 'date_winjiriyeko': "2024-07-05T08:38:34.519033Z",
@@ -978,8 +982,8 @@ class Rapport(viewsets.ViewSet):
                 'operator': "User1",
             }
         ]
-        rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
-        rep = self._entree(entree=last_umutiEntree, sort=2) # write these new instances into UmutiEntreeBackup model.
+        # rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
+        # rep = self._entree(entree=last_umutiEntree, sort=2) # write these new instances into UmutiEntreeBackup model.
 
         last_umutiSold = data_sent.get('last_umutiSold')
         # Mimic a list of UmutiSold
