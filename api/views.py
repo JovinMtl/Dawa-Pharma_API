@@ -957,6 +957,7 @@ class Rapport(viewsets.ViewSet):
     def syncFromLocal(self, request):
         """This endpoint will write records according to the index."""
         data_sent = request.data
+        data_sent = data_sent.get('imiti')
         # first take the new umutiEntree instances.
         # last_umutiEntree = data_sent.get('last_umutiEntree')
         # Mimic the last_umutiEntree
