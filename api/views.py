@@ -936,6 +936,17 @@ class Rapport(viewsets.ViewSet):
         last_umutiSold = int(data_gotten.get('last_umutiSold'))
         imitiEntree = UmutiEntree.objects.filter(id__gte=last_umutiEntree)
         imitiSold = UmutiSold.objects.filter(id__gte=last_umutiSold)
+
+        imitiEntree_serialized = UmutiEntreeSeriazer(imitiEntree,\
+                                                      many=True)
+        imitiSold_serialized = UmutiSoldSeriazer(imitiSold, many=True)
+        obj = {}
+        if imitiEntree_serialized.is_valid:
+            obj['last_umutiEntree'] = imitiEntree_serialized.data
+        if imitiSold_serialized.is_valid:
+            obj['last_umutiSold'] = imitiSold_serialized.data
+
+        return Response(obj)
     
 
     @action(methods=['get'], detail=False,\
