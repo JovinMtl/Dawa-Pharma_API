@@ -931,8 +931,7 @@ class Rapport(viewsets.ViewSet):
     def getForSync(self, request):
         """This endpoint will retrieve the above instances from 
         parameters."""
-        data_gotten = request.data
-        data_gotten = data_gotten.get('imiti')
+        data_gotten = request.data.get('imiti')
         print(f"getForSync, The data gotten {data_gotten}")
         last_umutiEntree = int(data_gotten.get('last_umutiEntree'))
         last_umutiSold = int(data_gotten.get('last_umutiSold'))
@@ -956,8 +955,7 @@ class Rapport(viewsets.ViewSet):
              permission_classes= [IsAuthenticated])
     def syncFromLocal(self, request):
         """This endpoint will write records according to the index."""
-        data_sent = request.data
-        data_sent = data_sent.get('imiti')
+        data_sent = request.data.get('imiti')
         # first take the new umutiEntree instances.
         # last_umutiEntree = data_sent.get('last_umutiEntree')
         # Mimic the last_umutiEntree
