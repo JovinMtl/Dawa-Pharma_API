@@ -935,8 +935,8 @@ class Rapport(viewsets.ViewSet):
         print(f"getForSync, The data gotten {data_gotten}")
         last_umutiEntree = int(data_gotten.get('last_umutiEntree'))
         last_umutiSold = int(data_gotten.get('last_umutiSold'))
-        imitiEntree = UmutiEntree.objects.filter(id__gt=last_umutiEntree)
-        imitiSold = UmutiSold.objects.filter(id__gt=last_umutiSold)
+        imitiEntree = UmutiEntree.objects.filter(id__gte=last_umutiEntree)
+        imitiSold = UmutiSold.objects.filter(id__gte=last_umutiSold)
 
         imitiEntree_serialized = UmutiEntreeSeriazer(imitiEntree,\
                                                       many=True)
@@ -980,10 +980,10 @@ class Rapport(viewsets.ViewSet):
                 'operator': "User1",
             }
         ]
+        last_umutiEntree = data_sent.get('last_umutiEntree')
         # rep = self._entree(entree=last_umutiEntree) # write these new instances into UmutiEntree model.
         # rep = self._entree(entree=last_umutiEntree, sort=2) # write these new instances into UmutiEntreeBackup model.
 
-        last_umutiSold = data_sent.get('last_umutiSold')
         # Mimic a list of UmutiSold
         last_umutiSold = [
             {
@@ -1001,6 +1001,7 @@ class Rapport(viewsets.ViewSet):
 
             },
         ]
+        last_umutiSold = data_sent.get('last_umutiSold')
         # rep = self._entree_sold(sold=last_umutiSold) # will work on entree and Sold
 
 
