@@ -1200,10 +1200,33 @@ class Rapport(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def getAllFine(self, request):
-        """This will return all instances of UmutiEntree and Imitiset with
+        """This will return all instances of UmutiEntree with
         no wrong case."""
 
-        return JsonResponse({"It did":"pass"})
+        code_umuti = ''
+        pure_result = [] # UmutiEntree
+        date_notice = datetime.today() + timedelta(days=90)
+        imiti = ImitiSet.objects.all()
+
+        for umuti in imiti:
+            code_umuti = umuti.code_umuti
+            if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) > 2.5 :
+                continue # the quantity is not safe
+
+            # kuri iyo code, raba iyifise date imeze neza
+            safe_date = UmutiEntree.objects.filter(code_umuti=code_umuti).\
+                filter(date_uzohererako__gte=date_notice)
+            if len(safe_date):
+                pure_result.append(safe_date)
+        
+        if not len(pure_result):
+            return JsonResponse({"It did":"pass"})
+        result_serialized = UmutiEntreeSeriazer(pure_result, many=True)
+        if result_serialized.is_valid:
+            return Response(result_serialized.data)
+
+
+        
     
 
 
