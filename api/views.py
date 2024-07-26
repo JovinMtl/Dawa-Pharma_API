@@ -1148,16 +1148,23 @@ class Rapport(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def getEndStock(self, request):
-        """This will return all instances of Imitiset with under
-        30% and above 1%."""
+        """This will return all instances of Imitiset with under 1%."""
 
         return JsonResponse({"It did":"pass"})
     
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def getOutDate(self, request):
-        """This will return all instances of UmutiEntree with under
-        30% and above 1%."""
+        """This will return all instances of UmutiEntree 
+        with date_uzohererako less than 3months."""
+
+        return JsonResponse({"It did":"pass"})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getAllFine(self, request):
+        """This will return all instances of UmutiEntree and Imitiset with
+        no wrong case."""
 
         return JsonResponse({"It did":"pass"})
     
