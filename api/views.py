@@ -1145,17 +1145,19 @@ class Rapport(viewsets.ViewSet):
         30% and above 1%."""
 
         imiti = ImitiSet.objects.all()
-        less_35 = []
+        less_25 = []
         for umuti in imiti:
-            if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) > 3:
-                less_35.append(umuti)
+            print(f"Here: {umuti.qte_entrant_big} and {umuti.quantite_restant} : {umuti.qte_entrant_big / (umuti.quantite_restant | 1)}")
+            if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) > 2.5:
+                less_25.append(umuti)
+                print(f"And")
         
-        if not len(less_35):
-            return JsonResponse({"It did":"pass"})
+        if not len(less_25):
+            return JsonResponse({"It didn't":"pass"})
         
-        less_35_serialized = ImitiSetSeriazer(less_35, many=True)
-        if less_35_serialized.is_valid:
-            return Response(less_35_serialized.data)
+        less_25_serialized = ImitiSetSeriazer(less_25, many=True)
+        if less_25_serialized.is_valid:
+            return Response(less_25_serialized.data)
 
         
     
