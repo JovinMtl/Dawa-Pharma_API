@@ -1152,7 +1152,7 @@ class Rapport(viewsets.ViewSet):
                 less_25.append(umuti)
         
         if not len(less_25):
-            return JsonResponse({"It didn't":"pass"})
+            return JsonResponse({"data":"empty"})
         
         less_25_serialized = ImitiSetSeriazer(less_25, many=True)
         if less_25_serialized.is_valid:
@@ -1173,7 +1173,7 @@ class Rapport(viewsets.ViewSet):
                 less_one.append(umuti)
         
         if not len(less_one):
-            return JsonResponse({"It didn't":"pass"})
+            return JsonResponse({"data":"empty"})
         
         less_one_serialized = ImitiSetSeriazer(less_one, many=True)
         if less_one_serialized.is_valid:
@@ -1224,7 +1224,7 @@ class Rapport(viewsets.ViewSet):
                 pure_result += safe_date # should add the Queryset instead of appending.
         
         if not len(pure_result):
-            return JsonResponse({"It did":"pass"})
+            return JsonResponse({"data":"empty"})
         
         result_serialized = UmutiEntreeSeriazer(pure_result, many=True)
         if result_serialized.is_valid:
