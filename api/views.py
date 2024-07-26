@@ -1221,10 +1221,11 @@ class Rapport(viewsets.ViewSet):
             safe_date = UmutiEntree.objects.filter(code_umuti=code_umuti).\
                 filter(date_uzohererako__gte=date_notice)
             if len(safe_date):
-                pure_result.append(safe_date)
+                pure_result += safe_date # should add the Queryset instead of appending.
         
         if not len(pure_result):
             return JsonResponse({"It did":"pass"})
+        
         result_serialized = UmutiEntreeSeriazer(pure_result, many=True)
         if result_serialized.is_valid:
             return Response(result_serialized.data)
