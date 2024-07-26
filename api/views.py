@@ -1181,9 +1181,21 @@ class Rapport(viewsets.ViewSet):
              permission_classes= [AllowAny])
     def getOutDate(self, request):
         """This will return all instances of UmutiEntree 
-        with date_uzohererako less than 3months."""
-
+        with and with quantite_restant above 0 and
+          date_uzohererako less than 3months."""
+        
+        date_notice = datetime.today() + timedelta(days=90)
+        queryset = UmutiEntree.objects.filter(quantite_restant__gte=1).\
+            filter(date_uzohererako__lte=date_notice)
+        
+        if not len(queryset):
+            return JsonResponse({"data":"empty"})
+        queryset_serialized = UmutiEntreeSeriazer(queryset, many=True)
+        if queryset_serialized.is_valid:
+            return Response(queryset_serialized.data)
+        
         return JsonResponse({"It did":"pass"})
+        
     
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
