@@ -1144,4 +1144,14 @@ class Rapport(viewsets.ViewSet):
         30% and above 1%."""
 
         return JsonResponse({"It did":"pass"})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getEndStock(self, request):
+        """This will return all instances of Imitiset with under
+        30% and above 1%."""
+
+        return JsonResponse({"It did":"pass"})
+    
+    
 
