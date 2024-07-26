@@ -1136,4 +1136,12 @@ class Rapport(viewsets.ViewSet):
             return Response(data=obj)
         # in case it didn't pass
         return JsonResponse({"It didn't":"pass"})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getLowStock(self, request):
+        """This will return all instances of Imitiset with under
+        30% and above 1%."""
+
+        return JsonResponse({"It did":"pass"})
 
