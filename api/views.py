@@ -1137,13 +1137,27 @@ class Rapport(viewsets.ViewSet):
         # in case it didn't pass
         return JsonResponse({"It didn't":"pass"})
     
+
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def getLowStock(self, request):
         """This will return all instances of Imitiset with under
         30% and above 1%."""
 
-        return JsonResponse({"It did":"pass"})
+        imiti = ImitiSet.objects.all()
+        less_35 = []
+        for umuti in imiti:
+            if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) > 3:
+                less_35.append(umuti)
+        
+        if not len(less_35):
+            return JsonResponse({"It did":"pass"})
+        
+        less_35_serialized = ImitiSetSeriazer(less_35, many=True)
+        if less_35_serialized.is_valid:
+            return Response(less_35_serialized.data)
+
+        
     
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
