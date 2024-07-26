@@ -1147,10 +1147,8 @@ class Rapport(viewsets.ViewSet):
         imiti = ImitiSet.objects.all()
         less_25 = []
         for umuti in imiti:
-            print(f"Here: {umuti.qte_entrant_big} and {umuti.quantite_restant} : {umuti.qte_entrant_big / (umuti.quantite_restant | 1)}")
             if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) > 2.5:
                 less_25.append(umuti)
-                print(f"And")
         
         if not len(less_25):
             return JsonResponse({"It didn't":"pass"})
@@ -1166,7 +1164,18 @@ class Rapport(viewsets.ViewSet):
     def getEndStock(self, request):
         """This will return all instances of Imitiset with under 1%."""
 
-        return JsonResponse({"It did":"pass"})
+        imiti = ImitiSet.objects.all()
+        less_one = []
+        for umuti in imiti:
+            if umuti.quantite_restant  == 0:
+                less_one.append(umuti)
+        
+        if not len(less_one):
+            return JsonResponse({"It didn't":"pass"})
+        
+        less_one_serialized = ImitiSetSeriazer(less_one, many=True)
+        if less_one_serialized.is_valid:
+            return Response(less_one_serialized.data)
     
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
