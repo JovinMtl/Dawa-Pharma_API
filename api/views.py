@@ -1142,7 +1142,8 @@ class Rapport(viewsets.ViewSet):
              permission_classes= [AllowAny])
     def getLowStock(self, request):
         """This will return all instances of Imitiset with under
-        30% and above 1%."""
+        30% and above 1%.
+        Return ImitiSet."""
 
         imiti = ImitiSet.objects.all()
         less_25 = []
@@ -1162,7 +1163,8 @@ class Rapport(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def getEndStock(self, request):
-        """This will return all instances of Imitiset with under 1%."""
+        """This will return all instances of Imitiset with under 1%.
+        Return ImitiSet."""
 
         imiti = ImitiSet.objects.all()
         less_one = []
@@ -1182,7 +1184,8 @@ class Rapport(viewsets.ViewSet):
     def getOutDate(self, request):
         """This will return all instances of UmutiEntree 
         with and with quantite_restant above 0 and
-          date_uzohererako less than 3months."""
+          date_uzohererako less than 3months.
+        Return UmutiEntree."""
         
         date_notice = datetime.today() + timedelta(days=90)
         queryset = UmutiEntree.objects.filter(quantite_restant__gte=1).\
@@ -1200,8 +1203,9 @@ class Rapport(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def getAllFine(self, request):
-        """This will return all instances of UmutiEntree with
-        no wrong case."""
+        """This endpoint works all instances of UmutiEntree and ImitiSet with
+        no wrong case.
+        Return UmutiEntree."""
 
         code_umuti = ''
         pure_result = [] # UmutiEntree
