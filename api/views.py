@@ -467,9 +467,9 @@ class ImitiOut(viewsets.ViewSet):
         for actual in bundle:
             print(f"actual: {actual}")
             code_umuti = actual.get('code_umuti')
-            # code_operation = actual.get('code_operation')[0]
-            # qte = actual.get('qte')
             lot = actual.get('lot')
+            if not lot:
+                continue
             for lote in lot:
                 code_operation = lote.get('code_operation')
                 qte = lote.get('qte')
@@ -479,11 +479,6 @@ class ImitiOut(viewsets.ViewSet):
                                              qte=qte)
                 print(f"ACTUAL ORDERS: {orders}")
                 # qte = lote.get('qte')
-
-            # code_operation = actual.get('lot')[0].get('code_operation')
-            # qte = actual.get('lot')[0].get('qte')
-            # print(f"The code gotten are: {code_umuti} and {code_operation} and {qte}")
-            # return JsonResponse({"done":"okay"})
                 for order in orders:
                     if order[2] == 0:
                         continue
