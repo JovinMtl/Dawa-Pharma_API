@@ -1,6 +1,12 @@
 dawa
+backup
 api/consumeAPI.py
 api/wsgi.py
+api/__pycache__
+api/shared/__pycache__
+Dawa_Pharma_API/__pycache__
+pharma/__pycache__
+pharma/migrations/__pycache__
 
 Dawa_Pharma_API/settings.py
-./db.sqlite3
+db.sqlite3
