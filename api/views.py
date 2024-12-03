@@ -435,6 +435,18 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
     
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def dispo_date(self, request):
+        """This endpoint will get range dates and return its disponible."""
+        data_sent = request.data
+        date1 = data_sent.get(date1)
+        date2 = data_sent.get(date2)
+
+        imiti =ImitiSet.objects.filter()
+
+        return JsonResponse({"things are":"ok"})
+    
     def __make_syntesis(self, imiti:list)->dict:
         """This method will calculate the sum and benefice."""
         syntesis = {
