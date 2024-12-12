@@ -129,3 +129,7 @@ class UsdToBif(models.Model):
 
     def __str__(self) -> str:
         return f"1$ = {self.actualExchangeRate} Bif. From {str(self.effect_date)[:7]}."
+
+class Assurance(models.Model):
+    name = models.CharField(max_length=25, default='null')
+    rate_assure = models.SmallIntegerField(default=0)

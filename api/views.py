@@ -475,9 +475,12 @@ class ImitiOut(viewsets.ViewSet):
     def sell(self, request):
         data_query = request.data
         print(f"The data sent is: {data_query}")
-        bundle = data_query.get('imiti').get('panier')
+        bundle = data_query.get('imiti')
+        panier = bundle.get('panier')
+        client = bundle.get('client')
+        code_sell = []
         # bundle.append(dict(data_query))
-        for actual in bundle:
+        for actual in panier:
             print(f"actual: {actual}")
             code_med = actual.get('code_med')
             lot = actual.get('lot')
@@ -511,6 +514,9 @@ class ImitiOut(viewsets.ViewSet):
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
 
+        print("The client is: ", client)
+        # Should write a client record + code_operation for this sale
+        # 
         #  after sell then call compile
         imiti = EntrantImiti()
         jove = imiti.compileImitiSet()
