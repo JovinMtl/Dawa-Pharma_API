@@ -110,11 +110,6 @@ def getBonDeCommandeInstance():
         new_bon = BonDeCommande.objects.create()
     
     return new_bon
-    # bon_seria = BonDeCommandeSeria(new_bon)
-    if bon_seria.is_valid:
-        return bon_seria
-    else:
-        return bon_seria
 
 class UmutiSold(models.Model):
     """This one will record all the sale and benefit as well"""

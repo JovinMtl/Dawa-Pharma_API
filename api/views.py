@@ -489,7 +489,8 @@ class ImitiOut(viewsets.ViewSet):
             pass
         else:
             # the client is not special, default BonDeCommande is applied
-            bon_de_commande = BonDeCommande.objects.first()
+            # bon_de_commande = BonDeCommande.objects.first()
+            pass
         code_sell = []
         # bundle.append(dict(data_query))
         for actual in panier:
@@ -551,11 +552,12 @@ class ImitiOut(viewsets.ViewSet):
         """
         new_bon = BonDeCommande.objects.create()
         new_bon.beneficiaire = client.get('')
-        org = client.get('')
+        org = client.get('') # use name of organization
         try:
             organization = Assurance.objects.get(name=org)
         except Assurance.DoesNotExist:
-            # create that organization
+            # no need to create a new organization,
+            # will be created on behalf of User
             pass
         else:
             org = organization
@@ -564,6 +566,10 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.num_du_bon = client.get('')
         new_bon.date_du_bon = client.get('')
         new_bon.date_served = datetime.today()
+
+        new_bon.save()
+        return 200
+    
     def _assess_order(self, code_umuti:str, code_operation:list, qte:int) -> list:
         """ THis function will take a list of object of this kind:
     
