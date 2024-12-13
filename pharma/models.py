@@ -134,6 +134,8 @@ class Assurance(models.Model):
     name = models.CharField(max_length=25, default='null')
     rate_assure = models.SmallIntegerField(default=0)
 
+    def __str__(self):
+        return f"{self.name}"
 class InfoClient(models.Model):
     name = models.CharField(max_length=25, default='inconnu')
     phone_number = models.CharField(max_length=12, default='1111')
@@ -148,3 +150,6 @@ class BonDeCommande(models.Model):
     date_du_bon = models.DateField(default=timezone.now)
     date_served = models.DateField(default=timezone.now)
     is_paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.beneficiaire}"
