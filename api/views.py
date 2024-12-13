@@ -551,8 +551,8 @@ class ImitiOut(viewsets.ViewSet):
         according to client dict.
         """
         new_bon = BonDeCommande.objects.create()
-        new_bon.beneficiaire = client.get('')
-        org = client.get('') # use name of organization
+        new_bon.beneficiaire = client.get('nom_client')
+        org = client.get('assureur') # use name of organization
         try:
             organization = Assurance.objects.get(name=org)
         except Assurance.DoesNotExist:
@@ -562,9 +562,9 @@ class ImitiOut(viewsets.ViewSet):
         else:
             org = organization
         new_bon.organization = org
-        new_bon.num_beneficiaire = client('')
-        new_bon.num_du_bon = client.get('')
-        new_bon.date_du_bon = client.get('')
+        new_bon.num_beneficiaire = client('numero_carte')
+        new_bon.num_du_bon = client.get('numero_bon')
+        new_bon.date_du_bon = client.get('date_bon')
         new_bon.date_served = datetime.today()
 
         new_bon.save()
