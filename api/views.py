@@ -208,6 +208,7 @@ class EntrantImiti(viewsets.ViewSet):
                     synced_lot = self._sync_lot(umuti_set.lot, umutie)
                     somme_lot = listDictIntSomme3(synced_lot)
                     usd_to_bif = UsdToBif.objects.get(id=1)
+                    usd_to_bif = UsdToBif.objects.last()
                     print(f"The new price_out : {umutie.price_out_usd} times {usd_to_bif.actualExchangeRate} of {umutie.code_umuti}")
                     umuti_set.price_out = float(umutie.price_out_usd) * \
                                         usd_to_bif.actualExchangeRate
@@ -475,10 +476,13 @@ class ImitiOut(viewsets.ViewSet):
         data_query = request.data
         print(f"The data sent is: {data_query}")
         bundle = data_query.get('imiti')
+        panier = bundle.get('panier')
+        client = bundle.get('client')
+        code_sell = []
         # bundle.append(dict(data_query))
-        for actual in bundle:
+        for actual in panier:
             print(f"actual: {actual}")
-            code_umuti = actual.get('code_umuti')
+            code_med = actual.get('code_med')
             lot = actual.get('lot')
             if not lot:
                 continue
@@ -486,7 +490,7 @@ class ImitiOut(viewsets.ViewSet):
                 code_operation = lote.get('code_operation')
                 qte = lote.get('qte')
                 print(f"working on qte:{qte}")
-                orders = self._assess_order(code_umuti=code_umuti,\
+                orders = self._assess_order(code_umuti=code_med,\
                                          code_operation=code_operation,\
                                              qte=qte)
                 print(f"ACTUAL ORDERS: {orders}")
@@ -496,7 +500,7 @@ class ImitiOut(viewsets.ViewSet):
                         continue
                     try:
                         umuti = UmutiEntree.objects.\
-                            filter(code_umuti=code_umuti).\
+                            filter(code_umuti=code_med).\
                             filter(code_operation=order[1])
                     except UmutiEntree.DoesNotExist:
                         pass
@@ -510,6 +514,9 @@ class ImitiOut(viewsets.ViewSet):
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
 
+        print("The client is: ", client)
+        # Should write a client record + code_operation for this sale
+        # 
         #  after sell then call compile
         imiti = EntrantImiti()
         jove = imiti.compileImitiSet()

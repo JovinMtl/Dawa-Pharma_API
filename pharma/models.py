@@ -129,3 +129,13 @@ class UsdToBif(models.Model):
 
     def __str__(self) -> str:
         return f"1$ = {self.actualExchangeRate} Bif. From {str(self.effect_date)[:7]}."
+
+class Assurance(models.Model):
+    name = models.CharField(max_length=25, default='null')
+    rate_assure = models.SmallIntegerField(default=0)
+
+class InfoClient(models.Model):
+    name = models.CharField(max_length=25, default='inconnu')
+    phone_number = models.CharField(max_length=12, default='1111')
+    assureur = models.ForeignKey(Assurance,on_delete=models.CASCADE)
+    date_bon = models.DateField("Date yatangiweko", default=timezone.now)
