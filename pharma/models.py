@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from django.utils import timezone
 
+
 # Create your models here.
 
 # All the structure of Pharma operations will be defined here
@@ -107,7 +108,13 @@ def getBonDeCommandeInstance():
         new_bon = BonDeCommande.objects.first()
     except BonDeCommande.DoesNotExist:
         new_bon = BonDeCommande.objects.create()
+    
     return new_bon
+    # bon_seria = BonDeCommandeSeria(new_bon)
+    if bon_seria.is_valid:
+        return bon_seria
+    else:
+        return bon_seria
 
 class UmutiSold(models.Model):
     """This one will record all the sale and benefit as well"""
@@ -123,7 +130,7 @@ class UmutiSold(models.Model):
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now())
     bon_de_commande = models.ForeignKey(BonDeCommande,\
-                        on_delete=models.CASCADE, default=)
+            on_delete=models.CASCADE, default=getBonDeCommandeInstance)
 
 class umutiReportSell(models.Model):
     """THis will contain report of its sale in a given period of time"""
