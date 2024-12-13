@@ -97,6 +97,8 @@ class BonDeCommande(models.Model):
     num_du_bon = models.CharField(max_length=10, default="0000")
     date_du_bon = models.DateField(default=timezone.now)
     date_served = models.DateField(default=timezone.now)
+    montant_caisse = models.IntegerField(default=0)
+    montant_dette = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
 
     def __str__(self):
