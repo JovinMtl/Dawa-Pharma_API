@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 # Create your models here.
@@ -84,8 +85,9 @@ class ImitiSet(models.Model):
 
 class Assurance(models.Model):
     name = models.CharField(max_length=25, default='null')
-    rate_assure = models.SmallIntegerField("Le Taux d'assurer le Malade",\
-                                           default=0)
+    rate_assure = models.PositiveIntegerField("Le Taux d'assurer le Malade",\
+                        default=0, validators=[MinValueValidator(0),\
+                                               MaxValueValidator(100)])
 
     def __str__(self):
         return f"{self.name}"
