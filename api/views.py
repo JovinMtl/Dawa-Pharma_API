@@ -485,7 +485,7 @@ class ImitiOut(viewsets.ViewSet):
         if client:
             # there is client data, and is special
             # create a new instance of commande
-            bon_de_commande = self._createBon(self, client)
+            bon_de_commande = self._createBon(self, client, 200)
             pass
         else:
             # the client is not special, default BonDeCommande is applied
@@ -546,7 +546,7 @@ class ImitiOut(viewsets.ViewSet):
         return JsonResponse({"sold": len(imiti_sold)})
     
 
-    def _createBon(self, client):
+    def _createBon(self, client, price:int)->int:
         """Will create a new instance of BonDeCommande
         according to client dict.
         """
@@ -558,6 +558,7 @@ class ImitiOut(viewsets.ViewSet):
         except Assurance.DoesNotExist:
             # no need to create a new organization,
             # will be created on behalf of User
+            return JsonResponse({"Assurance":"not found"})
             pass
         else:
             org = organization
@@ -565,6 +566,8 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.num_beneficiaire = client('numero_carte')
         new_bon.num_du_bon = client.get('numero_bon')
         new_bon.date_du_bon = client.get('date_bon')
+        new_bon.montant_caisse = (100 - org.rate_assure) * price
+        new_bon.montant_dette = org.rate_assure * price
         new_bon.date_served = datetime.today()
 
         new_bon.save()
