@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import UmutiEntree, ImitiSet, UmutiSold, \
-    umutiReportSell, UmutiEntreeBackup, UsdToBif
+    umutiReportSell, UmutiEntreeBackup, UsdToBif,\
+    BonDeCommande
 
 # Register your models here.
 
