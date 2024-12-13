@@ -79,7 +79,35 @@ class ImitiSet(models.Model):
 
     def __str__(self) -> str:
         return f"{self.code_umuti}:{self.quantite_restant}"
-    
+
+
+class Assurance(models.Model):
+    name = models.CharField(max_length=25, default='null')
+    rate_assure = models.SmallIntegerField("Le Taux d'assurer le Malade",\
+                                           default=0)
+
+    def __str__(self):
+        return f"{self.name}"
+
+class BonDeCommande(models.Model):
+    beneficiaire = models.CharField(max_length=25, default='inconnu')
+    organization = models.ForeignKey(Assurance, on_delete=models.CASCADE)
+    num_beneficiaire = models.CharField(max_length=10, default="0000")
+    num_du_bon = models.CharField(max_length=10, default="0000")
+    date_du_bon = models.DateField(default=timezone.now)
+    date_served = models.DateField(default=timezone.now)
+    is_paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.beneficiaire}" 
+
+def getBonDeCommandeInstance():
+    new_bon = None
+    try:
+        new_bon = BonDeCommande.objects.first()
+    except BonDeCommande.DoesNotExist:
+        new_bon = BonDeCommande.objects.create()
+    return new_bon
 
 class UmutiSold(models.Model):
     """This one will record all the sale and benefit as well"""
@@ -94,6 +122,8 @@ class UmutiSold(models.Model):
     code_operation = models.CharField(max_length=12, default='null') #common with other sold together
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now())
+    bon_de_commande = models.ForeignKey(BonDeCommande,\
+                        on_delete=models.CASCADE, default=)
 
 class umutiReportSell(models.Model):
     """THis will contain report of its sale in a given period of time"""
@@ -130,27 +160,8 @@ class UsdToBif(models.Model):
     def __str__(self) -> str:
         return f"1$ = {self.actualExchangeRate} Bif. From {str(self.effect_date)[:7]}."
 
-class Assurance(models.Model):
-    name = models.CharField(max_length=25, default='null')
-    rate_assure = models.SmallIntegerField("Le Taux d'assurer le Malade",\
-                                           default=0)
-
-    def __str__(self):
-        return f"{self.name}"
 class InfoClient(models.Model):
     name = models.CharField(max_length=25, default='inconnu')
     phone_number = models.CharField(max_length=12, default='1111')
     assureur = models.ForeignKey(Assurance,on_delete=models.CASCADE)
     date_bon = models.DateField("Date yatangiweko", default=timezone.now)
-
-class BonDeCommande(models.Model):
-    beneficiaire = models.CharField(max_length=25, default='inconnu')
-    organization = models.ForeignKey(Assurance, on_delete=models.CASCADE)
-    num_beneficiaire = models.CharField(max_length=10, default="0000")
-    num_du_bon = models.CharField(max_length=10, default="0000")
-    date_du_bon = models.DateField(default=timezone.now)
-    date_served = models.DateField(default=timezone.now)
-    is_paid = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.beneficiaire}"
