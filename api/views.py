@@ -14,7 +14,8 @@ import os
 
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
-    umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif
+    umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
+    BonDeCommande, Assurance
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -478,6 +479,14 @@ class ImitiOut(viewsets.ViewSet):
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
+        # First checking the client dict, in order to access the
+        # BonDeCommande objet to assign to UmutiSold
+        bon_de_commande = None
+        if client:
+            # there is client data, and is special
+        else:
+            # the client is not special, default BonDeCommande is applied
+            # 
         code_sell = []
         # bundle.append(dict(data_query))
         for actual in panier:
