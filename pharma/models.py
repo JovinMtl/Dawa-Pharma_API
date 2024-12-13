@@ -139,3 +139,12 @@ class InfoClient(models.Model):
     phone_number = models.CharField(max_length=12, default='1111')
     assureur = models.ForeignKey(Assurance,on_delete=models.CASCADE)
     date_bon = models.DateField("Date yatangiweko", default=timezone.now)
+
+class BonDeCommande(models.Model):
+    beneficiaire = models.CharField(max_length=25, default='inconnu')
+    organization = models.ForeignKey(Assurance, on_delete=models.CASCADE)
+    num_beneficiaire = models.CharField(max_length=10, default="0000")
+    num_du_bon = models.CharField(max_length=10, default="0000")
+    date_du_bon = models.DateField(default=timezone.now)
+    date_served = models.DateField(default=timezone.now)
+    is_paid = models.BooleanField(default=False)
