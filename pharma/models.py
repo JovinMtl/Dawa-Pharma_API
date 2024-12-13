@@ -132,7 +132,7 @@ class UsdToBif(models.Model):
 
 class Assurance(models.Model):
     name = models.CharField(max_length=25, default='null')
-    rate_assure = models.SmallIntegerField(default=0)
+    rate_assure = models.SmallIntegerField("Le Taux d'assurer le Malade",default=0)
 
     def __str__(self):
         return f"{self.name}"
