@@ -484,9 +484,12 @@ class ImitiOut(viewsets.ViewSet):
         bon_de_commande = None
         if client:
             # there is client data, and is special
+            # create a new instance of commande
+            bon_de_commande = self._createBon(self, client)
+            pass
         else:
             # the client is not special, default BonDeCommande is applied
-            # 
+            bon_de_commande = BonDeCommande.objects.first()
         code_sell = []
         # bundle.append(dict(data_query))
         for actual in panier:
