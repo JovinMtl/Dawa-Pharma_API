@@ -544,6 +544,26 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"sold": len(imiti_sold)})
     
+
+    def _createBon(self, client):
+        """Will create a new instance of BonDeCommande
+        according to client dict.
+        """
+        new_bon = BonDeCommande.objects.create()
+        new_bon.beneficiaire = client.get('')
+        org = client.get('')
+        try:
+            organization = Assurance.objects.get(name=org)
+        except Assurance.DoesNotExist:
+            # create that organization
+            pass
+        else:
+            org = organization
+        new_bon.organization = org
+        new_bon.num_beneficiaire = client('')
+        new_bon.num_du_bon = client.get('')
+        new_bon.date_du_bon = client.get('')
+        new_bon.date_served = datetime.today()
     def _assess_order(self, code_umuti:str, code_operation:list, qte:int) -> list:
         """ THis function will take a list of object of this kind:
     
