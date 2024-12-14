@@ -523,7 +523,11 @@ class ImitiOut(viewsets.ViewSet):
                         print(f"The Umuti found : {umuti}")
                         if not umuti:
                             return JsonResponse({"Umuti":"does not exist"})
-                        sold = self._imitiSell(umuti=umuti[0], qte=order[2], operator=request.user)
+                        if not reduction:
+                            sold = self._imitiSell(umuti=umuti[0], qte=order[2], operator=request.user)
+                        else:
+                            sold = self._imitiSell(umuti=umuti[0],\
+                                 qte=order[2], operator=request.user)
                         if sold == 200:
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
@@ -624,7 +628,9 @@ class ImitiOut(viewsets.ViewSet):
         return data
 
     
-    def _imitiSell(self, umuti:UmutiEntree, qte:int, operator:str):
+    def _imitiSell(self, umuti:UmutiEntree, \
+                   qte:int, operator:str, \
+                bon_de_commande:BonDeCommande=None):
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
 
