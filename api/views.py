@@ -77,8 +77,8 @@ class EntrantImiti(viewsets.ViewSet):
         name_umuti in order to share the code_umuti.
         In case there is a match of name_umuti or obj.code_umuti,
         then return that code_umuti."""
-        name_umuti = obj.get('name_umuti')
-        code_umuti = obj.get('code_umuti')
+        name_umuti = obj.get('nom_med')
+        code_umuti = obj.get('code_med')
         if len(code_umuti) == 6:
             return code_umuti
         try:
@@ -95,35 +95,35 @@ class EntrantImiti(viewsets.ViewSet):
 
         obj = {'code_umuti': '', 'date_winjiriyeko': '2024-06-08T09:01:18.785Z', 
                'date_uzohererako': '12:00:00 AM', 'name_umuti': 'AMINOPHYLLINE', 
-               'description_umuti': 'Uvura uburuhe', 'type_umuti': 'Ovule', 
-               'type_in': 'Carton', 'ratio_type': '10', 'type_out': 'Piece', 
-               'price_in': '1500', 'price_out': '1800', 
+               'description_med': 'Uvura uburuhe', 'famille_med': 'Ovule', 
+               'type_in': 'Carton', 'ratio_type': '10', 'type_vente': 'Piece', 
+               'prix_in': '1500', 'prix_vente': '1800', 
                'quantite_initial': '15', 'location': ''}
         """
         print(f"THe operator is : {operator}")
         umuti_new = UmutiEntree.objects.create()
-        umuti_new.name_umuti = obj.get('name_umuti')
+        umuti_new.name_umuti = obj.get('nom_med')
         umuti_new.code_umuti = code_umuti
         umuti_new.code_operation = code_operation
         umuti_new.quantite_initial = obj.get('quantite_initial')
         umuti_new.quantite_restant = umuti_new.quantite_initial
         usd_to_bif = UsdToBif.objects.get(id=1)
-        umuti_new.price_in = obj.get('price_in')
-        umuti_new.price_out = obj.get('price_out')
-        umuti_new.price_in_usd = obj.get('price_in') / usd_to_bif.actualExchangeRate
-        umuti_new.price_out_usd = obj.get('price_out') / usd_to_bif.actualExchangeRate
+        umuti_new.price_in = obj.get('prix_in')
+        umuti_new.price_out = obj.get('prix_vente')
+        umuti_new.price_in_usd = obj.get('prix_in') / usd_to_bif.actualExchangeRate
+        umuti_new.price_out_usd = obj.get('prix_vente') / usd_to_bif.actualExchangeRate
         if not single:
             umuti_new.date_uzohererako = self._giveDate_exp(obj.get('date_uzohererako'))
             umuti_new.date_winjiriyeko = self._giveDate_entree(obj.get('date_winjiriyeko'))
         else:
             umuti_new.date_uzohererako = obj.get('date_uzohererako')
             umuti_new.date_winjiriyeko = obj.get('date_winjiriyeko')
-        umuti_new.description_umuti = (obj.get('description_umuti'))
-        umuti_new.type_umuti = obj.get('type_umuti') 
+        umuti_new.description_umuti = (obj.get('description_med'))
+        umuti_new.type_umuti = obj.get('famille_med') 
         umuti_new.type_in = obj.get('type_in') 
         if obj.get('ratio_type'):
             umuti_new.ratio_type = obj.get('ratio_type')
-        umuti_new.type_out = obj.get('type_out')
+        umuti_new.type_out = obj.get('type_vente')
         umuti_new.location = obj.get('location')
         umuti_new.operator = operator
 
@@ -481,17 +481,13 @@ class ImitiOut(viewsets.ViewSet):
         client = bundle.get('client')
         # First checking the client dict, in order to access the
         # BonDeCommande objet to assign to UmutiSold
-        bon_de_commande = None
-        reduction = False
+        bon_de_commande = BonDeCommande.objects.first()
+        
         if client:
             # there is client data, and is special
             # create a new instance of commande
             bon_de_commande = self._createBon(self, client, 200)
-            reduction = True
-        else:
-            # the client is not special, default BonDeCommande is applied
-            # bon_de_commande = BonDeCommande.objects.first()
-            reduction = False
+        
         code_sell = []
         # bundle.append(dict(data_query))
         for actual in panier:
@@ -523,12 +519,10 @@ class ImitiOut(viewsets.ViewSet):
                         print(f"The Umuti found : {umuti}")
                         if not umuti:
                             return JsonResponse({"Umuti":"does not exist"})
-                        if not reduction:
-                            sold = self._imitiSell(umuti=umuti[0], qte=order[2], operator=request.user)
-                        else:
-                            sold = self._imitiSell(umuti=umuti[0],\
-                                 qte=order[2], operator=request.user,\
-                                    bon_de_commande=bon_de_commande)
+                        
+                        sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
+                                    operator=request.user, \
+                                        bon_de_commande=bon_de_commande)
                         if sold == 200:
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
@@ -1029,13 +1023,13 @@ class Rapport(viewsets.ViewSet):
                 'date_uzohererako': "2027-04-01",
                 'code_umuti': "4X6768",
                 'name_umuti': "AMINOPHYLLINE",
-                'description_umuti': "2024-07-05 08:38:34.519033",
-                'type_umuti': "Ovule",
+                'description_med': "2024-07-05 08:38:34.519033",
+                'famille_med': "Ovule",
                 'type_in': "Carton",
                 'ratio_type': 10,
-                'type_out': "Piece",
-                'price_in': 1500,
-                'price_out': 1800,
+                'type_vente': "Piece",
+                'prix_in': 1500,
+                'prix_vente': 1800,
                 'difference': 0,
                 'quantite_initial': 15,
                 'quantite_restant': 15,
@@ -1054,9 +1048,9 @@ class Rapport(viewsets.ViewSet):
                 'code_umuti': '055AWL',
                 'name_umuti': 'Quinine',
                 'quantity': 1,
-                'price_out': 2500,
+                'prix_vente': 2500,
                 'price_total': 1,
-                'price_in': 2200,
+                'prix_in': 2200,
                 'difference': 0,
                 'code_operation_entrant': 'kUyVk390907W',
                 'code_operation': '875mOdv17417',
@@ -1095,13 +1089,13 @@ class Rapport(viewsets.ViewSet):
             umuti_new.date_uzohererako = umuti_entree.get('date_uzohererako')
             umuti_new.code_umuti = umuti_entree.get('code_umuti')
             umuti_new.name_umuti = umuti_entree.get('name_umuti')
-            umuti_new.description_umuti = umuti_entree.get('description_umuti')
-            umuti_new.type_umuti = umuti_entree.get('type_umuti')
+            umuti_new.description_umuti = umuti_entree.get('description_med')
+            umuti_new.type_umuti = umuti_entree.get('famille_med')
             umuti_new.type_in = umuti_entree.get('type_in')
             umuti_new.ratio_type = umuti_entree.get('ratio_type')
-            umuti_new.type_out = umuti_entree.get('type_out')
-            umuti_new.price_in = umuti_entree.get('price_in')
-            umuti_new.price_out = umuti_entree.get('price_out')
+            umuti_new.type_out = umuti_entree.get('type_vente')
+            umuti_new.price_in = umuti_entree.get('prix_in')
+            umuti_new.price_out = umuti_entree.get('prix_vente')
             umuti_new.difference = umuti_entree.get('difference')
             umuti_new.quantite_initial = umuti_entree.get('quantite_initial')
             umuti_new.quantite_restant = umuti_entree.get('quantite_restant')
@@ -1140,9 +1134,9 @@ class Rapport(viewsets.ViewSet):
         new_umuti.code_umuti = instance.get('code_umuti')
         new_umuti.name_umuti = instance.get('name_umuti')
         new_umuti.quantity = instance.get('quantity')
-        new_umuti.price_out = instance.get('price_out')
+        new_umuti.price_out = instance.get('prix_vente')
         new_umuti.price_total = instance.get('price_total')
-        new_umuti.price_in = instance.get('price_in')
+        new_umuti.price_in = instance.get('prix_in')
         new_umuti.difference = instance.get('difference')
         new_umuti.code_operation_entrant = instance.get('code_operation_entrant')
         new_umuti.operator = instance.get('operator')
