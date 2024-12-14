@@ -482,15 +482,16 @@ class ImitiOut(viewsets.ViewSet):
         # First checking the client dict, in order to access the
         # BonDeCommande objet to assign to UmutiSold
         bon_de_commande = None
+        reduction = False
         if client:
             # there is client data, and is special
             # create a new instance of commande
             bon_de_commande = self._createBon(self, client, 200)
-            pass
+            reduction = True
         else:
             # the client is not special, default BonDeCommande is applied
             # bon_de_commande = BonDeCommande.objects.first()
-            pass
+            reduction = False
         code_sell = []
         # bundle.append(dict(data_query))
         for actual in panier:
