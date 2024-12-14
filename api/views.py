@@ -527,7 +527,8 @@ class ImitiOut(viewsets.ViewSet):
                             sold = self._imitiSell(umuti=umuti[0], qte=order[2], operator=request.user)
                         else:
                             sold = self._imitiSell(umuti=umuti[0],\
-                                 qte=order[2], operator=request.user)
+                                 qte=order[2], operator=request.user,\
+                                    bon_de_commande=bon_de_commande)
                         if sold == 200:
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
@@ -576,7 +577,7 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.date_served = datetime.today()
 
         new_bon.save()
-        return 200
+        return new_bon
     
     def _assess_order(self, code_umuti:str, code_operation:list, qte:int) -> list:
         """ THis function will take a list of object of this kind:
