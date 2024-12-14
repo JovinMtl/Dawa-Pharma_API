@@ -648,6 +648,7 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.code_operation = code.giveCode()
         new_vente.operator = str(operator.username)
         new_vente.date_operation = timezone.now()
+        new_vente.bon_de_commande = bon_de_commande
         umuti.quantite_restant -= int(qte)
 
         umuti.save()
