@@ -94,12 +94,12 @@ class Assurance(models.Model):
 
 class BonDeCommande(models.Model):
     beneficiaire = models.CharField(max_length=25, default='inconnu')
-    organization = models.ForeignKey(Assurance, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
+                                     default=1)
     num_beneficiaire = models.CharField(max_length=10, default="0000")
     num_du_bon = models.CharField(max_length=10, default="0000")
     date_du_bon = models.DateField(default=timezone.now)
     date_served = models.DateField(default=timezone.now)
-    montant_caisse = models.IntegerField(default=0)
     montant_dette = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
 
@@ -112,6 +112,7 @@ def getBonDeCommandeInstance():
         new_bon = BonDeCommande.objects.first()
     except BonDeCommande.DoesNotExist:
         new_bon = BonDeCommande.objects.create()
+        new_bon.save()
     
     return new_bon
 
@@ -129,7 +130,7 @@ class UmutiSold(models.Model):
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now())
     bon_de_commande = models.ForeignKey(BonDeCommande,\
-            on_delete=models.CASCADE, default=getBonDeCommandeInstance)
+            on_delete=models.CASCADE, default=1)
 
 class umutiReportSell(models.Model):
     """THis will contain report of its sale in a given period of time"""
