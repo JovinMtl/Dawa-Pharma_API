@@ -484,14 +484,6 @@ class ImitiOut(viewsets.ViewSet):
         bon_de_commande = BonDeCommande.objects.first()
         prix_vente = 0
         total_facture = 0
-        
-        if client:
-            # there is client data, and is special
-            # create a new instance of commande
-            bon_de_commande = self._createBon(client, 200)
-
-        code_sell = []
-        # bundle.append(dict(data_query))
         once = 0
         for actual in panier:
             print(f"actual: {actual}")
@@ -542,9 +534,7 @@ class ImitiOut(viewsets.ViewSet):
         # Should now update the reduction in bon_de_commande
         if client:
             bon_de_commande = self._updateReduction(bon_de_commande, total=total_facture)
-        print("The client is: ", client)
-        # Should write a client record + code_operation for this sale
-        # 
+            print("The client is: ", client)
         #  after sell then call compile
         imiti = EntrantImiti()
         jove = imiti.compileImitiSet()
