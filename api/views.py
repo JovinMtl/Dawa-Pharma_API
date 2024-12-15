@@ -482,11 +482,8 @@ class ImitiOut(viewsets.ViewSet):
         # First checking the client dict, in order to access the
         # BonDeCommande objet to assign to UmutiSold
         bon_de_commande = BonDeCommande.objects.first()
-        
-        if client:
-            # there is client data, and is special
-            # create a new instance of commande
-            bon_de_commande = self._createBon(client, 200)
+        prix_vente = 0
+        total_facture = 0
 
         code_sell = []
         # bundle.append(dict(data_query))
@@ -519,10 +516,17 @@ class ImitiOut(viewsets.ViewSet):
                         print(f"The Umuti found : {umuti}")
                         if not umuti:
                             return JsonResponse({"Umuti":"does not exist"})
-                        
+                        be_sold = ImitiSet.objects.get(code_umuti=umuti[0].code_umuti)
+                        if client:
+                            # there is client data, and is special
+                            # create a new instance of commande
+                            bon_de_commande = self._createBon(\
+                                client=client, price=be_sold.price_out)
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
                                     operator=request.user, \
+                                        reference_umuti=be_sold,\
                                         bon_de_commande=bon_de_commande)
+
                         if sold == 200:
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
@@ -628,12 +632,13 @@ class ImitiOut(viewsets.ViewSet):
     
     def _imitiSell(self, umuti:UmutiEntree, \
                    qte:int, operator:str, \
+                   reference_umuti:ImitiSet,\
                 bon_de_commande:BonDeCommande=None):
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
 
         print(f"The umuti to work on is : {umuti} with qte: {qte} found with {umuti.quantite_restant}")
-        reference_umuti = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
+        # reference_umuti = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
         new_vente = UmutiSold.objects.create()
         new_vente.code_umuti = umuti.code_umuti
         new_vente.name_umuti = umuti.name_umuti
