@@ -537,7 +537,9 @@ class ImitiOut(viewsets.ViewSet):
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
                 once += 1 # create bon_de_commande only once
-
+        # Should now update the reduction in bon_de_commande
+        if client:
+            bon_de_commande = self._updateReduction(bon_de_commande)
         print("The client is: ", client)
         # Should write a client record + code_operation for this sale
         # 
@@ -555,6 +557,15 @@ class ImitiOut(viewsets.ViewSet):
             date_operation__gte=year_start)
 
         return JsonResponse({"sold": len(imiti_sold)})
+    
+    def _updateReduction(self, \
+            bon_de_commande:BonDeCommande, \
+                total:int=0)->BonDeCommande:
+        """Updates the total dettes in as reduction."""
+        org = bon_de_commande.organization
+        dette = total * (org.rate_assure/100)
+        bon_de_commande.montant_dette = dette
+        bon_de_commande.save()
     
 
     def _createBon(self, client, price:int)->int:
