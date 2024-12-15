@@ -523,7 +523,7 @@ class ImitiOut(viewsets.ViewSet):
                         if not umuti:
                             return JsonResponse({"Umuti":"does not exist"})
                         be_sold = ImitiSet.objects.get(code_umuti=umuti[0].code_umuti)
-                        total_facture += be_sold.price_out
+                        
                         if client and (once==0):
                             # there is client data, and is special
                             # create a new instance of commande
@@ -535,6 +535,7 @@ class ImitiOut(viewsets.ViewSet):
                                         bon_de_commande=bon_de_commande)
 
                         if sold == 200:
+                            total_facture += be_sold.price_out * order[2]
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
                 once += 1 # create bon_de_commande only once
@@ -564,8 +565,8 @@ class ImitiOut(viewsets.ViewSet):
                 total:int=0)->BonDeCommande:
         """Updates the total dettes in as reduction."""
         org = bon_de_commande.organization
-        dette = total * (org.rate_assure/100)
-        bon_de_commande.montant_dette = dette
+        paid = total * (org.rate_assure/100)
+        bon_de_commande.montant_dette = total - paid
         bon_de_commande.save()
 
         return bon_de_commande
