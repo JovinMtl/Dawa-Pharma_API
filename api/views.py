@@ -486,8 +486,8 @@ class ImitiOut(viewsets.ViewSet):
         if client:
             # there is client data, and is special
             # create a new instance of commande
-            bon_de_commande = self._createBon(self, client, 200)
-        
+            bon_de_commande = self._createBon(client, 200)
+
         code_sell = []
         # bundle.append(dict(data_query))
         for actual in panier:
@@ -563,10 +563,10 @@ class ImitiOut(viewsets.ViewSet):
         else:
             org = organization
         new_bon.organization = org
+        new_bon.categorie = client.get('categorie')
         new_bon.num_beneficiaire = client('numero_carte')
         new_bon.num_du_bon = client.get('numero_bon')
         new_bon.date_du_bon = client.get('date_bon')
-        new_bon.montant_caisse = (100 - org.rate_assure) * price
         new_bon.montant_dette = org.rate_assure * price
         new_bon.date_served = datetime.today()
 
