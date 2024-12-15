@@ -484,9 +484,15 @@ class ImitiOut(viewsets.ViewSet):
         bon_de_commande = BonDeCommande.objects.first()
         prix_vente = 0
         total_facture = 0
+        
+        if client:
+            # there is client data, and is special
+            # create a new instance of commande
+            bon_de_commande = self._createBon(client, 200)
 
         code_sell = []
         # bundle.append(dict(data_query))
+        once = 0
         for actual in panier:
             print(f"actual: {actual}")
             code_med = actual.get('code_med')
@@ -517,7 +523,7 @@ class ImitiOut(viewsets.ViewSet):
                         if not umuti:
                             return JsonResponse({"Umuti":"does not exist"})
                         be_sold = ImitiSet.objects.get(code_umuti=umuti[0].code_umuti)
-                        if client:
+                        if client and (once==0):
                             # there is client data, and is special
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
@@ -530,6 +536,7 @@ class ImitiOut(viewsets.ViewSet):
                         if sold == 200:
                             print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
+                once += 1 # create bon_de_commande only once
 
         print("The client is: ", client)
         # Should write a client record + code_operation for this sale
