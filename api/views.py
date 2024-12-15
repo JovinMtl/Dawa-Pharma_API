@@ -564,11 +564,14 @@ class ImitiOut(viewsets.ViewSet):
             org = organization
         new_bon.organization = org
         new_bon.categorie = client.get('categorie')
-        new_bon.num_beneficiaire = client('numero_carte')
+        new_bon.num_beneficiaire = client.get('numero_carte')
         new_bon.num_du_bon = client.get('numero_bon')
-        new_bon.date_du_bon = client.get('date_bon')
         new_bon.montant_dette = org.rate_assure * price
+        if client.get('date_bon'):
+            new_bon.date_du_bon = client.get('date_bon')
         new_bon.date_served = datetime.today()
+
+        print("The date has this format:", new_bon.date_served)
 
         new_bon.save()
         return new_bon
