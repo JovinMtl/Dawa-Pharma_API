@@ -28,6 +28,8 @@ from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
 from .shared.listStrToList import listStrToList, listIntToList,\
       listDictIntSomme, listDictIntSomme2, listDictIntSomme3
+from .shared.stringToDate import stringToDate
+
 
 # Create your views here.
 
@@ -590,7 +592,9 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.num_du_bon = client.get('numero_bon')
         new_bon.montant_dette = org.rate_assure * price
         if client.get('date_bon'):
-            new_bon.date_du_bon = client.get('date_bon')
+            date_arr = stringToDate(client.get('date_bon'))
+            new_bon.date_du_bon = timezone.datetime(\
+                date_arr[0], date_arr[1], date_arr[2])
         new_bon.date_served = datetime.today()
 
         print("The date has this format:", new_bon.date_served)
@@ -1313,6 +1317,14 @@ class Rapport(viewsets.ViewSet):
         result_serialized = UmutiEntreeSeriazer(pure_result, many=True)
         if result_serialized.is_valid:
             return Response(result_serialized.data)
+    
+
+    # @action(methods=['get'], detail=False,\
+    #          permission_classes= [AllowAny])
+    # def getBons(self, request):
+    #     """
+    #     This will return all bon de commande
+    #     """
 
 
         
