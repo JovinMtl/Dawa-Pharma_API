@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny,\
+    IsAdminUser
 
 import json
 from django.utils import timezone
@@ -402,19 +403,12 @@ class EntrantImiti(viewsets.ViewSet):
             return None
 
 
-class Partnership(viewsets.ViewSet):
-    """THis primary deals with assurances and
-    BonDeCommandes"""
+class Assurances(viewsets.ModelViewSet):
+    """THis primary deals with assurances."""
+    queryset = Assurance.objects.all()
+    serializer_class = AssuranceSeria
+    permission_classes = [IsAuthenticated]
 
-    @action(methods=['get'], detail=False,\
-             permission_classes= [IsAuthenticated])
-    def allAssu(self, request):
-        """Will return all assurances instances."""
-        assu = Assurance.objects.all()
-        assu_seria = AssuranceSeria(assu, many=True)
-        if assu_seria.is_valid:
-            return Response(assu_seria.data)
-        return JsonResponse({"not right":"with Assurance"})
 
 class ImitiOut(viewsets.ViewSet):
     """THis will give informations about the Imiti in the Store 
