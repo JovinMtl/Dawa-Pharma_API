@@ -20,7 +20,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
-      LastIndexSeria, SyntesiSeria
+      LastIndexSeria, SyntesiSeria, AssuranceSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -402,6 +402,19 @@ class EntrantImiti(viewsets.ViewSet):
             return None
 
 
+class Partnership(viewsets.ViewSet):
+    """THis primary deals with assurances and
+    BonDeCommandes"""
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def allAssu(self, request):
+        """Will return all assurances instances."""
+        assu = Assurance.objects.all()
+        assu_seria = AssuranceSeria(assu_seria, many=True)
+        if assu_seria.is_valid:
+            return Response(assu_seria.data)
+        return JsonResponse({"not right":"with Assurance"})
 
 class ImitiOut(viewsets.ViewSet):
     """THis will give informations about the Imiti in the Store 
@@ -482,7 +495,6 @@ class ImitiOut(viewsets.ViewSet):
         # First checking the client dict, in order to access the
         # BonDeCommande objet to assign to UmutiSold
         bon_de_commande = BonDeCommande.objects.first()
-        prix_vente = 0
         total_facture = 0
         once = 0
         for actual in panier:
