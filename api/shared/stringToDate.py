@@ -22,7 +22,7 @@ months = {
 }
 date = 'Thu Dec 05 2024 02:00:00 GMT+0200 (Central Africa Time)'
 def stringToDate(date:str)->list:
-    date_list = date.split
+    date_list = date.split()
     year = int(date_list[3])
     month = int(months.get(date_list[1]))
     day = int(date_list[2])
