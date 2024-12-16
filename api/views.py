@@ -411,7 +411,7 @@ class Partnership(viewsets.ViewSet):
     def allAssu(self, request):
         """Will return all assurances instances."""
         assu = Assurance.objects.all()
-        assu_seria = AssuranceSeria(assu_seria, many=True)
+        assu_seria = AssuranceSeria(assu, many=True)
         if assu_seria.is_valid:
             return Response(assu_seria.data)
         return JsonResponse({"not right":"with Assurance"})

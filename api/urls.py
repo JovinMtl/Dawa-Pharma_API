@@ -5,13 +5,15 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, \
                                                   TokenVerifyView)
 
 
-from .views import EntrantImiti, ImitiOut, Rapport
+from .views import EntrantImiti, ImitiOut, Rapport,\
+    Partnership
 
 
 router = DefaultRouter()
 router.register(r'in', EntrantImiti, basename='entrants' )
 router.register(r'out', ImitiOut, basename='sortant')
 router.register(r'rep', Rapport, basename='rep')
+router.register(r'prt', Partnership, basename='partnership')
 
 urlpatterns = [
     path('', include(router.urls)),
