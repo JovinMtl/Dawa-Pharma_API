@@ -28,7 +28,7 @@ from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
 from .shared.listStrToList import listStrToList, listIntToList,\
       listDictIntSomme, listDictIntSomme2, listDictIntSomme3
-from .shared.stringToDate import stringToDate
+from .shared.stringToDate import stringToDate, shortStr2Date
 
 
 # Making a weekday dict that will be used
@@ -1330,7 +1330,7 @@ class Rapport(viewsets.ViewSet):
             return Response(result_serialized.data)
     
 
-    @action(methods=['get'], detail=False,\
+    @action(methods=['get','post'], detail=False,\
              permission_classes= [AllowAny])
     def getVentes(self, request):
         """
@@ -1338,12 +1338,27 @@ class Rapport(viewsets.ViewSet):
         7days for default from today.
         """
         data_params = request.data
+        end_date = None
+        begin_date = None
+        if data_params.get('dates'):
+            if data_params.get('dates')[0]:
+                date1 = data_params.get('dates')[0]
+                date_arr = shortStr2Date(date1)
+                begin_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
+            if data_params.get('dates')[1]:
+                date2 = data_params.get('dates')[1]
+                date_arr = shortStr2Date(date2)
+                end_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
         # checking that there is dates object
         # the set end_date and begin_date
         # else, set these defaults value of 7days
-        end_date = datetime.today()
-        end_date -= timedelta(hours=end_date.hour) #init to 0:00
-        begin_date = end_date - timedelta(days=7)
+        else:
+            end_date = datetime.today()
+            end_date -= timedelta(hours=end_date.hour) #init to 0:00
+            begin_date = end_date - timedelta(days=7)
+        print("THe dates are: ", begin_date, end_date)
         x = [] # date
         y = [] # quantifiers
         while begin_date != end_date:
