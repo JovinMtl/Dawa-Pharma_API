@@ -31,6 +31,17 @@ from .shared.listStrToList import listStrToList, listIntToList,\
 from .shared.stringToDate import stringToDate
 
 
+# Making a weekday dict that will be used
+week_day = {
+    1: 'Lun',
+    2: 'Mar',
+    3: 'Mer',
+    4: 'Jeu',
+    5: 'Ven',
+    6: 'Sam',
+    7: 'Dim'
+}
+
 # Create your views here.
 
 class EntrantImiti(viewsets.ViewSet):
