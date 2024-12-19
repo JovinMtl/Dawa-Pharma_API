@@ -1319,12 +1319,27 @@ class Rapport(viewsets.ViewSet):
             return Response(result_serialized.data)
     
 
-    # @action(methods=['get'], detail=False,\
-    #          permission_classes= [AllowAny])
-    # def getBons(self, request):
-    #     """
-    #     This will return all bon de commande
-    #     """
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getVentes(self, request):
+        """
+        This will return ventes journalieres.
+        7days for default from today.
+        """
+        end_date = datetime.today()
+        begin_date = end_date - timedelta(days=7)
+        x = [] # date
+        y = [] # quantifiers
+        while begin_date != end_date:
+            query = UmutiSold.objects.filter\
+                (date_operation__gte=begin_date)\
+                .filter(date_operation__lt=begin_date+timedelta(days=0.8))
+            date_str = (str(begin_date)).split()[0]
+            x.append(date_str)
+            y.append(len(query))
+            begin_date += timedelta(days=1)
+        return JsonResponse({"X":x, 'Y':y})
+
 
 
         
