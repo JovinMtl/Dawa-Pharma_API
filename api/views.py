@@ -1337,7 +1337,12 @@ class Rapport(viewsets.ViewSet):
         This will return ventes journalieres.
         7days for default from today.
         """
+        data_params = request.data
+        # checking that there is dates object
+        # the set end_date and begin_date
+        # else, set these defaults value of 7days
         end_date = datetime.today()
+        end_date -= timedelta(hours=end_date.hour) #init to 0:00
         begin_date = end_date - timedelta(days=7)
         x = [] # date
         y = [] # quantifiers
