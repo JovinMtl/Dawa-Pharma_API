@@ -28,3 +28,11 @@ def stringToDate(date:str)->list:
     day = int(date_list[2])
 
     return [year, month, day]
+
+def shortStr2Date(date:str)->list:
+    """
+    Date of this form: '2024-12-16'
+    """
+    date_list = date.split('-')
+    return [int(date_list[0]), int(date_list[1]),\
+            int(date_list[2])]
