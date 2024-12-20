@@ -1384,6 +1384,7 @@ class Rapport(viewsets.ViewSet):
         one_year = today + timedelta(days=360)
         two_year = today + timedelta(days=720)
 
+        outdated = qte_sup.filter(date_uzohererako__lte=today)
         with_less_six_month = qte_sup.filter(date_uzohererako__gt=today)\
             .filter(date_uzohererako__lt=six_month)
         with_six_month = qte_sup.filter(date_uzohererako__gte=six_month)\
@@ -1391,6 +1392,12 @@ class Rapport(viewsets.ViewSet):
         with_one_year = qte_sup.filter(date_uzohererako__gte=one_year)\
             .filter(date_uzohererako__lte=two_year)
         with_two_year = qte_sup.filter(date_uzohererako__gte=two_year)
+
+        y = ['Perime', '1-5', '6-12',\
+            '12-24','24 - ~']
+        x = [len(outdated), len(with_less_six_month), \
+            len(with_six_month), len(with_one_year),\
+                len(with_two_year)]
         return JsonResponse({"Situation":"Stock"})
 
 
