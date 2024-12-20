@@ -1380,9 +1380,17 @@ class Rapport(viewsets.ViewSet):
         """
         today = datetime.today()
         qte_sup = UmutiEntree.objects.filter(quantite_restant__gte=1)
-        with_six_month = today +timedelta(days=180)
-        with_one_year = today + timedelta(days=360)
-        with_two_year = today + timedelta(days=720)
+        six_month = today +timedelta(days=180)
+        one_year = today + timedelta(days=360)
+        two_year = today + timedelta(days=720)
+
+        with_less_six_month = qte_sup.filter(date_uzohererako__gt=today)\
+            .filter(date_uzohererako__lt=six_month)
+        with_six_month = qte_sup.filter(date_uzohererako__gte=six_month)\
+            .filter(date_uzohererako__lte=one_year)
+        with_one_year = qte_sup.filter(date_uzohererako__gte=one_year)\
+            .filter(date_uzohererako__lte=two_year)
+        with_two_year = qte_sup.filter(date_uzohererako__gte=two_year)
         return JsonResponse({"Situation":"Stock"})
 
 
