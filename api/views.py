@@ -1393,12 +1393,12 @@ class Rapport(viewsets.ViewSet):
             .filter(date_uzohererako__lte=two_year)
         with_two_year = qte_sup.filter(date_uzohererako__gte=two_year)
 
-        y = ['Perime', '1-5', '6-12',\
-            '12-24','24 - ~']
+        y = ['Perimé', '1-5mois', '6-12mois',\
+            '12-24mois','24mois +']
         x = [len(outdated), len(with_less_six_month), \
             len(with_six_month), len(with_one_year),\
                 len(with_two_year)]
-        return JsonResponse({"Situation":"Stock"})
+        return JsonResponse({"X":x, "Y":y})
 
 
 
