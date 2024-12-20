@@ -1378,6 +1378,11 @@ class Rapport(viewsets.ViewSet):
         """
         Will return the categorized level of stocks.
         """
+        today = datetime.today()
+        qte_sup = UmutiEntree.objects.filter(quantite_restant__gte=1)
+        with_six_month = today +timedelta(days=180)
+        with_one_year = today + timedelta(days=360)
+        with_two_year = today + timedelta(days=720)
         return JsonResponse({"Situation":"Stock"})
 
 
