@@ -1340,6 +1340,9 @@ class Rapport(viewsets.ViewSet):
         data_params = request.data
         end_date = None
         begin_date = None
+        # checking that there is dates object
+        # the set end_date and begin_date
+        # else, set these defaults value of 7days
         if data_params.get('dates'):
             if data_params.get('dates')[0]:
                 date1 = data_params.get('dates')[0]
@@ -1351,9 +1354,6 @@ class Rapport(viewsets.ViewSet):
                 date_arr = shortStr2Date(date2)
                 end_date = timezone.datetime(date_arr[0],\
                     date_arr[1], date_arr[2])
-        # checking that there is dates object
-        # the set end_date and begin_date
-        # else, set these defaults value of 7days
         else:
             end_date = datetime.today()
             end_date -= timedelta(hours=end_date.hour) #init to 0:00
@@ -1371,6 +1371,14 @@ class Rapport(viewsets.ViewSet):
             y.append(len(query))
             begin_date += timedelta(days=1)
         return JsonResponse({"X":x, 'Y':y})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getDiffStock(self, request):
+        """
+        Will return the categorized level of stocks.
+        """
+        return JsonResponse({"Situation":"Stock"})
 
 
 
