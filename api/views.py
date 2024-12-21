@@ -69,13 +69,13 @@ class EntrantImiti(viewsets.ViewSet):
                 single = True
             
             code_6 = GenerateCode(6)
-            code_umuti = code_6.giveCode()
-            print(f"using code: {code_umuti}")
-            # We should check the existence of umuti with that code or name_umuti
+            code_med = code_6.giveCode()
+            print(f"using code: {code_med}")
+            # We should check the existence of umuti with that code or nom_med
             check_exist = self._doesExist(obj=obj)
             if check_exist:
-                code_umuti = check_exist # in case there is a match.
-            reponse = self._addUmuti(obj=obj,code_umuti=code_umuti,\
+                code_med = check_exist # in case there is a match.
+            reponse = self._addUmuti(obj=obj,code_med=code_med,\
                                       code_operation=code_operation, \
                                         single=single, operator=request.user.username) # 200 if ok
             if reponse != 200:
@@ -88,56 +88,56 @@ class EntrantImiti(viewsets.ViewSet):
     
     def _doesExist(self, obj:dict):
         """This method checks if the umuti already exist with the same
-        name_umuti in order to share the code_umuti.
-        In case there is a match of name_umuti or obj.code_umuti,
-        then return that code_umuti."""
-        name_umuti = obj.get('nom_med')
-        code_umuti = obj.get('code_med')
-        if len(code_umuti) == 6:
-            return code_umuti
+        nom_med in order to share the code_med.
+        In case there is a match of nom_med or obj.code_med,
+        then return that code_med."""
+        nom_med = obj.get('nom_med')
+        code_med = obj.get('code_med')
+        if len(code_med) == 6:
+            return code_med
         try:
-            umuti_exist = UmutiEntree.objects.get(name_umuti=name_umuti)
+            umuti_exist = UmutiEntree.objects.get(nom_med=nom_med)
         except UmutiEntree.DoesNotExist:
             return None
         else:
-            return umuti_exist.code_umuti
+            return umuti_exist.code_med
     
-    def _addUmuti(self, obj:dict, code_umuti:str, code_operation:str,\
+    def _addUmuti(self, obj:dict, code_med:str, code_operation:str,\
                    single:bool, operator:str):
         """THis method is in charge of creating and filling a new instance
         of UmutiEntree, of this type: 
 
-        obj = {'code_umuti': '', 'date_winjiriyeko': '2024-06-08T09:01:18.785Z', 
-               'date_uzohererako': '12:00:00 AM', 'name_umuti': 'AMINOPHYLLINE', 
+        obj = {'code_med': '', 'date_entrant': '2024-06-08T09:01:18.785Z', 
+               'date_peremption': '12:00:00 AM', 'nom_med': 'AMINOPHYLLINE', 
                'description_med': 'Uvura uburuhe', 'famille_med': 'Ovule', 
-               'type_in': 'Carton', 'ratio_type': '10', 'type_vente': 'Piece', 
+               'type_achat': 'Carton', 'ratio': '10', 'type_vente': 'Piece', 
                'prix_in': '1500', 'prix_vente': '1800', 
                'quantite_initial': '15', 'location': ''}
         """
         print(f"THe operator is : {operator}")
         umuti_new = UmutiEntree.objects.create()
-        umuti_new.name_umuti = obj.get('nom_med')
-        umuti_new.code_umuti = code_umuti
+        umuti_new.nom_med = obj.get('nom_med')
+        umuti_new.code_med = code_med
         umuti_new.code_operation = code_operation
         umuti_new.quantite_initial = obj.get('quantite_initial')
         umuti_new.quantite_restant = umuti_new.quantite_initial
         usd_to_bif = UsdToBif.objects.get(id=1)
-        umuti_new.price_in = obj.get('prix_in')
-        umuti_new.price_out = obj.get('prix_vente')
-        umuti_new.price_in_usd = obj.get('prix_in') / usd_to_bif.actualExchangeRate
-        umuti_new.price_out_usd = obj.get('prix_vente') / usd_to_bif.actualExchangeRate
+        umuti_new.prix_achat = obj.get('prix_in')
+        umuti_new.prix_vente = obj.get('prix_vente')
+        umuti_new.prix_achat_usd = obj.get('prix_in') / usd_to_bif.actualExchangeRate
+        umuti_new.prix_vente_usd = obj.get('prix_vente') / usd_to_bif.actualExchangeRate
         if not single:
-            umuti_new.date_uzohererako = self._giveDate_exp(obj.get('date_uzohererako'))
-            umuti_new.date_winjiriyeko = self._giveDate_entree(obj.get('date_winjiriyeko'))
+            umuti_new.date_peremption = self._giveDate_exp(obj.get('date_peremption'))
+            umuti_new.date_entrant = self._giveDate_entree(obj.get('date_entrant'))
         else:
-            umuti_new.date_uzohererako = obj.get('date_uzohererako')
-            umuti_new.date_winjiriyeko = obj.get('date_winjiriyeko')
+            umuti_new.date_peremption = obj.get('date_peremption')
+            umuti_new.date_entrant = obj.get('date_entrant')
         umuti_new.description_umuti = (obj.get('description_med'))
-        umuti_new.type_umuti = obj.get('famille_med') 
-        umuti_new.type_in = obj.get('type_in') 
-        if obj.get('ratio_type'):
-            umuti_new.ratio_type = obj.get('ratio_type')
-        umuti_new.type_out = obj.get('type_vente')
+        umuti_new.type_med = obj.get('famille_med') 
+        umuti_new.type_achat = obj.get('type_achat') 
+        if obj.get('ratio'):
+            umuti_new.ratio = obj.get('ratio')
+        umuti_new.type_vente = obj.get('type_vente')
         umuti_new.location = obj.get('location')
         umuti_new.operator = operator
 
@@ -153,40 +153,40 @@ class EntrantImiti(viewsets.ViewSet):
         """This method duplicated UmutiEntree instance into 
         UmutiEntreeBackup."""
         umuti_backup = UmutiEntreeBackup.objects.create()
-        umuti_backup.name_umuti = instance.name_umuti
-        umuti_backup.code_umuti = instance.code_umuti
+        umuti_backup.nom_med = instance.nom_med
+        umuti_backup.code_med = instance.code_med
         umuti_backup.code_operation = instance.code_operation
         umuti_backup.quantite_initial = instance.quantite_initial
         umuti_backup.quantite_restant = instance.quantite_initial
-        umuti_backup.price_in = instance.price_in
-        umuti_backup.price_out = instance.price_out
-        umuti_backup.date_uzohererako = instance.date_uzohererako
-        umuti_backup.date_winjiriyeko = instance.date_winjiriyeko
-        umuti_backup.description_umuti = instance.date_winjiriyeko
-        umuti_backup.type_umuti = instance.type_umuti
-        umuti_backup.type_in = instance.type_in
-        umuti_backup.ratio_type = instance.ratio_type
-        umuti_backup.type_out = instance.type_out
+        umuti_backup.prix_achat = instance.prix_achat
+        umuti_backup.prix_vente = instance.prix_vente
+        umuti_backup.date_peremption = instance.date_peremption
+        umuti_backup.date_entrant = instance.date_entrant
+        umuti_backup.description_umuti = instance.date_entrant
+        umuti_backup.type_med = instance.type_med
+        umuti_backup.type_achat = instance.type_achat
+        umuti_backup.ratio = instance.ratio
+        umuti_backup.type_vente = instance.type_vente
         umuti_backup.location = instance.location
         umuti_backup.operator = instance.operator
         umuti_backup.save()
 
         return 200
     
-    def _giveDate_exp(self, date_uzohererako:str)->str:
+    def _giveDate_exp(self, date_peremption:str)->str:
         """ This function checks the expiring date sent in the format:
             "04/01/27" and return datetime.datetime(2027, 4, 1, 0, 0)
         """
-        if date_uzohererako:
-            return datetime.strptime(date_uzohererako, "%m/%d/%y")
+        if date_peremption:
+            return datetime.strptime(date_peremption, "%m/%d/%y")
         else:
             return datetime.today()
 
-    def _giveDate_entree(self, date_winjiriyeko:str)-> str:
+    def _giveDate_entree(self, date_entrant:str)-> str:
         """THis function checks that an date isoString is given 
         from Javascript and then converts it to real python date object."""
-        if date_winjiriyeko:
-            return datetime(date_winjiriyeko)
+        if date_entrant:
+            return datetime(date_entrant)
         else:
             today = datetime.now()
             return today
@@ -197,15 +197,15 @@ class EntrantImiti(viewsets.ViewSet):
              permission_classes= [IsAuthenticated])
     def compileImitiSet(self, request=None):
         """Compile all the list of the Medicament procured, according
-        the Code_umuti and date_echeance"""
+        the code_med and date_echeance"""
         procured = UmutiEntree.objects.all()
         i = 1
         j = 1
         lot = []
         for umutie in procured:
-            code = umutie.code_umuti
+            code = umutie.code_med
             try:
-                umuti_set = ImitiSet.objects.get(code_umuti=code)
+                umuti_set = ImitiSet.objects.get(code_med=code)
             except ImitiSet.DoesNotExist:
                 #when the code is new in the ImitiSet
                 #we create that entry in the ImitiSet
@@ -224,8 +224,8 @@ class EntrantImiti(viewsets.ViewSet):
                     somme_lot = listDictIntSomme3(synced_lot)
                     usd_to_bif = UsdToBif.objects.get(id=1)
                     usd_to_bif = UsdToBif.objects.last()
-                    print(f"The new price_out : {umutie.price_out_usd} times {usd_to_bif.actualExchangeRate} of {umutie.code_umuti}")
-                    umuti_set.price_out = float(umutie.price_out_usd) * \
+                    print(f"The new prix_vente : {umutie.prix_vente_usd} times {usd_to_bif.actualExchangeRate} of {umutie.code_med}")
+                    umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
                                         usd_to_bif.actualExchangeRate
                     umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
@@ -245,16 +245,16 @@ class EntrantImiti(viewsets.ViewSet):
 
                 #mugihe iyo code ihari muri Set
                 lot_list = self._check_lot(umuti_set.lot, umutie)
-                # umuti_set.price_out = umutie.price_out # setting price_out to the last entrie
+                # umuti_set.prix_vente = umutie.prix_vente # setting prix_vente to the last entrie
                 usd_to_bif = UsdToBif.objects.get(id=1)
-                umuti_set.price_out = float(umutie.price_out_usd) * \
+                umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
                         usd_to_bif.actualExchangeRate
-                umuti_set.price_out_usd = float(umutie.price_out_usd)
+                umuti_set.prix_vente_usd = float(umutie.prix_vente_usd)
                 # 
                 # umuti_set.quantite_restant += umutie.quantite_restant
                 umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
                 umuti_set.lot = lot_list
-                last_date = self._findLastDate(code_umuti=umuti_set.code_umuti)
+                last_date = self._findLastDate(code_med=umuti_set.code_med)
                 if last_date:
                     umuti_set.date_last_vente = last_date
                 #checking if there is qte_entrant bigger than before
@@ -279,8 +279,8 @@ class EntrantImiti(viewsets.ViewSet):
         i = 0
 
         for lote in lot_list:
-            if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
-                # print(f"Found: {lote.get('date')}  and {(str(umutie.date_uzohererako))[:7]}")
+            if lote.get('date') == (str(umutie.date_peremption))[:7]:
+                # print(f"Found: {lote.get('date')}  and {(str(umutie.date_peremption))[:7]}")
                 operation = lote.get('code_operation')
                 for lot in operation:
                     # print(f"exe: {lot}")
@@ -294,7 +294,7 @@ class EntrantImiti(viewsets.ViewSet):
                 somme_operation = listDictIntSomme2(lote['code_operation'])
                 # print(f"La somme est : {somme_operation}")
                 lote['qte'] = somme_operation
-            # else:s equal: {lote.get('date')} and {(str(umutie.date_uzohererako))[:7]}")
+            # else:s equal: {lote.get('date')} and {(str(umutie.date_peremption))[:7]}")
 
         return lot_list
 
@@ -306,7 +306,7 @@ class EntrantImiti(viewsets.ViewSet):
         i = 0
         j = 0
         for lote in lot_list:
-            if lote.get('date') == (str(umutie.date_uzohererako))[:7]:
+            if lote.get('date') == (str(umutie.date_peremption))[:7]:
                 obj = { 
                             str(umutie.code_operation) : int(umutie.quantite_restant)
                         }
@@ -316,7 +316,7 @@ class EntrantImiti(viewsets.ViewSet):
             
         if not j:
             obj = {
-                'date': (str(umutie.date_uzohererako))[:7],
+                'date': (str(umutie.date_peremption))[:7],
                 'qte': int(umutie.quantite_restant),
                 'code_operation': [
                         { 
@@ -349,35 +349,35 @@ class EntrantImiti(viewsets.ViewSet):
         """Creates an instance of ImitiSet, it's input is 
         an instance of UmutiEntree"""
         umuti_new = ImitiSet.objects.create()
-        umuti_new.code_umuti = str(umuti.code_umuti)
-        umuti_new.name_umuti = str(umuti.name_umuti)
+        umuti_new.code_med = str(umuti.code_med)
+        umuti_new.nom_med = str(umuti.nom_med)
         umuti_new.description_umuti = str(umuti.description_umuti)
-        umuti_new.type_umuti = str(umuti.type_umuti)
-        umuti_new.type_in = str(umuti.type_in)
-        umuti_new.ratio_type = str(umuti.ratio_type)
-        umuti_new.type_out = str(umuti.type_out)
+        umuti_new.type_med = str(umuti.type_med)
+        umuti_new.type_achat = str(umuti.type_achat)
+        umuti_new.ratio = str(umuti.ratio)
+        umuti_new.type_vente = str(umuti.type_vente)
         usd_to_bif = UsdToBif.objects.get(id=1)
         try:
-            last_umuti = UmutiEntree.objects.filter(code_umuti=umuti_new.code_umuti).last()
-            umuti_new.price_in = int(last_umuti.price_in)
-            # umuti_new.price_out = int(last_umuti.price_out)
-            umuti_new.price_out = int(last_umuti.price_out_usd) * \
+            last_umuti = UmutiEntree.objects.filter(code_med=umuti_new.code_med).last()
+            umuti_new.prix_achat = int(last_umuti.prix_achat)
+            # umuti_new.prix_vente = int(last_umuti.prix_vente)
+            umuti_new.prix_vente = int(last_umuti.prix_vente_usd) * \
                 usd_to_bif.actualExchangeRate
         except AttributeError:
-            umuti_new.price_in = int(umuti.price_in)
-            # umuti_new.price_out = int(umuti.price_out)
-            umuti_new.price_out = int(last_umuti.price_out_usd) * \
+            umuti_new.prix_achat = int(umuti.prix_achat)
+            # umuti_new.prix_vente = int(umuti.prix_vente)
+            umuti_new.prix_vente = int(last_umuti.prix_vente_usd) * \
                 usd_to_bif.actualExchangeRate
             pass
         
         umuti_new.quantite_restant = int(umuti.quantite_restant)
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
-        umuti_new.date_last_vente = umuti.date_winjiriyeko
+        umuti_new.date_last_vente = umuti.date_entrant
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
 
         obj = {
-            'date': (str(umuti.date_uzohererako))[:7],
+            'date': (str(umuti.date_peremption))[:7],
             'qte': int(umuti.quantite_restant),
             'code_operation': [
                         { 
@@ -405,8 +405,8 @@ class EntrantImiti(viewsets.ViewSet):
 
         return umuti_new
     
-    def _findLastDate(self, code_umuti:str):
-        sell_done = UmutiSold.objects.filter(code_umuti=code_umuti).last()
+    def _findLastDate(self, code_med:str):
+        sell_done = UmutiSold.objects.filter(code_med=code_med).last()
         if sell_done:
             date = sell_done
             # print(f"The umuti SOLD is: {date} with date {date.date_operation}")
@@ -480,11 +480,11 @@ class ImitiOut(viewsets.ViewSet):
         for umuti in imiti:
             syntesis['qte'] += int(umuti.quantite_restant)
             syntesis['pa_t'] += int(umuti.quantite_restant * \
-                                umuti.price_in)
+                                umuti.prix_achat)
             syntesis['pv_t'] += int(umuti.quantite_restant * \
-                                umuti.price_out)
+                                umuti.prix_vente)
             syntesis['benefice'] += int (umuti.quantite_restant *\
-                        (umuti.price_out - umuti.price_in))
+                        (umuti.prix_vente - umuti.prix_achat))
         
         return syntesis
     
@@ -514,7 +514,7 @@ class ImitiOut(viewsets.ViewSet):
                 code_operation = lote.get('code_operation')
                 qte = lote.get('qte')
                 print(f"working on qte:{qte}")
-                orders = self._assess_order(code_umuti=code_med,\
+                orders = self._assess_order(code_med=code_med,\
                                          code_operation=code_operation,\
                                              qte=qte)
                 print(f"ACTUAL ORDERS: {orders}")
@@ -524,7 +524,7 @@ class ImitiOut(viewsets.ViewSet):
                         continue
                     try:
                         umuti = UmutiEntree.objects.\
-                            filter(code_umuti=code_med).\
+                            filter(code_med=code_med).\
                             filter(code_operation=order[1])
                     except UmutiEntree.DoesNotExist:
                         pass
@@ -533,21 +533,21 @@ class ImitiOut(viewsets.ViewSet):
                         print(f"The Umuti found : {umuti}")
                         if not umuti:
                             return JsonResponse({"Umuti":"does not exist"})
-                        be_sold = ImitiSet.objects.get(code_umuti=umuti[0].code_umuti)
+                        be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
                         
                         if client and (once==0):
                             # there is client data, and is special
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
-                                client=client, price=be_sold.price_out)
+                                client=client, price=be_sold.prix_vente)
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
                                     operator=request.user, \
                                         reference_umuti=be_sold,\
                                         bon_de_commande=bon_de_commande)
 
                         if sold == 200:
-                            total_facture += be_sold.price_out * order[2]
-                            print(f"Umuti with code '{umuti[0].code_umuti}' is sold")
+                            total_facture += be_sold.prix_vente * order[2]
+                            print(f"Umuti with code '{umuti[0].code_med}' is sold")
                             print(f"The rest qte is {umuti[0].quantite_restant}")
                 once += 1 # create bon_de_commande only once
         # Should now update the reduction in bon_de_commande
@@ -613,11 +613,11 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.save()
         return new_bon
     
-    def _assess_order(self, code_umuti:str, code_operation:list, qte:int) -> list:
+    def _assess_order(self, code_med:str, code_operation:list, qte:int) -> list:
         """ THis function will take a list of object of this kind:
     
                     code_operation = [{'xt10': 2}, {'xt11': 5}]
-            coupled with :  code_umuti = 'AL123'
+            coupled with :  code_med = 'AL123'
            and return a  list of str and int of this kind:
             [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
         """
@@ -628,7 +628,7 @@ class ImitiOut(viewsets.ViewSet):
             qtee = int((str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(" ")[1].split('}')[0])
             
-            data.append([code_umuti, code, qtee])
+            data.append([code_med, code, qtee])
         
         orders = self.__place_order(data=data, qte=qte)
         
@@ -671,14 +671,14 @@ class ImitiOut(viewsets.ViewSet):
         write a new instance of UmutiSell"""
 
         print(f"The umuti to work on is : {umuti} with qte: {qte} found with {umuti.quantite_restant}")
-        # reference_umuti = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
+        # reference_umuti = ImitiSet.objects.get(code_med=umuti.code_med)
         new_vente = UmutiSold.objects.create()
-        new_vente.code_umuti = umuti.code_umuti
-        new_vente.name_umuti = umuti.name_umuti
+        new_vente.code_med = umuti.code_med
+        new_vente.nom_med = umuti.nom_med
         new_vente.quantity = qte
-        new_vente.price_in = reference_umuti.price_in
-        new_vente.price_out = reference_umuti.price_out
-        new_vente.difference = new_vente.price_out - new_vente.price_in
+        new_vente.prix_achat = reference_umuti.prix_achat
+        new_vente.prix_vente = reference_umuti.prix_vente
+        new_vente.difference = new_vente.prix_vente - new_vente.prix_achat
         new_vente.code_operation_entrant = umuti.code_operation
         code = GenerateCode(12)
         new_vente.code_operation = code.giveCode()
@@ -702,7 +702,7 @@ class Rapport(viewsets.ViewSet):
     def reportEntree(self, request):
         """making an endpoint that will return all the UmutiEntreeBackup instead of
           UmutiEntree entries."""
-        imiti = UmutiEntreeBackup.objects.all().order_by('-date_winjiriyeko')
+        imiti = UmutiEntreeBackup.objects.all().order_by('-date_entrant')
         imitiSerialized = UmutiEntreeSeriazer(imiti, many=True)
 
         if imitiSerialized.is_valid:
@@ -774,8 +774,8 @@ class Rapport(viewsets.ViewSet):
         for element in data:
             try:
                 umuti_set = umutiReportSell.objects.get\
-                    (code_umuti=element.code_umuti)
-                # print(f"Serching for : {element.code_umuti}")
+                    (code_med=element.code_med)
+                # print(f"Serching for : {element.code_med}")
             except umutiReportSell.DoesNotExist:
                 umuti_record = self._recordNew(umuti=element)
                 if not umuti_record:
@@ -799,9 +799,9 @@ class Rapport(viewsets.ViewSet):
           px_T_rest"""
         umuti_set.nb_rest -= umuti.quantity
         umuti_set.nb_vente += umuti.quantity
-        umuti_set.px_T_vente += int(umuti.quantity * umuti.price_out)
+        umuti_set.px_T_vente += int(umuti.quantity * umuti.prix_vente)
         umuti_set.benefice += int(umuti.quantity) * \
-            int(umuti.price_out - umuti.price_in)
+            int(umuti.prix_vente - umuti.prix_achat)
         umuti_set.px_T_rest -= umuti_set.px_T_vente
 
         umuti_set.save()
@@ -811,20 +811,20 @@ class Rapport(viewsets.ViewSet):
     def _recordNew(self, umuti:UmutiSold):
         """Here we record new umuti report"""
         record_new = umutiReportSell.objects.create()
-        record_new.code_umuti = umuti.code_umuti
-        record_new.name_umuti = umuti.name_umuti
+        record_new.code_med = umuti.code_med
+        record_new.nom_med = umuti.nom_med
         record_new.nb_vente = umuti.quantity
-        record_new.px_T_vente = int(umuti.price_out) * \
+        record_new.px_T_vente = int(umuti.prix_vente) * \
             int(umuti.quantity)
-        # record_new.benefice = int(umuti.price_out * umuti.quantity) - \
-        #                         int(umuti.price_in * umuti.quantity)
-        record_new.benefice = int(umuti.price_out - umuti.price_in) * \
+        # record_new.benefice = int(umuti.prix_vente * umuti.quantity) - \
+        #                         int(umuti.prix_achat * umuti.quantity)
+        record_new.benefice = int(umuti.prix_vente - umuti.prix_achat) * \
                                 int (umuti.quantity)
         try:
-            current = ImitiSet.objects.get(code_umuti=umuti.code_umuti)
+            current = ImitiSet.objects.get(code_med=umuti.code_med)
             record_new.nb_rest = int(current.quantite_restant)
             record_new.px_T_rest = int(current.quantite_restant * \
-                                    current.price_out)
+                                    current.prix_vente)
         except ImitiSet.DoesNotExist:
             pass
         
@@ -846,7 +846,7 @@ class Rapport(viewsets.ViewSet):
         if imiti:
             i = 0
             for umuti in imiti:
-                umuti_exist_15 = ventes_15.filter(code_umuti=umuti['code_umuti'])
+                umuti_exist_15 = ventes_15.filter(code_med=umuti['code_med'])
                 # check that the actual umuti is among one sold within the past two weeks.
                 if umuti_exist_15:
                     final_imiti.append(umuti)
@@ -875,8 +875,8 @@ class Rapport(viewsets.ViewSet):
         for umuti in imiti:
             if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) < 3.5:
                 obj = {
-                    'code_umuti': umuti.code_umuti,
-                    'name_umuti' : umuti.name_umuti,
+                    'code_med': umuti.code_med,
+                    'nom_med' : umuti.nom_med,
                     'quantite_restant' : umuti.quantite_restant
                 }
                 less_35.append(obj)
@@ -921,12 +921,12 @@ class Rapport(viewsets.ViewSet):
         # parcourir le queryset
         for instance in queryset:
             obj = {
-                'name_umuti' : instance.name_umuti,
-                'code_umuti' : instance.code_umuti,
+                'nom_med' : instance.nom_med,
+                'code_med' : instance.code_med,
                 'qte' : instance.quantity,
-                'p_achat' : instance.price_in * instance.quantity,
-                'p_vente' : instance.price_out * instance.quantity,
-                'benefice' : (instance.price_out - instance.price_in) * \
+                'p_achat' : instance.prix_achat * instance.quantity,
+                'p_vente' : instance.prix_vente * instance.quantity,
+                'benefice' : (instance.prix_vente - instance.prix_achat) * \
                         instance.quantity,
                 'previous_date': instance.date_operation
             }             
@@ -955,7 +955,7 @@ class Rapport(viewsets.ViewSet):
         for element in suggestion:
             try:
                 selected = ImitiSet.objects.\
-                    get(code_umuti=element.code_umuti)
+                    get(code_med=element.code_med)
             except ImitiSet.DoesNotExist:
                 pass
             else:
@@ -968,12 +968,12 @@ class Rapport(viewsets.ViewSet):
         """
         # checking the existence of obj in imitiSuggest
         try:
-            exist_suggest = imitiSuggest.objects.get(code_umuti=obj.\
-                                                     get('code_umuti'))
+            exist_suggest = imitiSuggest.objects.get(code_med=obj.\
+                                                     get('code_med'))
         except imitiSuggest.DoesNotExist:
             new_suggest = imitiSuggest.objects.create()
-            new_suggest.code_umuti = obj.get('code_umuti')
-            new_suggest.name_umuti = obj.get('name_umuti')
+            new_suggest.code_med = obj.get('code_med')
+            new_suggest.nom_med = obj.get('nom_med')
             new_suggest.qte = obj.get('qte')
             new_suggest.p_achat = obj.get('p_achat')
             new_suggest.p_vente = obj.get('p_vente')
@@ -1060,14 +1060,14 @@ class Rapport(viewsets.ViewSet):
         print(f"syncFromLocal, The data sent: {data_sent}")
         last_umutiEntree = [
             {
-                'date_winjiriyeko': "2024-07-05T08:38:34.519033Z",
-                'date_uzohererako': "2027-04-01",
-                'code_umuti': "4X6768",
-                'name_umuti': "AMINOPHYLLINE",
+                'date_entrant': "2024-07-05T08:38:34.519033Z",
+                'date_peremption': "2027-04-01",
+                'code_med': "4X6768",
+                'nom_med': "AMINOPHYLLINE",
                 'description_med': "2024-07-05 08:38:34.519033",
                 'famille_med': "Ovule",
-                'type_in': "Carton",
-                'ratio_type': 10,
+                'type_achat': "Carton",
+                'ratio': 10,
                 'type_vente': "Piece",
                 'prix_in': 1500,
                 'prix_vente': 1800,
@@ -1086,8 +1086,8 @@ class Rapport(viewsets.ViewSet):
         # Mimic a list of UmutiSold
         last_umutiSold = [
             {
-                'code_umuti': '055AWL',
-                'name_umuti': 'Quinine',
+                'code_med': '055AWL',
+                'nom_med': 'Quinine',
                 'quantity': 1,
                 'prix_vente': 2500,
                 'price_total': 1,
@@ -1112,31 +1112,31 @@ class Rapport(viewsets.ViewSet):
             # make distinction where to write
             if sort == 1: #for UmutiEntree
                 check = UmutiEntree.objects.filter(code_operation=\
-                    umuti_entree.get('code_operation')).filter(code_umuti=\
-                    umuti_entree.get('code_umuti'))
+                    umuti_entree.get('code_operation')).filter(code_med=\
+                    umuti_entree.get('code_med'))
                 if not len(check): # will remove 'not' when on real data.
                     continue # In case there is such instance
                 umuti_new = UmutiEntree.objects.create()
 
             elif sort == 2:   #for UmutiEntreeBackup
                 check = UmutiEntreeBackup.objects.filter(code_operation=\
-                    umuti_entree.get('code_operation')).filter(code_umuti=\
-                    umuti_entree.get('code_umuti'))
+                    umuti_entree.get('code_operation')).filter(code_med=\
+                    umuti_entree.get('code_med'))
                 if not len(check): # will remove 'not' when on real data.
                     continue # In case there is such instance
                 umuti_new = UmutiEntreeBackup.objects.create()
 
-            umuti_new.date_winjiriyeko = umuti_entree.get('date_winjiriyeko')
-            umuti_new.date_uzohererako = umuti_entree.get('date_uzohererako')
-            umuti_new.code_umuti = umuti_entree.get('code_umuti')
-            umuti_new.name_umuti = umuti_entree.get('name_umuti')
+            umuti_new.date_entrant = umuti_entree.get('date_entrant')
+            umuti_new.date_peremption = umuti_entree.get('date_peremption')
+            umuti_new.code_med = umuti_entree.get('code_med')
+            umuti_new.nom_med = umuti_entree.get('nom_med')
             umuti_new.description_umuti = umuti_entree.get('description_med')
-            umuti_new.type_umuti = umuti_entree.get('famille_med')
-            umuti_new.type_in = umuti_entree.get('type_in')
-            umuti_new.ratio_type = umuti_entree.get('ratio_type')
-            umuti_new.type_out = umuti_entree.get('type_vente')
-            umuti_new.price_in = umuti_entree.get('prix_in')
-            umuti_new.price_out = umuti_entree.get('prix_vente')
+            umuti_new.type_med = umuti_entree.get('famille_med')
+            umuti_new.type_achat = umuti_entree.get('type_achat')
+            umuti_new.ratio = umuti_entree.get('ratio')
+            umuti_new.type_vente = umuti_entree.get('type_vente')
+            umuti_new.prix_achat = umuti_entree.get('prix_in')
+            umuti_new.prix_vente = umuti_entree.get('prix_vente')
             umuti_new.difference = umuti_entree.get('difference')
             umuti_new.quantite_initial = umuti_entree.get('quantite_initial')
             umuti_new.quantite_restant = umuti_entree.get('quantite_restant')
@@ -1151,10 +1151,10 @@ class Rapport(viewsets.ViewSet):
         """ Will work imitiEntree and UmutiSold"""
         for umutisold in sold:
             code_operation_entrant = umutisold.get('code_operation_entrant')
-            code_umuti = umutisold.get('code_umuti')
+            code_med = umutisold.get('code_med')
             # check the equality of remaining
             now_umuti = UmutiEntree.objects.filter(code_operation=\
-                code_operation_entrant).filter(code_umuti=code_umuti)
+                code_operation_entrant).filter(code_med=code_med)
             if not len(now_umuti): 
                 continue
             
@@ -1172,12 +1172,12 @@ class Rapport(viewsets.ViewSet):
         """manage creating UmutiSold instance and clone umutisold."""
         new_umuti = UmutiSold.objects.create()
         new_umuti.code_operation = instance.get('code_operation')
-        new_umuti.code_umuti = instance.get('code_umuti')
-        new_umuti.name_umuti = instance.get('name_umuti')
+        new_umuti.code_med = instance.get('code_med')
+        new_umuti.nom_med = instance.get('nom_med')
         new_umuti.quantity = instance.get('quantity')
-        new_umuti.price_out = instance.get('prix_vente')
+        new_umuti.prix_vente = instance.get('prix_vente')
         new_umuti.price_total = instance.get('price_total')
-        new_umuti.price_in = instance.get('prix_in')
+        new_umuti.prix_achat = instance.get('prix_in')
         new_umuti.difference = instance.get('difference')
         new_umuti.code_operation_entrant = instance.get('code_operation_entrant')
         new_umuti.operator = instance.get('operator')
@@ -1283,12 +1283,12 @@ class Rapport(viewsets.ViewSet):
     def getOutDate(self, request):
         """This will return all instances of UmutiEntree 
         with and with quantite_restant above 0 and
-          date_uzohererako less than 3months.
+          date_peremption less than 3months.
         Return UmutiEntree."""
         
         date_notice = datetime.today() + timedelta(days=90)
         queryset = UmutiEntree.objects.filter(quantite_restant__gte=1).\
-            filter(date_uzohererako__lte=date_notice)
+            filter(date_peremption__lte=date_notice)
         
         if not len(queryset):
             return JsonResponse({"data":"empty"})
@@ -1306,19 +1306,19 @@ class Rapport(viewsets.ViewSet):
         no wrong case.
         Return UmutiEntree."""
 
-        code_umuti = ''
+        code_med = ''
         pure_result = [] # UmutiEntree
         date_notice = datetime.today() + timedelta(days=90)
         imiti = ImitiSet.objects.all()
 
         for umuti in imiti:
-            code_umuti = umuti.code_umuti
+            code_med = umuti.code_med
             if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) > 2.5 :
                 continue # the quantity is not safe
 
             # kuri iyo code, raba iyifise date imeze neza
-            safe_date = UmutiEntree.objects.filter(code_umuti=code_umuti).\
-                filter(date_uzohererako__gte=date_notice)
+            safe_date = UmutiEntree.objects.filter(code_med=code_med).\
+                filter(date_peremption__gte=date_notice)
             if len(safe_date):
                 pure_result += safe_date # should add the Queryset instead of appending.
         
@@ -1384,14 +1384,14 @@ class Rapport(viewsets.ViewSet):
         one_year = today + timedelta(days=360)
         two_year = today + timedelta(days=720)
 
-        outdated = qte_sup.filter(date_uzohererako__lte=today)
-        with_less_six_month = qte_sup.filter(date_uzohererako__gt=today)\
-            .filter(date_uzohererako__lt=six_month)
-        with_six_month = qte_sup.filter(date_uzohererako__gte=six_month)\
-            .filter(date_uzohererako__lte=one_year)
-        with_one_year = qte_sup.filter(date_uzohererako__gte=one_year)\
-            .filter(date_uzohererako__lte=two_year)
-        with_two_year = qte_sup.filter(date_uzohererako__gte=two_year)
+        outdated = qte_sup.filter(date_peremption__lte=today)
+        with_less_six_month = qte_sup.filter(date_peremption__gt=today)\
+            .filter(date_peremption__lt=six_month)
+        with_six_month = qte_sup.filter(date_peremption__gte=six_month)\
+            .filter(date_peremption__lte=one_year)
+        with_one_year = qte_sup.filter(date_peremption__gte=one_year)\
+            .filter(date_peremption__lte=two_year)
+        with_two_year = qte_sup.filter(date_peremption__gte=two_year)
 
         y = ['Perimé', '1-5mois', '6-12mois',\
             '12-24mois','24mois +']

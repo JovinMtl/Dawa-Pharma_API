@@ -35,8 +35,8 @@ class AssuranceSeria(serializers.ModelSerializer):
         fields = '__all__'
 
 class ImitiSuggestSeria(serializers.Serializer):
-    code_umuti = serializers.CharField(required=True, max_length=6)
-    name_umuti = serializers.CharField(required=True)
+    code_med = serializers.CharField(required=True, max_length=6)
+    nom_med = serializers.CharField(required=True)
     quantite_restant = serializers.IntegerField(required=True)
 
 class LastIndexSeria(serializers.Serializer):
