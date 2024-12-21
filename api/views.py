@@ -1372,7 +1372,7 @@ class Rapport(viewsets.ViewSet):
             begin_date += timedelta(days=1)
         return JsonResponse({"X":x, 'Y':y})
     
-    @action(methods=['get'], detail=False,\
+    @action(methods=['get','post'], detail=False,\
              permission_classes= [AllowAny])
     def getDiffStock(self, request):
         """
