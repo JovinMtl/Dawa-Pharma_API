@@ -111,7 +111,7 @@ class EntrantImiti(viewsets.ViewSet):
                'date_peremption': '12:00:00 AM', 'nom_med': 'AMINOPHYLLINE', 
                'description_med': 'Uvura uburuhe', 'famille_med': 'Ovule', 
                'type_achat': 'Carton', 'ratio': '10', 'type_vente': 'Piece', 
-               'prix_in': '1500', 'prix_vente': '1800', 
+               'prix_vente': '1500', 'prix_vente': '1800', 
                'quantite_initial': '15', 'location': ''}
         """
         print(f"THe operator is : {operator}")
@@ -121,10 +121,10 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.code_operation = code_operation
         umuti_new.quantite_initial = obj.get('quantite_initial')
         umuti_new.quantite_restant = umuti_new.quantite_initial
-        usd_to_bif = UsdToBif.objects.get(id=1)
-        umuti_new.prix_achat = obj.get('prix_in')
+        usd_to_bif = UsdToBif.objects.first()
+        umuti_new.prix_achat = obj.get('prix_achat')
         umuti_new.prix_vente = obj.get('prix_vente')
-        umuti_new.prix_achat_usd = obj.get('prix_in') / usd_to_bif.actualExchangeRate
+        umuti_new.prix_achat_usd = obj.get('prix_achat') / usd_to_bif.actualExchangeRate
         umuti_new.prix_vente_usd = obj.get('prix_vente') / usd_to_bif.actualExchangeRate
         if not single:
             umuti_new.date_peremption = self._giveDate_exp(obj.get('date_peremption'))
@@ -132,7 +132,7 @@ class EntrantImiti(viewsets.ViewSet):
         else:
             umuti_new.date_peremption = obj.get('date_peremption')
             umuti_new.date_entrant = obj.get('date_entrant')
-        umuti_new.description_umuti = (obj.get('description_med'))
+        # umuti_new.description_umuti = (obj.get('description_med'))
         umuti_new.type_med = obj.get('famille_med') 
         umuti_new.type_achat = obj.get('type_achat') 
         if obj.get('ratio'):
@@ -141,11 +141,13 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.location = obj.get('location')
         umuti_new.operator = operator
 
+        umuti_new.save()
+
+        print("THe new saved Med: ", umuti_new.nom_med)
+
         # Creating a backup of UmutiEntree which will keep unchanged initial state.
         # This is to copy each new instance of UmutiEntree into backup.
         reponse = self._duplicateUmutiEntree(instance=umuti_new)
-
-        umuti_new.save()
         
         return 200
     
@@ -162,7 +164,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_backup.prix_vente = instance.prix_vente
         umuti_backup.date_peremption = instance.date_peremption
         umuti_backup.date_entrant = instance.date_entrant
-        umuti_backup.description_umuti = instance.date_entrant
+        # umuti_backup.description_umuti = instance.date_entrant
         umuti_backup.type_med = instance.type_med
         umuti_backup.type_achat = instance.type_achat
         umuti_backup.ratio = instance.ratio
@@ -351,7 +353,6 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new = ImitiSet.objects.create()
         umuti_new.code_med = str(umuti.code_med)
         umuti_new.nom_med = str(umuti.nom_med)
-        umuti_new.description_umuti = str(umuti.description_umuti)
         umuti_new.type_med = str(umuti.type_med)
         umuti_new.type_achat = str(umuti.type_achat)
         umuti_new.ratio = str(umuti.ratio)
@@ -1069,7 +1070,7 @@ class Rapport(viewsets.ViewSet):
                 'type_achat': "Carton",
                 'ratio': 10,
                 'type_vente': "Piece",
-                'prix_in': 1500,
+                'prix_vente': 1500,
                 'prix_vente': 1800,
                 'difference': 0,
                 'quantite_initial': 15,
@@ -1091,7 +1092,7 @@ class Rapport(viewsets.ViewSet):
                 'quantity': 1,
                 'prix_vente': 2500,
                 'price_total': 1,
-                'prix_in': 2200,
+                'prix_vente': 2200,
                 'difference': 0,
                 'code_operation_entrant': 'kUyVk390907W',
                 'code_operation': '875mOdv17417',
@@ -1135,7 +1136,7 @@ class Rapport(viewsets.ViewSet):
             umuti_new.type_achat = umuti_entree.get('type_achat')
             umuti_new.ratio = umuti_entree.get('ratio')
             umuti_new.type_vente = umuti_entree.get('type_vente')
-            umuti_new.prix_achat = umuti_entree.get('prix_in')
+            umuti_new.prix_achat = umuti_entree.get('prix_vente')
             umuti_new.prix_vente = umuti_entree.get('prix_vente')
             umuti_new.difference = umuti_entree.get('difference')
             umuti_new.quantite_initial = umuti_entree.get('quantite_initial')
@@ -1177,7 +1178,7 @@ class Rapport(viewsets.ViewSet):
         new_umuti.quantity = instance.get('quantity')
         new_umuti.prix_vente = instance.get('prix_vente')
         new_umuti.price_total = instance.get('price_total')
-        new_umuti.prix_achat = instance.get('prix_in')
+        new_umuti.prix_achat = instance.get('prix_vente')
         new_umuti.difference = instance.get('difference')
         new_umuti.code_operation_entrant = instance.get('code_operation_entrant')
         new_umuti.operator = instance.get('operator')
