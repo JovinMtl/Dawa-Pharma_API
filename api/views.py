@@ -1372,6 +1372,31 @@ class Rapport(viewsets.ViewSet):
             begin_date += timedelta(days=1)
         return JsonResponse({"X":x, 'Y':y})
     
+    def _getDate(self, data_params)->list:
+        end_date = None
+        begin_date = None
+        # checking that there is dates object
+        # the set end_date and begin_date
+        # else, set these defaults value of 7days
+        if data_params.get('dates'):
+            if data_params.get('dates')[0]:
+                date1 = data_params.get('dates')[0]
+                date_arr = shortStr2Date(date1)
+                begin_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
+            if data_params.get('dates')[1]:
+                date2 = data_params.get('dates')[1]
+                date_arr = shortStr2Date(date2)
+                end_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
+        else:
+            end_date = datetime.today()
+            end_date -= timedelta(hours=end_date.hour) #init to 0:00
+            begin_date = end_date - timedelta(days=7)
+        print("THe dates are: ", begin_date, end_date)
+
+        return [begin_date, end_date]
+    
     @action(methods=['get','post'], detail=False,\
              permission_classes= [AllowAny])
     def getDiffStock(self, request):
@@ -1399,6 +1424,14 @@ class Rapport(viewsets.ViewSet):
             len(with_six_month), len(with_one_year),\
                 len(with_two_year)]
         return JsonResponse({"X":x, "Y":y})
+    
+    def getUnpaidBons(self, request):
+        """
+        Return the unpaid BonDeCommande.
+        default range is 7 days.
+        """
+        end_date, begin_date = self._getDate(request.data)
+        
 
 
 
