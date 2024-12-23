@@ -594,8 +594,7 @@ class ImitiOut(viewsets.ViewSet):
         except Assurance.DoesNotExist:
             # no need to create a new organization,
             # will be created on behalf of User
-            return JsonResponse({"Assurance":"not found"})
-            pass
+            return 404
         else:
             org = organization
         new_bon.organization = org
@@ -609,7 +608,7 @@ class ImitiOut(viewsets.ViewSet):
                 date_arr[0], date_arr[1], date_arr[2])
         new_bon.date_served = datetime.today()
 
-        print("The date has this format:", new_bon.date_served)
+        print("The assureur:", new_bon.organization)
 
         new_bon.save()
         return new_bon
