@@ -44,6 +44,22 @@ week_days = {
 
 # Create your views here.
 
+class GeneralOps(viewsets.ViewSet):
+    """
+    Designed to do general operations like setup
+    """
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def setup(self, request):
+        """
+        checks and creates required instances.
+        """
+        try:
+            assu_sans = Assurance.objects.get(name="Sans")
+        except Assurance.DoesNotExist:
+            assu_sans = Assurance.objects.create(name="Sans", rate=0)
+            assu_sans.save()
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
