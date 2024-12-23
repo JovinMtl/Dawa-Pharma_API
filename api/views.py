@@ -1425,6 +1425,9 @@ class Rapport(viewsets.ViewSet):
                 len(with_two_year)]
         return JsonResponse({"X":x, "Y":y})
     
+    
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [AllowAny])
     def getUnpaidBons(self, request):
         """
         Return the unpaid BonDeCommande.
@@ -1434,7 +1437,13 @@ class Rapport(viewsets.ViewSet):
         # queryset = BonDeCommande.filter(date_du_bon__gte=begin_date)\
         #     .filter(date_du_bon__lte=end_date)\
         #     .filter(is_paid=False)
-        queryset = UmutiSold.objects.filter(bon_de_commande__date_du_bon__gte=begin_date)
+        queryset = UmutiSold.objects.filter\
+            (bon_de_commande__date_du_bon__gte=begin_date)
+        query_seria = UmutiSoldSeriazer(queryset,\
+                                        many=True)
+        if query_seria.is_valid:
+            return Response(query_seria.data)
+        return JsonResponse({"Something":"is not right"})
     
 
 
