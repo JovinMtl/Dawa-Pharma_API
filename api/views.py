@@ -58,8 +58,16 @@ class GeneralOps(viewsets.ViewSet):
         try:
             assu_sans = Assurance.objects.get(name="Sans")
         except Assurance.DoesNotExist:
-            assu_sans = Assurance.objects.create(name="Sans", rate=0)
+            assu_sans = Assurance.objects.create(name="Sans", rate_assure=0)
             assu_sans.save()
+        try:
+            assu_ph = Assurance.objects.get\
+                (name="Pharmacie Ubuzima")
+        except Assurance.DoesNotExist:
+            assu_ph = Assurance.objects.create()
+            assu_ph.name = "Pharmacie Ubuzima"
+            assu_ph.rate_assure = 10
+            assu_ph.save()
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
