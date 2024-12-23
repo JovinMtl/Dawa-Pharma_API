@@ -1428,9 +1428,9 @@ class Rapport(viewsets.ViewSet):
     
     @action(methods=['get','post'], detail=False,\
              permission_classes= [AllowAny])
-    def getUnpaidBons(self, request):
+    def getUnpaidUmutiSold(self, request):
         """
-        Return the unpaid BonDeCommande.
+        Return UmutiSold instance(s) with the unpaid BonDeCommande.
         default range is 7 days.
         """
         begin_date, end_date = self._getDate(request.data)
@@ -1438,7 +1438,8 @@ class Rapport(viewsets.ViewSet):
         #     .filter(date_du_bon__lte=end_date)\
         #     .filter(is_paid=False)
         queryset = UmutiSold.objects.filter\
-            (bon_de_commande__date_du_bon__gte=begin_date)
+            (bon_de_commande__date_du_bon__gte=begin_date)\
+            .filter(bon_de_commande__is_paid=True)
         query_seria = UmutiSoldSeriazer(queryset,\
                                         many=True)
         if query_seria.is_valid:
