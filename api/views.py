@@ -1439,6 +1439,7 @@ class Rapport(viewsets.ViewSet):
         #     .filter(is_paid=False)
         queryset = UmutiSold.objects.filter\
             (bon_de_commande__date_du_bon__gte=begin_date)\
+            .filter(bon_de_commande__date_du_bon__lte=end_date)\
             .filter(bon_de_commande__is_paid=True)
         query_seria = UmutiSoldSeriazer(queryset,\
                                         many=True)
