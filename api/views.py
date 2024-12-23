@@ -1430,12 +1430,11 @@ class Rapport(viewsets.ViewSet):
         Return the unpaid BonDeCommande.
         default range is 7 days.
         """
-        end_date, begin_date = self._getDate(request.data)
-        
-
-
-
-        
+        begin_date, end_date = self._getDate(request.data)
+        # queryset = BonDeCommande.filter(date_du_bon__gte=begin_date)\
+        #     .filter(date_du_bon__lte=end_date)\
+        #     .filter(is_paid=False)
+        queryset = UmutiSold.objects.filter(bon_de_commande__date_du_bon__gte=begin_date)
     
 
 
