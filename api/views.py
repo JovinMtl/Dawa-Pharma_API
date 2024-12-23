@@ -71,6 +71,17 @@ class GeneralOps(viewsets.ViewSet):
             assu_ph.rate_assure = 10
             assu_ph.save()
             created.append(assu_sans.name)
+        try:
+            bon_default = BonDeCommande.get\
+                (beneficiaire='inconnu')
+        except BonDeCommande.DoesNotExist:
+            assu_sans = Assurance.objects.get(name="Sans")
+            bon_default = BonDeCommande.objects\
+                .create(organization=assu_sans)
+            bon_default.is_paid = True
+            bon_default.save()
+            created.append("Default BdC")
+
         
         return JsonResponse({"Setup done" : created})
 class EntrantImiti(viewsets.ViewSet):
