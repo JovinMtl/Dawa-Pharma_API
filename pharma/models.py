@@ -102,7 +102,7 @@ class BonDeCommande(models.Model):
                                      default=1)
     num_beneficiaire = models.CharField(max_length=10, default="0000")
     categorie = models.CharField(max_length=10, default='null')
-    num_du_bon = models.CharField(max_length=10, default="0000")
+    num_du_bon = models.CharField(max_length=10, unique=True)
     date_du_bon = models.DateField(default=timezone.now)
     date_served = models.DateField(default=timezone.now)
     montant_dette = models.IntegerField(default=0)
