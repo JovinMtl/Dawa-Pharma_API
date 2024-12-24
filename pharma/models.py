@@ -96,10 +96,20 @@ class Assurance(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+def getAssuranceInstance():
+    new_bon = None
+    try:
+        new_bon = Assurance.objects.first()
+    except Assurance.DoesNotExist:
+        new_bon = Assurance.objects.create()
+        new_bon.save()
+    
+    return new_bon
+
 class BonDeCommande(models.Model):
     beneficiaire = models.CharField(max_length=25, default='inconnu')
     organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
-                                     default=1)
+                            default=getAssuranceInstance)
     num_beneficiaire = models.CharField(max_length=10, default="0000")
     categorie = models.CharField(max_length=10, default='null')
     num_du_bon = models.CharField(max_length=10, unique=True)
@@ -109,7 +119,7 @@ class BonDeCommande(models.Model):
     is_paid = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.beneficiaire}" 
+        return f"{self.beneficiaire}: {self.num_du_bon}" 
 
 def getBonDeCommandeInstance():
     new_bon = None
