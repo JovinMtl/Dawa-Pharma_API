@@ -592,6 +592,7 @@ class ImitiOut(viewsets.ViewSet):
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
                                 client=client, price=be_sold.prix_vente)
+                            print(f"The bon_de_commande got: {bon_de_commande}")
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Bon ":"already exist"})
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
@@ -656,12 +657,14 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.num_beneficiaire = client.get('numero_carte')
         # Dealing with uniqueness of num_du_bon
         if new_bon.organization.name \
-            == 'Pharmacie Ubuzima' or \
-            new_bon.organization.name == 'Sans':
+            == "Pharmacie Ubuzima" or \
+            new_bon.organization.name == "Sans":
+            print("Generate code")
             code_8 = GenerateCode(7)
             code_bon = code_8.giveCode()
             new_bon.num_du_bon = 'P_' + code_bon
         else:
+            print("Didn't generate code")
             new_bon.num_du_bon = client.get('numero_bon')
         
         

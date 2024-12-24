@@ -145,7 +145,7 @@ class UmutiSold(models.Model):
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now())
     bon_de_commande = models.ForeignKey(BonDeCommande,\
-            on_delete=models.CASCADE, default=1)
+            on_delete=models.CASCADE, default=getBonDeCommandeInstance)
 
 class umutiReportSell(models.Model):
     """THis will contain report of its sale in a given period of time"""
