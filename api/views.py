@@ -82,8 +82,15 @@ class GeneralOps(viewsets.ViewSet):
             bon_default.save()
             created.append("Default BdC")
 
-        
         return JsonResponse({"Setup done" : created})
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def addAssu(self, request):
+        """
+        This endpoint will check and create a new
+        assurance
+        """
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
