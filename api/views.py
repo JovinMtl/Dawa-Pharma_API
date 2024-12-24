@@ -72,12 +72,13 @@ class GeneralOps(viewsets.ViewSet):
             assu_ph.save()
             created.append(assu_sans.name)
         try:
-            bon_default = BonDeCommande.get\
+            bon_default = BonDeCommande.objects.get\
                 (beneficiaire='inconnu')
         except BonDeCommande.DoesNotExist:
             assu_sans = Assurance.objects.get(name="Sans")
             bon_default = BonDeCommande.objects\
                 .create(organization=assu_sans)
+            bon_default.num_du_bon = '0001'
             bon_default.is_paid = True
             bon_default.save()
             created.append("Default BdC")
@@ -591,6 +592,8 @@ class ImitiOut(viewsets.ViewSet):
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
                                 client=client, price=be_sold.prix_vente)
+                            if bon_de_commande == 403:
+                                return JsonResponse({"The Bon already exist"})
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
                                     operator=request.user, \
                                         reference_umuti=be_sold,\
@@ -650,7 +653,18 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.organization = org
         new_bon.categorie = client.get('categorie')
         new_bon.num_beneficiaire = client.get('numero_carte')
-        new_bon.num_du_bon = client.get('numero_bon')
+        num_bon = client.get('numero_bon')
+        if not num_bon:
+            num_bon = '0000'
+            print("NO num_du_bon")
+        try:
+            existant_bon = BonDeCommande.objects.get(\
+                num_du_bon=num_bon)
+        except BonDeCommande.DoesNotExist:
+            new_bon.num_du_bon = client.get('numero_bon')
+        else:
+            print("Attempting to return 403 code")
+            return 403 #the num_du_bon already exist
         new_bon.montant_dette = org.rate_assure * price
         if client.get('date_bon'):
             date_arr = stringToDate(client.get('date_bon'))
