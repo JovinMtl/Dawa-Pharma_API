@@ -84,13 +84,16 @@ class GeneralOps(viewsets.ViewSet):
 
         return JsonResponse({"Setup done" : created})
     
-    @action(methods=['post'], detail=False,\
+    @action(methods=['post', 'get'], detail=False,\
              permission_classes= [IsAdminUser])
     def addAssu(self, request):
         """
         This endpoint will check and create a new
         assurance
         """
+        data_sent = request.data
+        # assu_name = data_sent.get('name')
+        return JsonResponse({"Can add":"Assu"})
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
