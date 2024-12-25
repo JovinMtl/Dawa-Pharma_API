@@ -98,17 +98,19 @@ class GeneralOps(viewsets.ViewSet):
         This endpoint will check and create a new
         assurance
         """
-        data_sent = request.data.get('imiti')
+        data_sent = request.data
         status = False
         assu_name = 'Sans'
         assu_rate = 0
-        if data_sent.get('assu'):
+        if data_sent:
+            data_sent = data_sent.get('imiti')
             print("Have received assuData: ", data_sent.get('assu'))
             assu_name = data_sent.get('assu')[0]
             assu_rate = data_sent.get('assu')[1]
             if assu_rate > 100 or assu_rate < 0:
-                return JsonResponse({'assu_rate':'invalid'},\
-                                     status=404)
+                return JsonResponse({"status": 0,\
+                                'reason':'assu_rate invalid'},\
+                                status=406)
         else:
             print("Did not receive assuData, but ", data_sent)
         try:
@@ -119,8 +121,14 @@ class GeneralOps(viewsets.ViewSet):
             new_assu.rate_assure = assu_rate
             new_assu.save()
             status = True
+        else:
+            return JsonResponse({"status": 0,\
+                                'reason':"Cette assurance existe"},\
+                                status=400)
         # assu_name = data_sent.get('name')
-        return JsonResponse({"Added Assurance" : status})
+        return JsonResponse({"status": 1,\
+                                'reason':"Assurance ajoutee"},\
+                                status=200)
     
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
@@ -155,6 +163,20 @@ class GeneralOps(viewsets.ViewSet):
 
         return JsonResponse({"Setup" : isReady,\
                              "Missing": missing})
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getAssu(self, request):
+        """
+        Returns all instances of Assurances
+        """
+        assu = Assurance.objects.all()
+        assu_seria = AssuranceSeria(assu, many=True)
+        if assu_seria.is_valid:
+            return Response(assu_seria.data)
+        return JsonResponse({"status": 0,\
+                            'reason':'server failed'},\
+                            status=406)
     
 
 
