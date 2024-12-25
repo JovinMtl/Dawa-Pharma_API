@@ -82,6 +82,12 @@ class GeneralOps(viewsets.ViewSet):
             bon_default.is_paid = True
             bon_default.save()
             created.append("Default BdC")
+        
+        taux_usd = UsdToBif.objects.first()
+        if not taux_usd:
+            new_taux = UsdToBif.objects.create()
+            new_taux.actualExchangeRate = 6200
+            new_taux.save()
 
         return JsonResponse({"Setup done" : created})
     
