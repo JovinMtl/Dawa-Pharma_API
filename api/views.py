@@ -594,7 +594,7 @@ class ImitiOut(viewsets.ViewSet):
                                 client=client, price=be_sold.prix_vente)
                             print(f"The bon_de_commande got: {bon_de_commande}")
                             if bon_de_commande == 403:
-                                return JsonResponse({"The Bon ":"already exist"})
+                                return JsonResponse({"The Assurance does ":"not exist"})
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
                                     operator=request.user, \
                                         reference_umuti=be_sold,\
@@ -646,10 +646,8 @@ class ImitiOut(viewsets.ViewSet):
         try:
             organization = Assurance.objects.get(name=org)
         except Assurance.DoesNotExist:
-            # no need to create a new organization,
-            # will be created on behalf of User
-            pass
-            # return 404
+            # indicate that assurance does not exist
+            return 403
         else:
             org = organization
         new_bon.organization = org
