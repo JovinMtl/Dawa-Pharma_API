@@ -404,12 +404,15 @@ class EntrantImiti(viewsets.ViewSet):
 
         return qte_tracked
     
-    def _umutiMushasha(self, umuti):
+    def _umutiMushasha(self, umuti:UmutiEntree):
         """Creates an instance of ImitiSet, it's input is 
         an instance of UmutiEntree"""
         umuti_new = ImitiSet.objects.create()
         umuti_new.code_med = str(umuti.code_med)
         umuti_new.nom_med = str(umuti.nom_med)
+        umuti_new.classe_med = (str(umuti.classe_med))[:29]
+        umuti_new.sous_classe_med = \
+            (str(umuti.sous_classe_med))[:29]
         umuti_new.type_med = str(umuti.type_med)
         umuti_new.type_achat = str(umuti.type_achat)
         umuti_new.ratio = str(umuti.ratio)
