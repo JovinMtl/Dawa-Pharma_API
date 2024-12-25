@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+# from datetime import datetime
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -10,7 +10,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class UmutiEntree(models.Model):
     date_entrant = models.DateTimeField(default=timezone.now())
-    date_peremption = models.DateField(default=datetime.now())
+    date_peremption = models.DateField(default=timezone.now())
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
     nom_med = models.CharField(max_length=30, default='null')
     classe_med = models.CharField(max_length=30, default='null')
@@ -35,7 +35,7 @@ class UmutiEntree(models.Model):
 
 class UmutiEntreeBackup(models.Model):
     date_entrant = models.DateTimeField(default=timezone.now())
-    date_peremption = models.DateField(default=datetime.now())
+    date_peremption = models.DateField(default=timezone.now())
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
     nom_med = models.CharField(max_length=30, default='null')
     classe_med = models.CharField(max_length=30, default='null')
