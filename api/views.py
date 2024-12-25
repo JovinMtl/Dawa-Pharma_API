@@ -110,26 +110,34 @@ class GeneralOps(viewsets.ViewSet):
         that are all set.
         """
         isReady = True
+        missing = []
         try:
             assu_sans = Assurance.objects.get(name="Sans")
         except Assurance.DoesNotExist:
+            missing.append('Sans')
             isReady = False
         try:
             assu_ph = Assurance.objects.get\
                 (name="Pharmacie Ubuzima")
         except Assurance.DoesNotExist:
             isReady = False
+            missing.append("Pharmacie Ubuzima")
         try:
             bon_default = BonDeCommande.objects.get\
                 (organization__name='Sans')
         except BonDeCommande.DoesNotExist:
             isReady = False
+            missing.append("Default Bon de Commande")
         taux_usd = UsdToBif.objects.first()
         if not taux_usd:
             isReady = False
- 
+            missing.append("Taux de change")
 
-        return JsonResponse({"Setup" : isReady})
+        return JsonResponse({"Setup" : isReady,\
+                             "Missing": missing})
+    
+
+
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
