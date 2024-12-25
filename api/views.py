@@ -106,9 +106,29 @@ class GeneralOps(viewsets.ViewSet):
              permission_classes= [AllowAny])
     def isSetUp(self, request):
         """
-        Checks if all requirements are all set.
+        Checks if all requirements handled by setup 
+        that are all set.
         """
-        isReady = False
+        isReady = True
+        try:
+            assu_sans = Assurance.objects.get(name="Sans")
+        except Assurance.DoesNotExist:
+            isReady = False
+        try:
+            assu_ph = Assurance.objects.get\
+                (name="Pharmacie Ubuzima")
+        except Assurance.DoesNotExist:
+            isReady = False
+        try:
+            bon_default = BonDeCommande.objects.get\
+                (organization__name='Sans')
+        except BonDeCommande.DoesNotExist:
+            isReady = False
+        taux_usd = UsdToBif.objects.first()
+        if not taux_usd:
+            isReady = False
+ 
+
         return JsonResponse({"Setup" : isReady})
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
