@@ -233,7 +233,7 @@ class EntrantImiti(viewsets.ViewSet):
         if date_peremption:
             return datetime.strptime(date_peremption, "%m/%d/%y")
         else:
-            return datetime.today()
+            return timezone.now()
 
     def _giveDate_entree(self, date_entrant:str)-> str:
         """THis function checks that an date isoString is given 
@@ -277,7 +277,7 @@ class EntrantImiti(viewsets.ViewSet):
                     somme_lot = listDictIntSomme3(synced_lot)
                     usd_to_bif = UsdToBif.objects.get(id=1)
                     usd_to_bif = UsdToBif.objects.last()
-                    print(f"The new prix_vente : {umutie.prix_vente_usd} times {usd_to_bif.actualExchangeRate} of {umutie.code_med}")
+                    # print(f"The new prix_vente : {umutie.prix_vente_usd} times {usd_to_bif.actualExchangeRate} of {umutie.code_med}")
                     umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
                                         usd_to_bif.actualExchangeRate
                     umuti_set.quantite_restant = somme_lot
@@ -603,12 +603,11 @@ class ImitiOut(viewsets.ViewSet):
         #  after sell then call compile
         imiti = EntrantImiti()
         jove = imiti.compileImitiSet()
-        print(f"La reponse de vente est: {jove}")
 
         # should calculate the number of sold in this year
-        elapsed_month = datetime.today().month
-        today_number = datetime.today().day
-        year_start = datetime.today() - timedelta(\
+        elapsed_month = timezone.now().month
+        today_number = timezone.now().day
+        year_start = timezone.now() - timedelta(\
             days=((30*elapsed_month)+today_number))
         imiti_sold = UmutiSold.objects.filter(\
             date_operation__gte=year_start)
@@ -660,7 +659,7 @@ class ImitiOut(viewsets.ViewSet):
             date_arr = stringToDate(client.get('date_bon'))
             new_bon.date_du_bon = timezone.datetime(\
                 date_arr[0], date_arr[1], date_arr[2])
-        new_bon.date_served = datetime.today()
+        new_bon.date_served = timezone.now()
 
         new_bon.save()
         return new_bon
@@ -781,7 +780,7 @@ class Rapport(viewsets.ViewSet):
         Accepted criteria: today(default), date1, date2
         """
         criteria = request.data
-        today = datetime.today()
+        today = timezone.now()
         if criteria.get('date1'):
             date1 = criteria.get('date1')
         else:
@@ -957,7 +956,7 @@ class Rapport(viewsets.ViewSet):
             print(f"The data sent is wrong formatted")
             # The assign date1 and date2 with a default values of 
             # yesterday and today
-            date1 = datetime.today() - timedelta(days=2) # before yesterday
+            date1 = timezone.now() - timedelta(days=2) # before yesterday
             date2 = date1 + timedelta(days=2) # tomorrow, I know date2 would have today() but more tierce would be added, to be precise.
                 
         print(f"THe dates are: {date1} and {type(date2)}")
@@ -1338,7 +1337,7 @@ class Rapport(viewsets.ViewSet):
           date_peremption less than 3months.
         Return UmutiEntree."""
         
-        date_notice = datetime.today() + timedelta(days=90)
+        date_notice = timezone.now() + timedelta(days=90)
         queryset = UmutiEntree.objects.filter(quantite_restant__gte=1).\
             filter(date_peremption__lte=date_notice)
         
@@ -1360,7 +1359,7 @@ class Rapport(viewsets.ViewSet):
 
         code_med = ''
         pure_result = [] # UmutiEntree
-        date_notice = datetime.today() + timedelta(days=90)
+        date_notice = timezone.now() + timedelta(days=90)
         imiti = ImitiSet.objects.all()
 
         for umuti in imiti:
@@ -1407,7 +1406,7 @@ class Rapport(viewsets.ViewSet):
                 end_date = timezone.datetime(date_arr[0],\
                     date_arr[1], date_arr[2])
         else:
-            end_date = datetime.today()
+            end_date = timezone.now()
             end_date -= timedelta(hours=end_date.hour) #init to 0:00
             begin_date = end_date - timedelta(days=7)
         print("THe dates are: ", begin_date, end_date)
@@ -1442,7 +1441,7 @@ class Rapport(viewsets.ViewSet):
                 end_date = timezone.datetime(date_arr[0],\
                     date_arr[1], date_arr[2])
         else:
-            end_date = datetime.today()
+            end_date = timezone.now()
             end_date -= timedelta(hours=end_date.hour) #init to 0:00
             begin_date = end_date - timedelta(days=7)
         print("THe dates are: ", begin_date, end_date)
@@ -1455,7 +1454,7 @@ class Rapport(viewsets.ViewSet):
         """
         Will return the categorized level of stocks.
         """
-        today = datetime.today()
+        today = timezone.now()
         qte_sup = UmutiEntree.objects.filter(quantite_restant__gte=1)
         six_month = today +timedelta(days=180)
         one_year = today + timedelta(days=360)
