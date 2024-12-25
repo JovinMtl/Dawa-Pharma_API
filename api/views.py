@@ -101,6 +101,15 @@ class GeneralOps(viewsets.ViewSet):
         data_sent = request.data
         # assu_name = data_sent.get('name')
         return JsonResponse({"Can add":"Assu"})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def isSetUp(self, request):
+        """
+        Checks if all requirements are all set.
+        """
+        isReady = False
+        return JsonResponse({"Setup" : isReady})
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
 
