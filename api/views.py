@@ -98,13 +98,19 @@ class GeneralOps(viewsets.ViewSet):
         This endpoint will check and create a new
         assurance
         """
-        data_sent = request.data
+        data_sent = request.data.get('imiti')
         status = False
         assu_name = 'Sans'
         assu_rate = 0
         if data_sent.get('assu'):
+            print("Have received assuData: ", data_sent.get('assu'))
             assu_name = data_sent.get('assu')[0]
             assu_rate = data_sent.get('assu')[1]
+            if assu_rate > 100 or assu_rate < 0:
+                return JsonResponse({'assu_rate':'invalid'},\
+                                     status=404)
+        else:
+            print("Did not receive assuData, but ", data_sent)
         try:
             assu = Assurance.objects.get(name=assu_name)
         except Assurance.DoesNotExist:
