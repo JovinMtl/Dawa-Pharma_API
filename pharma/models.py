@@ -62,7 +62,8 @@ class ImitiSet(models.Model):
     """THis one will contain the unique Umuti and its availability"""
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
     nom_med = models.CharField(max_length=30, default='null')
-    description_umuti = models.TextField(verbose_name="ukwo bawufata n'ico umaze, bizofasha uwutawuzi")
+    classe_med = models.CharField(max_length=30, default='null')
+    sous_classe_med = models.CharField(max_length=30, default='null')
     type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
     type_achat  = models.CharField(max_length=10, default='null') #kurangura
     ratio = models.FloatField(default=1) #ari carton ndayidandaza carton
