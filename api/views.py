@@ -92,15 +92,29 @@ class GeneralOps(viewsets.ViewSet):
         return JsonResponse({"Setup done" : created})
     
     @action(methods=['post', 'get'], detail=False,\
-             permission_classes= [IsAdminUser])
+             permission_classes= [IsAuthenticated])
     def addAssu(self, request):
         """
         This endpoint will check and create a new
         assurance
         """
         data_sent = request.data
+        status = False
+        assu_name = 'Sans'
+        assu_rate = 0
+        if data_sent.get('assu'):
+            assu_name = data_sent.get('assu')[0]
+            assu_rate = data_sent.get('assu')[1]
+        try:
+            assu = Assurance.objects.get(name=assu_name)
+        except Assurance.DoesNotExist:
+            new_assu = Assurance.objects.create()
+            new_assu.name = assu_name
+            new_assu.rate_assure = assu_rate
+            new_assu.save()
+            status = True
         # assu_name = data_sent.get('name')
-        return JsonResponse({"Can add":"Assu"})
+        return JsonResponse({"Added Assurance" : status})
     
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
