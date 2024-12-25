@@ -541,8 +541,6 @@ class ImitiOut(viewsets.ViewSet):
         return syntesis
     
 
-    # @action(methods=['post'], detail=False,\
-    #          permission_classes= [IsAuthenticated])
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def sell(self, request):
@@ -557,7 +555,6 @@ class ImitiOut(viewsets.ViewSet):
         total_facture = 0
         once = 0
         for actual in panier:
-            print(f"actual: {actual}")
             code_med = actual.get('code_med')
             lot = actual.get('lot')
             if not lot:
@@ -565,12 +562,9 @@ class ImitiOut(viewsets.ViewSet):
             for lote in lot:
                 code_operation = lote.get('code_operation')
                 qte = lote.get('qte')
-                print(f"working on qte:{qte}")
                 orders = self._assess_order(code_med=code_med,\
                                          code_operation=code_operation,\
                                              qte=qte)
-                print(f"ACTUAL ORDERS: {orders}")
-                # qte = lote.get('qte')
                 for order in orders:
                     if order[2] == 0:
                         continue
@@ -592,7 +586,6 @@ class ImitiOut(viewsets.ViewSet):
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
                                 client=client, price=be_sold.prix_vente)
-                            print(f"The bon_de_commande got: {bon_de_commande}")
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Assurance does ":"not exist"})
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
@@ -602,8 +595,6 @@ class ImitiOut(viewsets.ViewSet):
 
                         if sold == 200:
                             total_facture += be_sold.prix_vente * order[2]
-                            print(f"Umuti with code '{umuti[0].code_med}' is sold")
-                            print(f"The rest qte is {umuti[0].quantite_restant}")
                 once += 1 # create bon_de_commande only once
         # Should now update the reduction in bon_de_commande
         if client:
@@ -657,12 +648,10 @@ class ImitiOut(viewsets.ViewSet):
         if new_bon.organization.name \
             == "Pharmacie Ubuzima" or \
             new_bon.organization.name == "Sans":
-            print("Generate code")
             code_8 = GenerateCode(7)
             code_bon = code_8.giveCode()
             new_bon.num_du_bon = 'P_' + code_bon
         else:
-            print("Didn't generate code")
             new_bon.num_du_bon = client.get('numero_bon')
         
         
@@ -672,8 +661,6 @@ class ImitiOut(viewsets.ViewSet):
             new_bon.date_du_bon = timezone.datetime(\
                 date_arr[0], date_arr[1], date_arr[2])
         new_bon.date_served = datetime.today()
-
-        print("The assureur:", new_bon.organization)
 
         new_bon.save()
         return new_bon
