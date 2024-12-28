@@ -179,15 +179,28 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'server failed'},\
                             status=406)
     
-    @action(methods=['post', 'get'], detail=False,\
+    @action(methods=['post'], detail=False,\
              permission_classes= [AllowAny])
     def setBons(self, request):
         """
-        Returns all instances of Assurances
-        """
+        Sets to true the given instances of BonDeCommande
+        """ 
+        bon_ids = request.data.get('imiti')
+        print("THe requested data Set:", bon_ids)
+
+        for id in bon_ids:
+            try:
+                bon = BonDeCommande.objects.get(id=id)
+            except BonDeCommande.DoesNotExist:
+                return JsonResponse({"status": 0,\
+                            'reason':'Bon invalide'},\
+                            status=406)
+            else:
+                bon.is_paid = True
+                bon.save()
         
         return JsonResponse({"status": 1,\
-                            'reason':'request received'},\
+                            'reason':'request completed'},\
                             status=200)
 
     @action(methods=['post'], detail=False,\
