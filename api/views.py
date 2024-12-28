@@ -178,6 +178,28 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'server failed'},\
                             status=406)
     
+    @action(methods=['post', 'get'], detail=False,\
+             permission_classes= [AllowAny])
+    def setBons(self, request):
+        """
+        Returns all instances of Assurances
+        """
+        
+        return JsonResponse({"status": 1,\
+                            'reason':'request received'},\
+                            status=200)
+
+    @action(methods=['post', 'get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getBons(self, request):
+        """
+        Returns all instances of Assurances
+        """
+        
+        return JsonResponse({"status": 1,\
+                            'reason':'request received'},\
+                            status=200)    
+    
 
 
 class EntrantImiti(viewsets.ViewSet):
