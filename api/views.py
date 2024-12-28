@@ -21,7 +21,8 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
-      LastIndexSeria, SyntesiSeria, AssuranceSeria
+      LastIndexSeria, SyntesiSeria, AssuranceSeria,\
+      BonCommaSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -189,16 +190,31 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'request received'},\
                             status=200)
 
-    @action(methods=['post', 'get'], detail=False,\
+    @action(methods=['post'], detail=False,\
              permission_classes= [AllowAny])
     def getBons(self, request):
         """
-        Returns all instances of Assurances
+        Returns all instances of BonDeCommande
         """
+        requested_data = request.data.get('imiti')
+        print("THe requested data:", requested_data)
+        request_bons = []
+        for bon in requested_data:
+            try:
+                query = BonDeCommande.objects.get(id=bon)
+            except BonDeCommande.DoesNotExist:
+                return JsonResponse({"status": 0,\
+                            'reason':'Bon invalide'},\
+                            status=406)
+            else:
+                request_bons.append(query)
+        bons_seria = BonCommaSeria(request_bons, many=True)
+        if bons_seria.is_valid:
+            return Response(bons_seria.data)
         
-        return JsonResponse({"status": 1,\
-                            'reason':'request received'},\
-                            status=200)    
+        return JsonResponse({"status": 0,\
+                            'reason':'erreur du serveur'},\
+                            status=406)
     
 
 
