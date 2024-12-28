@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from pharma.models import ImitiSet, umutiReportSell, UmutiSold,\
-      UmutiEntree, imitiSuggest, Assurance
+      UmutiEntree, imitiSuggest, Assurance,\
+      BonDeCommande
 
 
 class ImitiSetSeriazer(serializers.ModelSerializer):
@@ -32,6 +33,11 @@ class imitiSuggestSeria(serializers.ModelSerializer):
 class AssuranceSeria(serializers.ModelSerializer):
     class Meta:
         model = Assurance
+        fields = '__all__'
+
+class BonCommaSeria(serializers.ModelSerializer):
+    class Meta:
+        model = BonDeCommande
         fields = '__all__'
 
 class ImitiSuggestSeria(serializers.Serializer):
