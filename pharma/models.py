@@ -95,7 +95,7 @@ class Assurance(models.Model):
                                                MaxValueValidator(100)])
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name}: {self.id}"
 
 def getAssuranceInstance():
     new_bon = None
@@ -120,7 +120,7 @@ class BonDeCommande(models.Model):
     is_paid = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.beneficiaire}: {self.num_du_bon}" 
+        return f"{self.beneficiaire}: {self.num_du_bon}: {self.id}" 
 
 def getBonDeCommandeInstance():
     new_bon = None
