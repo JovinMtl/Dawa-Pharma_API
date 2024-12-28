@@ -22,7 +22,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
-      BonCommaSeria
+      BonCommaSeria, SoldAsBonSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -921,12 +921,13 @@ class Rapport(viewsets.ViewSet):
         meds = UmutiSold.objects.filter(date_operation__gte=begin_date)\
             .filter(date_operation__lte=end_date)
         meds_built = self._builtVente(meds)
-        imitiSerialized = UmutiSoldSeriazer(meds, many=True)
+        print(f"THe things gotten: {meds_built}")
+        imitiSerialized = SoldAsBonSeria(data=meds_built, many=True)
 
-        if imitiSerialized.is_valid:
+        if imitiSerialized.is_valid():
             return Response(imitiSerialized.data)
 
-        return JsonResponse({"THings are":"okay"})
+        return JsonResponse({"response": meds_built})
 
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
@@ -1610,12 +1611,11 @@ class Rapport(viewsets.ViewSet):
         needed dict: {
             'nom_med', 'qte', 'pa','pv','total','bnf',
             'caisse', 'dette', 'assu', 'categ','date',
-            'id_bon'
+            'id_bon', 'is_paid'
         }
         """
         bons = []
         for umuti_sold in meds:
-            # umuti = UmutiSold.objects.create()
             vente = {}
             vente['nom_med'] = umuti_sold.nom_med
             vente['qte'] = umuti_sold.quantity
@@ -1628,19 +1628,23 @@ class Rapport(viewsets.ViewSet):
             assu = bon.organization
             assu_name = assu.name
             rate = assu.rate_assure
-            vente['caisse'] = (rate/100) * vente['total'] 
             vente['dette'] = bon.montant_dette
+            vente['caisse'] = vente['total'] - bon.montant_dette
+            if bon.montant_dette:
+                vente['dette'] = vente['total'] - bon.montant_dette
+                vente['caisse'] = bon.montant_dette
             vente['assu'] = assu_name
             vente['categ'] = bon.categorie
-            vente['date1'] = bon.date_du_bon
-            vente['date2'] = bon.date_served
+            vente['date_operation'] = bon.date_du_bon
+            vente['date_served'] = bon.date_served
             vente['num_du_bon'] = bon.num_du_bon
+            vente['is_paid'] = bon.is_paid
 
             bons.append(vente)
 
-            print(f"Bon {vente};")
+            # print(f"Bon {vente};")
         
-        return 0
+        return bons
     
     @action(methods=['get','post'], detail=False,\
              permission_classes= [AllowAny])
