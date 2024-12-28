@@ -56,5 +56,19 @@ class SyntesiSeria(serializers.Serializer):
     benefice = serializers.IntegerField(default=0)
     page_number = serializers.IntegerField(default=0)
 
+class SoldAsBonSeria(serializers.Serializer):
+    nom_med = serializers.CharField(max_length=30,defaut="null")
+    qte = serializers.IntegerField(default=0)
+    prix_achat = serializers.IntegerField(default=0)
+    prix_vente = serializers.IntegerField(default=0)
+    total = serializers.IntegerField(default=0)
+    bnf = serializers.IntegerField(default=0)
+    dette = serializers.IntegerField(default=0)
+    assu = serializers.CharField(max_length=25,defaut="null")
+    categ = serializers.CharField(max_length=15,defaut="null")
+    date1 = serializers.DateTimeField(default=0)
+    date2 = serializers.DateTimeField(default=0)
+    num_du_bon = serializers.CharField(max_length=10,defaut="0000")
+
 
 
