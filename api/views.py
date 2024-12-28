@@ -911,6 +911,22 @@ class Rapport(viewsets.ViewSet):
             return Response(imitiSerialized.data)
 
         return JsonResponse({"THings are":"okay"})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def reportVentes(self, request):
+        """making an endpoint that will return all the umutisold entries"""
+        begin_date, end_date = self._getDate(request.data)
+        # imiti = UmutiSold.objects.all().order_by('-date_operation')
+        meds = UmutiSold.objects.filter(date_operation__gte=begin_date)\
+            .filter(date_operation__lte=end_date)
+        meds_built = self._builtVente(meds)
+        imitiSerialized = UmutiSoldSeriazer(meds, many=True)
+
+        if imitiSerialized.is_valid:
+            return Response(imitiSerialized.data)
+
+        return JsonResponse({"THings are":"okay"})
 
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
@@ -1586,6 +1602,45 @@ class Rapport(viewsets.ViewSet):
         print("THe dates are: ", begin_date, end_date)
 
         return [begin_date, end_date]
+    
+    def _builtVente(self, meds):
+        """
+        Will return a mixed info from
+          UmutiSold, BonDeCommande and Assurance.
+        needed dict: {
+            'nom_med', 'qte', 'pa','pv','total','bnf',
+            'caisse', 'dette', 'assu', 'categ','date',
+            'id_bon'
+        }
+        """
+        bons = []
+        for umuti_sold in meds:
+            # umuti = UmutiSold.objects.create()
+            vente = {}
+            vente['nom_med'] = umuti_sold.nom_med
+            vente['qte'] = umuti_sold.quantity
+            vente['prix_achat'] = umuti_sold.prix_achat
+            vente['prix_vente'] = umuti_sold.prix_vente
+            vente['total'] = umuti_sold.prix_vente * umuti_sold.quantity
+            vente['bnf'] = (umuti_sold.prix_vente - umuti_sold.prix_achat)\
+                            * umuti_sold.quantity
+            bon = umuti_sold.bon_de_commande
+            assu = bon.organization
+            assu_name = assu.name
+            rate = assu.rate_assure
+            vente['caisse'] = (rate/100) * vente['total'] 
+            vente['dette'] = bon.montant_dette
+            vente['assu'] = assu_name
+            vente['categ'] = bon.categorie
+            vente['date1'] = bon.date_du_bon
+            vente['date2'] = bon.date_served
+            vente['num_du_bon'] = bon.num_du_bon
+
+            bons.append(vente)
+
+            print(f"Bon {vente};")
+        
+        return 0
     
     @action(methods=['get','post'], detail=False,\
              permission_classes= [AllowAny])
