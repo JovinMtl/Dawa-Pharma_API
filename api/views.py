@@ -190,7 +190,7 @@ class GeneralOps(viewsets.ViewSet):
 
         for id in bon_ids:
             try:
-                bon = BonDeCommande.objects.get(id=id)
+                bon = BonDeCommande.objects.get(num_du_bon=id)
             except BonDeCommande.DoesNotExist:
                 return JsonResponse({"status": 0,\
                             'reason':'Bon invalide'},\
