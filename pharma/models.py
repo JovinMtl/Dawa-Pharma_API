@@ -118,6 +118,7 @@ class BonDeCommande(models.Model):
     date_served = models.DateField(default=timezone.now)
     montant_dette = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
+    date_is_paid = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"{self.beneficiaire}: {self.num_du_bon}: {self.id}" 
