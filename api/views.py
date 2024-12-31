@@ -197,6 +197,7 @@ class GeneralOps(viewsets.ViewSet):
                             status=406)
             else:
                 bon.is_paid = True
+                bon.date_is_paid = timezone.now().date()
                 bon.save()
         
         return JsonResponse({"status": 1,\
