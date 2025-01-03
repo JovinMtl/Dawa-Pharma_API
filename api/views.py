@@ -1727,4 +1727,17 @@ class Rapport(viewsets.ViewSet):
         return JsonResponse({"Avec": result})
     
 
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [AllowAny])
+    def getCate(self, request):
+        """
+        Will return the comparison of categories:
+        tv, mt, md, au, null(for simple clients).
+        Should source in BonDeCommande
+        """
+        begin_date, end_date = self._getDate(request.data)
+
+        return JsonResponse({"Cate":"Gorie"})
+    
+
 
