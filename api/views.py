@@ -1732,12 +1732,27 @@ class Rapport(viewsets.ViewSet):
     def getCate(self, request):
         """
         Will return the comparison of categories:
-        tv, mt, md, au, null(for simple clients).
+        tv, mt, md, au, ord(for simple clients).
         Should source in BonDeCommande
         """
         begin_date, end_date = self._getDate(request.data)
+        tv, mt, md, au, ord = 0,0,0,0,0
+        queryset = BonDeCommande.objects.filter(date_served__gte=begin_date)\
+            .filter(date_served__lte=end_date)
+        tv = len(queryset.filter(categorie='tv'))
+        mt = len(queryset.filter(categorie='mt'))
+        md = len(queryset.filter(categorie='md'))
+        au = len(queryset.filter(categorie='au'))
+        ord = len(queryset.filter(categorie='null'))
 
-        return JsonResponse({"Cate":"Gorie"})
+        result = {}
+        result['Taxi_v'] = tv
+        result['Motar'] = mt
+        result['Dom_med'] = md
+        result['Assure'] = au
+        result['Ordinaire'] = ord
+
+        return JsonResponse({"Cate": result})
     
 
 
