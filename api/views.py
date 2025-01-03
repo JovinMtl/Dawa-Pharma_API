@@ -416,8 +416,10 @@ class EntrantImiti(viewsets.ViewSet):
                     usd_to_bif = UsdToBif.objects.get(id=1)
                     usd_to_bif = UsdToBif.objects.last()
                     # print(f"The new prix_vente : {umutie.prix_vente_usd} times {usd_to_bif.actualExchangeRate} of {umutie.code_med}")
-                    umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
+                    prix_vente = float(umutie.prix_vente_usd) * \
                                         usd_to_bif.actualExchangeRate
+                    prix_vente_arondi = (int(prix_vente / 100)) + 1
+                    umuti_set.prix_vente = prix_vente_arondi * 100
                     umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
