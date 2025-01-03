@@ -1698,4 +1698,17 @@ class Rapport(viewsets.ViewSet):
         return JsonResponse({"Something":"is not right"})
     
 
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [AllowAny])
+    def getOnNoBon(self, request):
+        """
+        Will return all two variables: 
+        - sum of ones UmutiSold without BonDeCommande
+        - sum of ones UmutiSold with BonDeCommande 
+        """
+        begin_date, end_date = self._getDate(request.data)
+
+        return JsonResponse({"Avec":"Sans"})
+    
+
 
