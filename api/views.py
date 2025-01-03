@@ -10,6 +10,7 @@ import json
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
+from django.db.models import Q
 from datetime import timedelta, datetime
 import os
 
@@ -1707,8 +1708,23 @@ class Rapport(viewsets.ViewSet):
         - sum of ones UmutiSold with BonDeCommande 
         """
         begin_date, end_date = self._getDate(request.data)
+        on_bon, no_bon = 0, 0
+        s1 = "Sans"
+        s2 = "Pharmacie Ubuzima"
+        
+        queryset = UmutiSold.objects.filter(date_operation__gte=begin_date)\
+            .filter(date_operation__lte=end_date)
+        query1 = queryset.filter(Q(bon_de_commande__organization__name=s1)\
+                                |Q(bon_de_commande__organization__name=s2))
+        query2 = queryset.exclude(Q(bon_de_commande__organization__name=s1)\
+                                |Q(bon_de_commande__organization__name=s2))
+        no_bon = len(query1)
+        on_bon = len(query2)
 
-        return JsonResponse({"Avec":"Sans"})
+        result = {}
+        result['Avec_bon'] = on_bon
+        result['Sans'] = no_bon
+        return JsonResponse({"Avec": result})
     
 
 
