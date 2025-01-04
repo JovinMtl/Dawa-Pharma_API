@@ -394,6 +394,8 @@ class EntrantImiti(viewsets.ViewSet):
         j = 1
         lot = []
         for umutie in procured:
+            if not umutie.quantite_restant:
+                continue
             code = umutie.code_med
             try:
                 umuti_set = ImitiSet.objects.get(code_med=code)
@@ -1739,6 +1741,7 @@ class Rapport(viewsets.ViewSet):
         """
         begin_date, end_date = self._getDate(request.data)
         tv, mt, md, au, ord = 0,0,0,0,0
+        x, y = [], []
         queryset = BonDeCommande.objects.filter(date_served__gte=begin_date)\
             .filter(date_served__lte=end_date)
         tv = len(queryset.filter(categorie='tv'))
@@ -1753,8 +1756,10 @@ class Rapport(viewsets.ViewSet):
         result['Dom_med'] = md
         result['Assure'] = au
         result['Ordinaire'] = ord
+        y = ['Taxi_v','Motar', 'Dom_med', 'Assure', 'Ordinaire']
+        x = [tv, mt, md, au, ord]
 
-        return JsonResponse({"Cate": result})
+        return JsonResponse({"X": x, "Y":y})
     
 
 
