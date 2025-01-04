@@ -1750,12 +1750,6 @@ class Rapport(viewsets.ViewSet):
         au = len(queryset.filter(categorie='au'))
         ord = len(queryset.filter(categorie='null'))
 
-        result = {}
-        result['Taxi_v'] = tv
-        result['Motar'] = mt
-        result['Dom_med'] = md
-        result['Assure'] = au
-        result['Ordinaire'] = ord
         y = ['Taxi_v','Motar', 'Dom_med', 'Assure', 'Ordinaire']
         x = [tv, mt, md, au, ord]
 
