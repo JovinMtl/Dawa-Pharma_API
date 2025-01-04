@@ -1713,6 +1713,7 @@ class Rapport(viewsets.ViewSet):
         """
         begin_date, end_date = self._getDate(request.data)
         on_bon, no_bon = 0, 0
+        x, y = [], []
         s1 = "Sans"
         s2 = "Pharmacie Ubuzima"
         
@@ -1725,10 +1726,10 @@ class Rapport(viewsets.ViewSet):
         no_bon = len(query1)
         on_bon = len(query2)
 
-        result = {}
-        result['Avec_bon'] = on_bon
-        result['Sans'] = no_bon
-        return JsonResponse({"Avec": result})
+        y = ['Avec_bon', 'Sans_bon']
+        x = [on_bon, no_bon]
+
+        return JsonResponse({"X": x, "Y":y})
     
 
     @action(methods=['get','post'], detail=False,\
