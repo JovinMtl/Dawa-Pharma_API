@@ -369,7 +369,8 @@ class GeneralOps(viewsets.ViewSet):
         """
         creates a ther.class with its members.
         """
-        if not len(data):
+        cl_name = ClassThep.objects.filter(name=data[0])
+        if (not len(data)) or (len(cl_name)):
             return 0
 
         cl_object = None
@@ -383,7 +384,6 @@ class GeneralOps(viewsets.ViewSet):
         for s_cl in data[1:]:
             sub_cl_obj = SubClassThep.objects\
                 .create(parent=cl_object)
-            print("Have created")
             sub_cl_obj.name = (str(s_cl))[:69]
             sub_cl_obj.n_group = n_group
             sub_cl_obj.save()
