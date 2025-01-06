@@ -189,3 +189,15 @@ class InfoClient(models.Model):
     phone_number = models.CharField(max_length=12, default='1111')
     assureur = models.ForeignKey(Assurance,on_delete=models.CASCADE)
     date_bon = models.DateField("Date yatangiweko", default=timezone.now)
+
+
+class ClassThep(models.Model):
+    name = models.CharField(max_length=25, default='inconnu')
+    n_group = models.CharField(max_length=5, default='0000')
+
+class SubClassThep(models.Model):
+    name = models.CharField(max_length=25, default='inconnu')
+    parent = models.ForeignKey(ClassThep, on_delete=models.CASCADE)
+    n_group = models.CharField(max_length=5, default='0000')
+
+    
