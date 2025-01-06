@@ -17,7 +17,7 @@ import os
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
-    BonDeCommande, Assurance
+    BonDeCommande, Assurance, ClassThep, SubClassThep
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -231,7 +231,164 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'erreur du serveur'},\
                             status=406)
     
+    def _createClasses(self)->int:
+        """
+        For creating therap. class and sub-class
+        """
+        c1 = ['Anesthesie_et_Reanimation',
+                'Anesthésiques généraux',
+                'Anesthésiques locaux',
+                'Agents de réanimation'
+                ]
+        c2 = ['Antalgiques_Analgesiques',
+                'Antalgiques périphériques',
+                "Antalgiques centraux (Opioïdes et dérivés)"
+                ]
+        c3 = ['Anti_inflammatoires',
+                "AINS (Anti-Inflammatoires Non Stéroïdiens)",
+                "Corticostéroïdes",
+                "Inhibiteurs de COX-2"
+                ]
+        c4 = ['Cancerologie_et_Hematologie',
+                'Chimiothérapies',
+                'Immunothérapies',
+                "Thérapies ciblées",
+                "Agents hématopoïétiques"
+                ]
+        c5 = ['Cardiologie_et_Angiologie'
+                "Anti-hypertenseurs",
+                "Antiarythmiques",
+                "Antiangineux",
+                "Anticoagulants",
+                "Diurétiques"
+                ]
+        c6 = ['Contraception_et_Interruption_de_Grossesse',
+                "Contraceptifs oraux",
+                "Contraceptifs injectables",
+                "Dispositifs intra-utérins",
+                ]
+        c7 = ['Dermatologie',
+                "Antifongiques locaux",
+                "Antibactériens locaux",
+                "Corticostéroïdes topiques"
+                ]
+        c8 = ['Endocrinologie',
+                "Antidiabétiques oraux",
+                'Insulines',
+                'Hormonothérapies'
+                ]
+        c9 = ['Gastro_Entero_Hepatologie',
+                "Antiulcéreux et Antiacides",
+                'Laxatifs',
+                'Antidiarrhéiques',
+                'Hépatoprotecteurs'
+                ]
+        c10 = ['Gynecologie',
+                "Oestrogènes et Progestatifs",
+                "Traitement des infections gynécologiques"
+                ]
+        c11 = ['Hemostase_et_Sang',
+                "Facteurs de coagulation",
+                "Antifibrinolytiques",
+                "Produits sanguins"
+                ]
+        c12 = ['Immunologie',
+                'Vaccins',
+                'Immunoglobulines',
+                'Immunosuppresseurs'
+                ]
+        c13 = ['Infectiologie_Parasitologie',
+                'Antibiotiques',
+                'Antiviraux',
+                'Antiparasitaires',
+                'Antifongiques'
+                ]
+        c14 = ['Metabolisme_et_Nutrition',
+                "Suppléments nutritionnels",
+                "Régulateurs de l'appétit"
+                ]
+        c15 = ['Neurologie_Psychiatrie',
+                'Antidépresseurs',
+                'Anxiolytiques',
+                'Antipsychotiques',
+                'Antiépileptiques'
+                ]
+        c16 = ['Ophtalmologie',
+                'Antiglaucomateux',
+                'Mydriatiques',
+                "Lubrifiants oculaires"
+                ]
+        c17 = ['Oto_Rhino_Laryngologie',
+                'Antihistaminiques',
+                'Décongestionnants',
+                "Anti-inflammatoires"
+                ]
+        c18 = ['Pneumologie',
+                'Bronchodilatateurs',
+                "Corticostéroïdes inhalés",
+                'Antileucotriènes'
+                ]
+        c19 = ['Rhumatologie',
+                "DMARDs (Disease-Modifying Antirheumatic Drugs)",
+                "Anti-inflammatoires",
+                'Biothérapies'
+                ]
+        c20 = ['Sang_et_Derives',
+                'Érythropoïétine',
+                'Plasma',
+                "Concentrés de plaquettes"
+                ]
+        c21 = ['Stomatologie'
+                "Antiseptiques buccaux"
+                "Analgésiques bucco-dentaires"
+                ]
+        c22 = ['Toxicologie',
+                'Antidotes',
+                'Chélateurs'
+                ]
+        c23 = ['Urologie_et_Nephrologie',
+                'Diurétiques',
+                'Anticholinergiques',
+                "Suppléments de potassium"
+                ]
+        all_cs = [c1, c2, c3, c4, c5, c6, c7,\
+            c7, c8, c9, c10, c11, c12, c13, c14,\
+            c15, c16, c17, c18, c19, c20, c21,\
+            c22, c23]
+        i = 0
+        for c in all_cs:
+            cl = self._createOneClass(c)
+            if cl == 200: i += 1
+        
+        return i
+    
+    def _createOneClass(self, data)->int:
+        c1 = ['Anesthesie_et_Reanimation',
+                'Anesthésiques généraux',
+                'Anesthésiques locaux',
+                'Agents de réanimation'
+                ]
+        if not len(c1):
+            return 0
 
+        cl_object = None
+        n_group = GenerateCode(4).giveCode()
+        cl_object = ClassThep.objects.\
+                    create()
+        cl_object.name = (c1[0])[:24]
+        cl_object.n_group = n_group
+        cl_object.save()
+
+        for s_cl in c1[1:]:
+            sub_cl_obj = SubClassThep.objects\
+                .create()
+            sub_cl_obj.name = (str(s_cl))[:24]
+            sub_cl_obj.parent = cl_object
+            sub_cl_obj.n_group = n_group
+            sub_cl_obj.save()
+        
+        return 200
+                
 
 class EntrantImiti(viewsets.ViewSet):
     """Manages all the Entrant Operations"""
