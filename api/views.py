@@ -367,9 +367,9 @@ class GeneralOps(viewsets.ViewSet):
     
     def _createOneClass(self, data)->int:
         c1 = ['Anesthesie_et_Reanimation',
-                'Anesthésiques généraux',
-                'Anesthésiques locaux',
-                'Agents de réanimation'
+                'Anesthesiques_generaux',
+                'Anesthesiques_locaux',
+                'Agents_de_reanimation'
                 ]
         if not len(c1):
             return 0
@@ -384,9 +384,9 @@ class GeneralOps(viewsets.ViewSet):
 
         for s_cl in c1[1:]:
             sub_cl_obj = SubClassThep.objects\
-                .create()
+                .create(parent=cl_object)
+            print("Have created")
             sub_cl_obj.name = (str(s_cl))[:24]
-            sub_cl_obj.parent = cl_object
             sub_cl_obj.n_group = n_group
             sub_cl_obj.save()
         
