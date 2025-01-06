@@ -366,6 +366,9 @@ class GeneralOps(viewsets.ViewSet):
         return i
     
     def _createOneClass(self, data)->int:
+        """
+        creates a ther.class with its members.
+        """
         if not len(data):
             return 0
 
