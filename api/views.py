@@ -90,6 +90,9 @@ class GeneralOps(viewsets.ViewSet):
             new_taux = UsdToBif.objects.create()
             new_taux.actualExchangeRate = 6200
             new_taux.save()
+        
+        cls = self._createClasses()
+        created.append(f"with {cls} ther. classes")
 
         return JsonResponse({"Setup done" : created})
     
