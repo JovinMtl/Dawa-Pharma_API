@@ -195,9 +195,15 @@ class ClassThep(models.Model):
     name = models.CharField(max_length=25, default='inconnu')
     n_group = models.CharField(max_length=5, default='0000')
 
+    def __str__(self):
+        return f"{self.name}:{self.n_group}"
+
 class SubClassThep(models.Model):
     name = models.CharField(max_length=25, default='inconnu')
     parent = models.ForeignKey(ClassThep, on_delete=models.CASCADE)
     n_group = models.CharField(max_length=5, default='0000')
+
+    def __str__(self):
+        return f"{self.name}:{self.n_group}"
 
     
