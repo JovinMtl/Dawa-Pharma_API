@@ -376,7 +376,7 @@ class GeneralOps(viewsets.ViewSet):
         n_group = GenerateCode(4).giveCode()
         cl_object = ClassThep.objects.\
                     create()
-        cl_object.name = (data[0])[:24]
+        cl_object.name = (data[0])[:69]
         cl_object.n_group = n_group
         cl_object.save()
 
@@ -384,7 +384,7 @@ class GeneralOps(viewsets.ViewSet):
             sub_cl_obj = SubClassThep.objects\
                 .create(parent=cl_object)
             print("Have created")
-            sub_cl_obj.name = (str(s_cl))[:24]
+            sub_cl_obj.name = (str(s_cl))[:69]
             sub_cl_obj.n_group = n_group
             sub_cl_obj.save()
         
