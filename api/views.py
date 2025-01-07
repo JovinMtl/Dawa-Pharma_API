@@ -416,7 +416,8 @@ class GeneralOps(viewsets.ViewSet):
                 local_cl = []
             local_cl.append(sb.name)
         
-        y.remove([])
+        y.append(local_cl) # adding the last group of sub-class 
+        y.remove([]) # removing the initial empty list
 
         return JsonResponse({"x":x, "Y":y})
                 
