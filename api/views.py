@@ -415,8 +415,8 @@ class GeneralOps(viewsets.ViewSet):
                 x.append(sb.parent.name)
                 local_cl = []
             local_cl.append(sb.name)
-        
-        print(f"X:{x} ")
+
+        y.remove([])  # removing the initial empty list
 
         return JsonResponse({"x":x, "Y":y})
                 
