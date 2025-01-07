@@ -239,56 +239,56 @@ class GeneralOps(viewsets.ViewSet):
         For creating therap. class and sub-class
         """
         c1 = ['Anesthesie_et_Reanimation',
-                'Anesthesiques generaux',
-                'Anesthesiques locaux',
-                'Agents de reanimation'
+                'Anesthésiques généraux',
+                'Anesthésiques locaux',
+                'Agents de réanimation'
                 ]
         c2 = ['Antalgiques_Analgesiques',
-                'Antalgiques peripheriques',
-                "Antalgiques centraux (Opioides et derives)"
+                'Antalgiques périphériques',
+                "Antalgiques centraux (Opioïdes et dérivés)"
                 ]
         c3 = ['Anti_inflammatoires',
-                "AINS (Anti-Inflammatoires Non Steroidiens)",
-                "Corticosteroides",
+                "AINS (Anti-Inflammatoires Non Stéroïdiens)",
+                "Corticostéroïdes",
                 "Inhibiteurs de COX-2"
                 ]
         c4 = ['Cancerologie_et_Hematologie',
-                'Chimiotherapies',
-                'Immunotherapies',
-                "Therapies ciblees",
-                "Agents hematopoietiques"
+                'Chimiothérapies',
+                'Immunothérapies',
+                "Thérapies ciblées",
+                "Agents hématopoïétiques"
                 ]
         c5 = ['Cardiologie_et_Angiologie'
                 "Anti-hypertenseurs",
                 "Antiarythmiques",
                 "Antiangineux",
                 "Anticoagulants",
-                "Diuretiques"
+                "Diurétiques"
                 ]
         c6 = ['Contraception_et_Interruption_de_Grossesse',
                 "Contraceptifs oraux",
                 "Contraceptifs injectables",
-                "Dispositifs intra-uterins",
+                "Dispositifs intra-utérins",
                 ]
         c7 = ['Dermatologie',
                 "Antifongiques locaux",
-                "Antibacteriens locaux",
-                "Corticosteroides topiques"
+                "Antibactériens locaux",
+                "Corticostéroïdes topiques"
                 ]
         c8 = ['Endocrinologie',
-                "Antidiabetiques oraux",
+                "Antidiabétiques oraux",
                 'Insulines',
-                'Hormonotherapies'
+                'Hormonothérapies'
                 ]
         c9 = ['Gastro_Entero_Hepatologie',
-                "Antiulcereux et Antiacides",
+                "Antiulcéreux et Antiacides",
                 'Laxatifs',
-                'Antidiarrheiques',
-                'Hepatoprotecteurs'
+                'Antidiarrhéiques',
+                'Hépatoprotecteurs'
                 ]
         c10 = ['Gynecologie',
                 "Oestrogènes et Progestatifs",
-                "Traitement des infections gynecologiques"
+                "Traitement des infections gynécologiques"
                 ]
         c11 = ['Hemostase_et_Sang',
                 "Facteurs de coagulation",
@@ -307,14 +307,14 @@ class GeneralOps(viewsets.ViewSet):
                 'Antifongiques'
                 ]
         c14 = ['Metabolisme_et_Nutrition',
-                "Supplements nutritionnels",
-                "Regulateurs de l'appetit"
+                "Suppléments nutritionnels",
+                "Régulateurs de l'appétit"
                 ]
         c15 = ['Neurologie_Psychiatrie',
-                'Antidepresseurs',
+                'Antidépresseurs',
                 'Anxiolytiques',
                 'Antipsychotiques',
-                'Antiepileptiques'
+                'Antiépileptiques'
                 ]
         c16 = ['Ophtalmologie',
                 'Antiglaucomateux',
@@ -323,36 +323,36 @@ class GeneralOps(viewsets.ViewSet):
                 ]
         c17 = ['Oto_Rhino_Laryngologie',
                 'Antihistaminiques',
-                'Decongestionnants',
+                'Décongestionnants',
                 "Anti-inflammatoires"
                 ]
         c18 = ['Pneumologie',
                 'Bronchodilatateurs',
-                "Corticosteroides inhales",
+                "Corticostéroïdes inhalés",
                 'Antileucotriènes'
                 ]
         c19 = ['Rhumatologie',
                 "DMARDs (Disease-Modifying Antirheumatic Drugs)",
                 "Anti-inflammatoires",
-                'Biotherapies'
+                'Biothérapies'
                 ]
         c20 = ['Sang_et_Derives',
-                'erythropoietine',
+                'Érythropoïétine',
                 'Plasma',
-                "Concentres de plaquettes"
+                "Concentrés de plaquettes"
                 ]
         c21 = ['Stomatologie'
                 "Antiseptiques buccaux"
-                "Analgesiques bucco-dentaires"
+                "Analgésiques bucco-dentaires"
                 ]
         c22 = ['Toxicologie',
                 'Antidotes',
-                'Chelateurs'
+                'Chélateurs'
                 ]
         c23 = ['Urologie_et_Nephrologie',
-                'Diuretiques',
+                'Diurétiques',
                 'Anticholinergiques',
-                "Supplements de potassium"
+                "Suppléments de potassium"
                 ]
         all_cs = [c1, c2, c3, c4, c5, c6, c7,\
             c7, c8, c9, c10, c11, c12, c13, c14,\
@@ -415,8 +415,8 @@ class GeneralOps(viewsets.ViewSet):
                 x.append(sb.parent.name)
                 local_cl = []
             local_cl.append(sb.name)
-
-        y.remove([])  # removing the initial empty list
+        
+        y.remove([])
 
         return JsonResponse({"x":x, "Y":y})
                 
@@ -1864,7 +1864,7 @@ class Rapport(viewsets.ViewSet):
             .filter(date_peremption__lte=two_year)
         with_two_year = qte_sup.filter(date_peremption__gte=two_year)
 
-        y = ['Perime', '1-5mois', '6-12mois',\
+        y = ['Perimé', '1-5mois', '6-12mois',\
             '12-24mois','24mois +']
         x = [len(outdated), len(with_less_six_month), \
             len(with_six_month), len(with_one_year),\
