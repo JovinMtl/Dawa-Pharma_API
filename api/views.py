@@ -389,6 +389,39 @@ class GeneralOps(viewsets.ViewSet):
             sub_cl_obj.save()
         
         return 200
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getClasses(self, request):
+        """
+        Returns the array of classes with 
+        the sub-classes:
+        x = ['class-one', 'class-two']
+        y = [[sub-cl-one, sub-cl-two], [sub-cl-one, sub-cl-two]]
+        """
+        x = []  # for classes
+        y = []  # for sub-classes
+        n_groups = []
+
+        sub_classes = SubClassThep.objects.all()
+        same_group = []
+        code_group = ''
+        local_cl = []
+        for sb in sub_classes:
+            code_group = sb.n_group
+            if code_group not in same_group:
+                same_group.append(code_group)
+                y.append(local_cl)
+                x.append(sb.parent.name)
+                local_cl = []
+            local_cl.append(sb.name)
+        
+        print(f"X:{x} ")
+
+        return JsonResponse({"x":x, "Y":y})
+                
+            
+
                 
 
 class EntrantImiti(viewsets.ViewSet):
