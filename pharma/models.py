@@ -9,8 +9,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # All the structure of Pharma operations will be defined here
 
 class UmutiEntree(models.Model):
-    date_entrant = models.DateTimeField(default=timezone.now())
-    date_peremption = models.DateField(default=timezone.now())
+    date_entrant = models.DateTimeField(default=timezone.now)
+    date_peremption = models.DateField(default=timezone.now)
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
     nom_med = models.CharField(max_length=30, default='null')
     classe_med = models.CharField(max_length=30, default='null')
@@ -34,8 +34,8 @@ class UmutiEntree(models.Model):
         return f"{self.code_med} {(str(self.date_entrant))[:7]}"
 
 class UmutiEntreeBackup(models.Model):
-    date_entrant = models.DateTimeField(default=timezone.now())
-    date_peremption = models.DateField(default=timezone.now())
+    date_entrant = models.DateTimeField(default=timezone.now)
+    date_peremption = models.DateField(default=timezone.now)
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
     nom_med = models.CharField(max_length=30, default='null')
     classe_med = models.CharField(max_length=30, default='null')
@@ -80,7 +80,7 @@ class ImitiSet(models.Model):
     #    {'date':"2025,04", 'qte':"3", 'code_operation':'12stM'},
     # ]
     qte_entrant_big = models.IntegerField(default=0) #twisunga mukugira rapport y'iyisigaye
-    date_last_vente = models.DateTimeField(default=timezone.now()) #aho uwo muti uheruka gusohoka ku murwayi
+    date_last_vente = models.DateTimeField(default=timezone.now) #aho uwo muti uheruka gusohoka ku murwayi
     checked_imiti = models.TextField() # for tracking imitiEntree checked(array of code_operation)
     checked_qte = models.TextField() # for tracking qte on each umutiEntree
 
@@ -112,6 +112,9 @@ class Client(models.Model):
     beneficiaire = models.CharField(max_length=25, default='inconnu')
     relation = models.CharField(max_length=10, default='lui-meme')
     joined_on = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.beneficiaire}:{self.nom_adherant}"
 
 class BonDeCommand(models.Model):
     beneficaire = models.ForeignKey(Client, on_delete=models.CASCADE)
@@ -166,7 +169,7 @@ class UmutiSold(models.Model):
     code_operation_entrant = models.CharField(max_length=12, default='null') #code operation uyo muti winjiriyeko
     code_operation = models.CharField(max_length=12, default='null') #common with other sold together
     operator = models.CharField(max_length=15, default='null')
-    date_operation = models.DateTimeField(default=timezone.now())
+    date_operation = models.DateTimeField(default=timezone.now)
     bon_de_commande = models.ForeignKey(BonDeCommande,\
             on_delete=models.CASCADE, default=getBonDeCommandeInstance)
 
@@ -190,7 +193,7 @@ class imitiSuggest(models.Model):
     p_achat = models.IntegerField(default=0)
     p_vente = models.IntegerField(default=0)
     benefice = models.IntegerField(default=0)
-    previous_date = models.DateTimeField(default=timezone.now())
+    previous_date = models.DateTimeField(default=timezone.now)
     qte_big = models.IntegerField(default=0)
     qte_restant = models.IntegerField(default=0)
 
@@ -200,7 +203,7 @@ class UsdToBif(models.Model):
     of Usd into Bif.
     """
     actualExchangeRate = models.IntegerField(default=0)
-    effect_date = models.DateTimeField(default=timezone.now())
+    effect_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return f"1$ = {self.actualExchangeRate} Bif. From {str(self.effect_date)[:7]}."
