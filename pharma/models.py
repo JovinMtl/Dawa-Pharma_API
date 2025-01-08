@@ -113,6 +113,20 @@ class Client(models.Model):
     relation = models.CharField(max_length=10, default='lui-meme')
     joined_on = models.DateField(default=timezone.now)
 
+class BonDeCommand(models.Model):
+    beneficaire = models.ForeignKey(Client, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
+                            default=getAssuranceInstance)
+    meds = models.TextField() # like ['Quinine, 1, 1500','Albendazole, 2, 2400','']
+    cout = models.IntegerField(default=0)
+    assu_rate = models.IntegerField(default=0)
+    is_paid = models.BooleanField(default=False)
+    date_paid = models.DateField(blank=True)
+    date_prescri = models.DateField(blank=True)
+    date_served = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.beneficaire.beneficiaire}: {self.cout}"
 
 class BonDeCommande(models.Model):
     beneficiaire = models.CharField(max_length=25, default='inconnu')
