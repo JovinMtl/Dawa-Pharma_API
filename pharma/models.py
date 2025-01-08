@@ -106,6 +106,13 @@ def getAssuranceInstance():
         new_bon.save()
     
     return new_bon
+class Client(models.Model):
+    nom_adherant = models.CharField(max_length=25, default='adhe')
+    employeur = models.CharField(max_length=25, default='empl')
+    beneficiaire = models.CharField(max_length=25, default='inconnu')
+    relation = models.CharField(max_length=10, default='lui-meme')
+    joined_on = models.DateField(default=timezone.now)
+
 
 class BonDeCommande(models.Model):
     beneficiaire = models.CharField(max_length=25, default='inconnu')
