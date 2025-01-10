@@ -109,13 +109,7 @@ class GeneralOps(viewsets.ViewSet):
         assu_rate = 0
         if data_sent:
             data_sent = data_sent.get('imiti')
-            print("Have received assuData: ", data_sent.get('assu'))
             assu_name = data_sent.get('assu')[0]
-            assu_rate = data_sent.get('assu')[1]
-            if assu_rate > 100 or assu_rate < 0:
-                return JsonResponse({"status": 0,\
-                                'reason':'assu_rate invalid'},\
-                                status=406)
         else:
             print("Did not receive assuData, but ", data_sent)
         try:
