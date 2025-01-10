@@ -129,6 +129,18 @@ class GeneralOps(viewsets.ViewSet):
                                 'reason':"Assurance ajoutee"},\
                                 status=200)
     
+    @action(methods=['post', 'get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def addClient(self, request):
+        data_sent = request.data
+        status = False
+        print("The data sent:", data_sent)
+        return JsonResponse({"status": 1,\
+                                'reason':"Client ajoutee"},\
+                                status=200)
+
+
+    
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
     def isSetUp(self, request):
