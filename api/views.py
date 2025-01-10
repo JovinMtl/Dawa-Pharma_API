@@ -141,7 +141,7 @@ class GeneralOps(viewsets.ViewSet):
     
     @action(methods=['post', 'get'], detail=False,\
              permission_classes= [IsAuthenticated])
-    def getClient(self, request):
+    def getClients(self, request):
         data_sent = request.data
         status = False
         print("The data sent:", data_sent)
