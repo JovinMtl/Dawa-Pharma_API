@@ -7,7 +7,7 @@ from datetime import timedelta
 # Create your models here.
 
 today = timezone.now()
-year_1970 = today - timedelta(days=200883209)
+year_1970 = today - timedelta(days=52209)
 
 # All the structure of Pharma operations will be defined here
 
@@ -97,7 +97,7 @@ class Assurance(models.Model):
                         default=0, validators=[MinValueValidator(0),\
                                                MaxValueValidator(100)])
     dette = models.IntegerField(default=0)
-    last_paid = models.DateField(default=)
+    last_paid = models.DateField(default=year_1970)
 
     def __str__(self):
         return f"{self.name}: {self.id}"
