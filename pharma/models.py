@@ -2,9 +2,12 @@ from django.db import models
 # from datetime import datetime
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
-
+from datetime import timedelta
 
 # Create your models here.
+
+today = timezone.now()
+year_1970 = today - timedelta(days=200883209)
 
 # All the structure of Pharma operations will be defined here
 
@@ -93,6 +96,8 @@ class Assurance(models.Model):
     rate_assure = models.PositiveIntegerField("Le Taux d'assurer le Malade",\
                         default=0, validators=[MinValueValidator(0),\
                                                MaxValueValidator(100)])
+    dette = models.IntegerField(default=0)
+    last_paid = models.DateField(default=)
 
     def __str__(self):
         return f"{self.name}: {self.id}"
