@@ -1060,6 +1060,14 @@ class ImitiOut(viewsets.ViewSet):
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
+        case = 0
+        if not client:
+            case = 1
+        elif not client.get('nom_adherant'):
+            case = 2
+        else:
+            case = 3
+        print(f"The case :{case}")
         return JsonResponse({"status": 1,\
                                 'reason':"Vente Sent"},\
                                 status=200)
