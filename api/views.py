@@ -204,6 +204,20 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'server failed'},\
                             status=406)
     
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getDefRate(self, request):
+        """
+        Returns the assu_rate for Pharmacie Ubuzima
+        """
+        query = Assurance.objects.filter(name="Pharmacie Ubuzima")
+        if query:
+            assu_rate = query[0].rate_assure
+            return JsonResponse({"status": 1,\
+                                'reason':"Client ajoutee",\
+                                'rep': assu_rate},\
+                                status=200)
+    
     @action(methods=['post'], detail=False,\
              permission_classes= [AllowAny])
     def setBons(self, request):
@@ -1042,6 +1056,9 @@ class ImitiOut(viewsets.ViewSet):
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
+        return JsonResponse({"status": 1,\
+                                'reason':"Vente Sent"},\
+                                status=200)
         # First checking the client dict, in order to access the
         # BonDeCommande objet to assign to UmutiSold
         bon_de_commande = BonDeCommande.objects.first()
