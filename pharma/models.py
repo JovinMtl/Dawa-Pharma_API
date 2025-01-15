@@ -216,6 +216,7 @@ class UsdToBif(models.Model):
         return f"1$ = {self.actualExchangeRate} Bif. From {str(self.effect_date)[:7]}."
 
 class InfoClient(models.Model):
+    # Still can't remember it's use: Jan 15, 2025
     name = models.CharField(max_length=25, default='inconnu')
     phone_number = models.CharField(max_length=12, default='1111')
     assureur = models.ForeignKey(Assurance,on_delete=models.CASCADE)

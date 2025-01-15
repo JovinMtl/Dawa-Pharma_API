@@ -217,6 +217,10 @@ class GeneralOps(viewsets.ViewSet):
                                 'reason':"Client ajoutee",\
                                 'rep': assu_rate},\
                                 status=200)
+        return JsonResponse({"status": 0,\
+                                'reason':"Client ajoutee",\
+                                'rep': 0},\
+                                status=404)
     
     @action(methods=['post'], detail=False,\
              permission_classes= [AllowAny])
