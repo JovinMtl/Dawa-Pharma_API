@@ -17,13 +17,14 @@ import os
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
-    BonDeCommande, Assurance, ClassThep, SubClassThep
+    BonDeCommande, Assurance, ClassThep, SubClassThep,\
+    Client
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
-      BonCommaSeria, SoldAsBonSeria
+      BonCommaSeria, SoldAsBonSeria, ClientSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -142,9 +143,10 @@ class GeneralOps(viewsets.ViewSet):
     @action(methods=['post', 'get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def getClients(self, request):
-        data_sent = request.data
-        status = False
-        print("The data sent:", data_sent)
+        queryset = Client.objects.all()
+        query_seria = ClientSeria(queryset, many=True)
+        if query_seria.is_valid:
+            return Response(query_seria.data)
         return JsonResponse({"status": 1,\
                                 'reason':"Client ajoutee"},\
                                 status=200)
@@ -189,9 +191,12 @@ class GeneralOps(viewsets.ViewSet):
              permission_classes= [AllowAny])
     def getAssu(self, request):
         """
-        Returns all instances of Assurances
+        Returns all instances of Assurances, except
+        of name: 'Sans' and 'Pharmacie Ubuzima'
         """
-        assu = Assurance.objects.all()
+        assu = Assurance.objects\
+            .exclude(Q(name='Sans')| \
+                     Q(name="Pharmacie Ubuzima"))
         assu_seria = AssuranceSeria(assu, many=True)
         if assu_seria.is_valid:
             return Response(assu_seria.data)
