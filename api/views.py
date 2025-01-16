@@ -1182,7 +1182,7 @@ class ImitiOut(viewsets.ViewSet):
         rate_assure = assu.rate_assure
         if query:
             return [query[0], rate_assure]
-        return None
+        return [None, 0]
     
     def _getClient1(self)->list:
         """
