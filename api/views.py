@@ -59,6 +59,7 @@ class GeneralOps(viewsets.ViewSet):
         checks and creates required instances.
         """
         created = []
+        num_client = self._createInitClient()
         try:
             assu_sans = Assurance.objects.get(name="Sans")
         except Assurance.DoesNotExist:
@@ -95,7 +96,7 @@ class GeneralOps(viewsets.ViewSet):
             new_taux.save()
         
         cls = self._createClasses_cloned()
-        num_client = self._createInitClient()
+        
         created.append(f"with {cls} ther. classes")
         created.append(f"{num_client} Init clients")
 
