@@ -1083,6 +1083,8 @@ class ImitiOut(viewsets.ViewSet):
         else:
             # Assure: categorie: au
             case = 3
+            client_obj, rate_assure = self._getClient3(client)
+            categorie = client.get('categorie')
         print(f"The case :{case}")
         return JsonResponse({"status": 1,\
                                 'reason':"Vente Sent"},\
@@ -1152,7 +1154,26 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"sold": len(imiti_sold)})
     
-    def _getClient2(self)->Client:
+    def _getClient3(self, dataClient)->list:
+        """Returns a instance created or existed client with the rate_assure."""
+        benefiaire = dataClient.get('nom_client')
+        rate_assure = dataClient.get('rate_assure')
+        try:
+            client = Client.objects.get(benefiaire=benefiaire)
+        except Client.DoesNotExist:
+            # create that client
+            client = Client.objects.create(benefiaire=benefiaire)
+            client.employeur = dataClient.get('employeur')
+            client.joined_on = timezone.now()
+            client.nom_adherant = dataClient.get('nom_adherant')
+            client.numero_carte = dataClient.get('numero_carte')
+            client.relation = dataClient.get('relation')
+            client.save()
+            return [client, rate_assure]
+        else:
+            return [client, rate_assure]
+
+    def _getClient2(self)->list:
         """
         Will return the only instance for special client
         """
@@ -1163,7 +1184,7 @@ class ImitiOut(viewsets.ViewSet):
             return [query[0], rate_assure]
         return None
     
-    def _getClient1(self)->Client:
+    def _getClient1(self)->list:
         """
         Will return the instance for ordinary Client
         """
