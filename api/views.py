@@ -447,9 +447,9 @@ class GeneralOps(viewsets.ViewSet):
         ordinary = None
         created = 0
         try:
-            ordinary = Client.objects.get(benefiaire="Ordinary")
+            ordinary = Client.objects.get(beneficiaire="Ordinary")
         except Client.DoesNotExist:
-            ordinary = Client.objects.create(benefiaire="Ordinary")
+            ordinary = Client.objects.create(beneficiaire="Ordinary")
             ordinary.employeur = "Self"
             ordinary.joined_on = timezone.now()
             ordinary.nom_adherant = "Self"
