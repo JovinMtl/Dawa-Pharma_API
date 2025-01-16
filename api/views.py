@@ -1085,7 +1085,7 @@ class ImitiOut(viewsets.ViewSet):
             case = 3
             client_obj, rate_assure = self._getClient3(client)
             categorie = client.get('categorie')
-        print(f"The case :{case}")
+        print(f"The case :{case}, rate:{rate_assure}")
         return JsonResponse({"status": 1,\
                                 'reason':"Vente Sent"},\
                                 status=200)
@@ -1191,7 +1191,7 @@ class ImitiOut(viewsets.ViewSet):
         query = Client.objects.filter(beneficiaire='Ordinaire')
         if query:
             return [query[0], 0]
-        return None
+        return [None, 0]
 
     def _updateReduction(self, \
             bon_de_commande:BonDeCommande, \
