@@ -462,9 +462,9 @@ class GeneralOps(viewsets.ViewSet):
         else:
             pass
         try:
-            special = Client.objects.get(benefiaire="Special")
+            special = Client.objects.get(beneficiaire="Special")
         except Client.DoesNotExist:
-            special = Client.objects.create(benefiaire="Special")
+            special = Client.objects.create(beneficiaire="Special")
             special.employeur = "Self"
             special.joined_on = timezone.now()
             special.nom_adherant = "Self"
@@ -1072,13 +1072,13 @@ class ImitiOut(viewsets.ViewSet):
     
     def _getClient3(self, dataClient)->list:
         """Returns a instance created or existed client with the rate_assure."""
-        benefiaire = dataClient.get('nom_client')
+        beneficiaire = dataClient.get('nom_client')
         rate_assure = dataClient.get('rate_assure')
         try:
-            client = Client.objects.get(benefiaire=benefiaire)
+            client = Client.objects.get(beneficiaire=beneficiaire)
         except Client.DoesNotExist:
             # create that client
-            client = Client.objects.create(benefiaire=benefiaire)
+            client = Client.objects.create(beneficiaire=beneficiaire)
             client.employeur = dataClient.get('employeur')
             client.joined_on = timezone.now()
             client.nom_adherant = dataClient.get('nom_adherant')
