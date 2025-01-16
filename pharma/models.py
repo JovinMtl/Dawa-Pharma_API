@@ -123,7 +123,7 @@ class Client(models.Model):
         return f"{self.beneficiaire}:{self.nom_adherant}"
 
 class BonDeCommand(models.Model):
-    beneficaire = models.ForeignKey(Client, on_delete=models.CASCADE)
+    beneficiaire = models.ForeignKey(Client, on_delete=models.CASCADE)
     organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
                             default=getAssuranceInstance)
     meds = models.TextField() # like ['Quinine, 1, 1500','Albendazole, 2, 2400','']
