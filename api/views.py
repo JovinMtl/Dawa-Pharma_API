@@ -78,9 +78,11 @@ class GeneralOps(viewsets.ViewSet):
             bon_default = BonDeCommand.objects.get\
                 (organization__name='Sans')
         except BonDeCommand.DoesNotExist:
+            client_ordi = Client.objects.get(beneficiaire="Ordinary")
             assu_sans = Assurance.objects.get(name="Sans")
             bon_default = BonDeCommand.objects\
-                .create(organization=assu_sans)
+                .create(beneficiaire=client_ordi, \
+                    organization=assu_sans)
             bon_default.num_du_bon = '0001'
             bon_default.is_paid = True
             bon_default.save()
