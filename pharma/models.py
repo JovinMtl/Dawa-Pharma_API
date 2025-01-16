@@ -133,8 +133,8 @@ class BonDeCommand(models.Model):
     num_bon = models.IntegerField(default=0)
     categorie = models.CharField(max_length=4, default='null') # no, tv, mt, md, au
     is_paid = models.BooleanField(default=False)
-    date_paid = models.DateField(blank=True)
-    date_prescri = models.DateField(blank=True)
+    date_paid = models.DateField(default=year_1970)
+    date_prescri = models.DateField(default=year_1970)
     date_served = models.DateField(default=timezone.now)
 
     def __str__(self):
