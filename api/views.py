@@ -1055,17 +1055,30 @@ class ImitiOut(viewsets.ViewSet):
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def sell(self, request):
+        """
+        Handles the sell operation
+        """
         data_query = request.data
         print(f"The data sent is: {data_query}")
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
         case = 0
+
+        # create client instance for case 3.
+        # otherwise, 1&2, link the existing instance 
+        client_obj = None
+        categorie = ''
         if not client:
+            # Client ordinaire, categorie: 'no'
             case = 1
+            client_obj = self._getClient1()
+            categorie = 'no'
         elif not client.get('nom_adherant'):
+            # Client special, categorie: tv, mt, md
             case = 2
         else:
+            # Assure: categorie: au
             case = 3
         print(f"The case :{case}")
         return JsonResponse({"status": 1,\
@@ -1136,6 +1149,15 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"sold": len(imiti_sold)})
     
+    def _getClient1(self)->Client:
+        """
+        Will return the instance for ordinary Client
+        """
+        query = Client.objects.filter(beneficiaire='Ordinaire')
+        if query:
+            return query[0]
+        return None
+
     def _updateReduction(self, \
             bon_de_commande:BonDeCommande, \
                 total:int=0)->BonDeCommande:

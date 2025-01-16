@@ -141,6 +141,7 @@ class BonDeCommand(models.Model):
         return f"{self.beneficaire.beneficiaire}: {self.cout}"
 
 class BonDeCommande(models.Model):
+    """ To be deprecated, kept for compatibility issue"""
     beneficiaire = models.CharField(max_length=25, default='inconnu')
     organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
                             default=getAssuranceInstance)
