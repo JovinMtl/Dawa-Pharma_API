@@ -17,7 +17,7 @@ import os
 #importing my models from Pharma
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
-    BonDeCommande, Assurance, ClassThep, SubClassThep,\
+    BonDeCommand, Assurance, ClassThep, SubClassThep,\
     Client
 
 #importing the serializers
@@ -75,11 +75,11 @@ class GeneralOps(viewsets.ViewSet):
             assu_ph.save()
             created.append(assu_sans.name)
         try:
-            bon_default = BonDeCommande.objects.get\
+            bon_default = BonDeCommand.objects.get\
                 (organization__name='Sans')
-        except BonDeCommande.DoesNotExist:
+        except BonDeCommand.DoesNotExist:
             assu_sans = Assurance.objects.get(name="Sans")
-            bon_default = BonDeCommande.objects\
+            bon_default = BonDeCommand.objects\
                 .create(organization=assu_sans)
             bon_default.num_du_bon = '0001'
             bon_default.is_paid = True
@@ -176,9 +176,9 @@ class GeneralOps(viewsets.ViewSet):
             isReady = False
             missing.append("Pharmacie Ubuzima")
         try:
-            bon_default = BonDeCommande.objects.get\
+            bon_default = BonDeCommand.objects.get\
                 (organization__name='Sans')
-        except BonDeCommande.DoesNotExist:
+        except BonDeCommand.DoesNotExist:
             isReady = False
             missing.append("Default Bon de Commande")
         taux_usd = UsdToBif.objects.first()
@@ -228,15 +228,15 @@ class GeneralOps(viewsets.ViewSet):
              permission_classes= [AllowAny])
     def setBons(self, request):
         """
-        Sets to true the given instances of BonDeCommande
+        Sets to true the given instances of BonDeCommand
         """ 
         bon_ids = request.data.get('imiti')
         print("THe requested data Set:", bon_ids)
 
         for id in bon_ids:
             try:
-                bon = BonDeCommande.objects.get(num_du_bon=id)
-            except BonDeCommande.DoesNotExist:
+                bon = BonDeCommand.objects.get(num_du_bon=id)
+            except BonDeCommand.DoesNotExist:
                 return JsonResponse({"status": 0,\
                             'reason':'Bon invalide'},\
                             status=406)
@@ -253,15 +253,15 @@ class GeneralOps(viewsets.ViewSet):
              permission_classes= [AllowAny])
     def getBons(self, request):
         """
-        Returns all instances of BonDeCommande
+        Returns all instances of BonDeCommand
         """
         requested_data = request.data.get('imiti')
         print("THe requested data:", requested_data)
         request_bons = []
         for bon in requested_data:
             try:
-                query = BonDeCommande.objects.get(id=bon)
-            except BonDeCommande.DoesNotExist:
+                query = BonDeCommand.objects.get(id=bon)
+            except BonDeCommand.DoesNotExist:
                 return JsonResponse({"status": 0,\
                             'reason':'Bon invalide'},\
                             status=406)
@@ -438,8 +438,8 @@ class GeneralOps(viewsets.ViewSet):
     def _createInitClient(self)->int:
         """
         Will create two instances of Client:
-        1. beneficiaire: Ordinary, rate = 0
-        2. beneficiaire: Special , rate = Pharmacie Ubuzima
+        1. beneficiaire: Ordinary,
+        2. beneficiaire: Special 
         """
         ordinary = None
         created = 0
@@ -1003,8 +1003,8 @@ class ImitiOut(viewsets.ViewSet):
                                 'reason':"Vente Sent"},\
                                 status=200)
         # First checking the client dict, in order to access the
-        # BonDeCommande objet to assign to UmutiSold
-        bon_de_commande = BonDeCommande.objects.first()
+        # BonDeCommand objet to assign to UmutiSold
+        bon_de_commande = BonDeCommand.objects.first()
         total_facture = 0
         once = 0
         for actual in panier:
@@ -1107,8 +1107,8 @@ class ImitiOut(viewsets.ViewSet):
         return [None, 0]
 
     def _updateReduction(self, \
-            bon_de_commande:BonDeCommande, \
-                total:int=0)->BonDeCommande:
+            bon_de_commande:BonDeCommand, \
+                total:int=0)->BonDeCommand:
         """Updates the total dettes in as reduction."""
         org = bon_de_commande.organization
         paid = total * (org.rate_assure/100)
@@ -1119,10 +1119,10 @@ class ImitiOut(viewsets.ViewSet):
     
 
     def _createBon(self, client, price:int)->int:
-        """Will create a new instance of BonDeCommande
+        """Will create a new instance of BonDeCommand
         according to client dict.
         """
-        new_bon = BonDeCommande.objects.create()
+        new_bon = BonDeCommand.objects.create()
         new_bon.beneficiaire = client.get('nom_client')
         org = client.get('assureur') # use name of organization
         try:
@@ -1209,7 +1209,7 @@ class ImitiOut(viewsets.ViewSet):
     def _imitiSell(self, umuti:UmutiEntree, \
                    qte:int, operator:str, \
                    reference_umuti:ImitiSet,\
-                bon_de_commande:BonDeCommande=None):
+                bon_de_commande:BonDeCommand=None):
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
 
@@ -1960,7 +1960,7 @@ class Rapport(viewsets.ViewSet):
     def _builtVente(self, meds):
         """
         Will return a mixed info from
-          UmutiSold, BonDeCommande and Assurance.
+          UmutiSold, BonDeCommand and Assurance.
         needed dict: {
             'nom_med', 'qte', 'pa','pv','total','bnf',
             'caisse', 'dette', 'assu', 'categ','date',
@@ -2032,11 +2032,11 @@ class Rapport(viewsets.ViewSet):
              permission_classes= [AllowAny])
     def getUnpaidUmutiSold(self, request):
         """
-        Return UmutiSold instance(s) with the unpaid BonDeCommande.
+        Return UmutiSold instance(s) with the unpaid BonDeCommand.
         default range is 7 days.
         """
         begin_date, end_date = self._getDate(request.data)
-        # queryset = BonDeCommande.filter(date_du_bon__gte=begin_date)\
+        # queryset = BonDeCommand.filter(date_du_bon__gte=begin_date)\
         #     .filter(date_du_bon__lte=end_date)\
         #     .filter(is_paid=False)
         queryset = UmutiSold.objects.filter\
@@ -2055,8 +2055,8 @@ class Rapport(viewsets.ViewSet):
     def getOnNoBon(self, request):
         """
         Will return all two variables: 
-        - sum of ones UmutiSold without BonDeCommande
-        - sum of ones UmutiSold with BonDeCommande 
+        - sum of ones UmutiSold without BonDeCommand
+        - sum of ones UmutiSold with BonDeCommand 
         """
         begin_date, end_date = self._getDate(request.data)
         on_bon, no_bon = 0, 0
@@ -2085,12 +2085,12 @@ class Rapport(viewsets.ViewSet):
         """
         Will return the comparison of categories:
         tv, mt, md, au, ord(for simple clients).
-        Should source in BonDeCommande
+        Should source in BonDeCommand
         """
         begin_date, end_date = self._getDate(request.data)
         tv, mt, md, au, ord = 0,0,0,0,0
         x, y = [], []
-        queryset = BonDeCommande.objects.filter(date_served__gte=begin_date)\
+        queryset = BonDeCommand.objects.filter(date_served__gte=begin_date)\
             .filter(date_served__lte=end_date)
         tv = len(queryset.filter(categorie='tv'))
         mt = len(queryset.filter(categorie='mt'))

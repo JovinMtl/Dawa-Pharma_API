@@ -92,7 +92,7 @@ class ImitiSet(models.Model):
 
 
 class Assurance(models.Model):
-    name = models.CharField(max_length=25, default='null')
+    name = models.CharField(max_length=25, default='null', unique=True)
     rate_assure = models.PositiveIntegerField("Le Taux d'assurer le Malade",\
                         default=0, validators=[MinValueValidator(0),\
                                                MaxValueValidator(100)])
