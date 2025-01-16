@@ -129,7 +129,9 @@ class BonDeCommand(models.Model):
     meds = models.TextField() # like ['Quinine, 1, 1500','Albendazole, 2, 2400','']
     cout = models.IntegerField(default=0)
     assu_rate = models.IntegerField(default=0)
+    montant_dette = models.IntegerField(default=0)
     num_bon = models.IntegerField(default=0)
+    categorie = models.CharField(max_length=4, default='null') # no, tv, mt, md, au
     is_paid = models.BooleanField(default=False)
     date_paid = models.DateField(blank=True)
     date_prescri = models.DateField(blank=True)
