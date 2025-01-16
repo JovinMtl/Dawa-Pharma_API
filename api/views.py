@@ -1069,14 +1069,17 @@ class ImitiOut(viewsets.ViewSet):
         # otherwise, 1&2, link the existing instance 
         client_obj = None
         categorie = ''
+        rate_assure = 0
         if not client:
             # Client ordinaire, categorie: 'no'
             case = 1
-            client_obj = self._getClient1()
+            client_obj, rate_assure = self._getClient1()
             categorie = 'no'
         elif not client.get('nom_adherant'):
             # Client special, categorie: tv, mt, md
             case = 2
+            client_obj, rate_assure = self._getClient2()
+            categorie = client.get('categorie')
         else:
             # Assure: categorie: au
             case = 3
@@ -1149,13 +1152,24 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"sold": len(imiti_sold)})
     
+    def _getClient2(self)->Client:
+        """
+        Will return the only instance for special client
+        """
+        query = Client.objects.filter(beneficiaire='Special')
+        assu = Assurance.objects.get(name = "Pharmacie Ubuzima")
+        rate_assure = assu.rate_assure
+        if query:
+            return [query[0], rate_assure]
+        return None
+    
     def _getClient1(self)->Client:
         """
         Will return the instance for ordinary Client
         """
         query = Client.objects.filter(beneficiaire='Ordinaire')
         if query:
-            return query[0]
+            return [query[0], 0]
         return None
 
     def _updateReduction(self, \
