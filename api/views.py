@@ -1004,9 +1004,9 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         print(f"The case :{case}, rate:{rate_assure}")
-        return JsonResponse({"status": 1,\
-                                'reason':"Vente Sent"},\
-                                status=200)
+        # return JsonResponse({"status": 1,\
+        #                         'reason':"Vente Sent"},\
+        #                         status=200)
         # First checking the client dict, in order to access the
         # BonDeCommand objet to assign to UmutiSold
         bon_de_commande = BonDeCommand.objects.first()
