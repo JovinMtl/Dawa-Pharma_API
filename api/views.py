@@ -148,7 +148,8 @@ class GeneralOps(viewsets.ViewSet):
     @action(methods=['post', 'get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def getClients(self, request):
-        queryset = Client.objects.all()
+        queryset = Client.objects.exclude(\
+            Q(nom_adherant="Self"))
         query_seria = ClientSeria(queryset, many=True)
         if query_seria.is_valid:
             return Response(query_seria.data)
