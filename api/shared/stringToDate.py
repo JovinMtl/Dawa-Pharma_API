@@ -29,7 +29,7 @@ def stringToDate(date:str)->list:
     if not (months.get(date_list[1])): # Date of this form: '2024-12-16'
         month_ = date_list[1]
         if month_[0] == '0':
-            month = month_[1]
+            month = int(month_[1])
     else:
         month = int(months.get(date_list[1]))
     day = int(date_list[2])
