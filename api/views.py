@@ -1049,16 +1049,16 @@ class ImitiOut(viewsets.ViewSet):
                                 categorie=categorie)
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Assurance does ":"not exist"})
-                        # completing bon_de_commande
-                        bon_de_commande = self._completeBon(\
-                            bon_de_commande=bon_de_commande,med=umuti[0], \
-                            qte=qte=order[2])
+                        
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
                                     operator=request.user, \
                                         reference_umuti=be_sold,\
                                         bon_de_commande=bon_de_commande)
-
-                        if sold == 200:
+                        # completing bon_de_commande
+                        bon_de_commande = self._completeBon(\
+                            bon_de_commande=bon_de_commande,\
+                            code_operation=sold)
+                        if sold:
                             total_facture += be_sold.prix_vente * order[2]
                 once += 1 # create bon_de_commande only once
         # Should now update the reduction in bon_de_commande
@@ -1142,7 +1142,9 @@ class ImitiOut(viewsets.ViewSet):
 
         return bon_de_commande
     def _completeBon(self,bon_de_commande:BonDeCommand,\
-         med, qte)->BonDeCommand:
+         code_operation:str)->BonDeCommand:
+        bon_de_commande.meds += f"{code_operation};"
+        bon_de_commande.save()
         return bon_de_commande
     def _createBon(self, client,\
         client_obj, assu_obj, \
