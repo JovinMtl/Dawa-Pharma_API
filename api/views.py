@@ -1140,7 +1140,6 @@ class ImitiOut(viewsets.ViewSet):
 
         return bon_de_commande
     
-
     def _createBon(self, client,\
         client_obj, assu_obj, \
         categorie)->int:
@@ -1163,7 +1162,7 @@ class ImitiOut(viewsets.ViewSet):
         
         if client.get('date_bon'):
             date_arr = stringToDate(client.get('date_bon'))
-            new_bon.date_du_bon = timezone.datetime(\
+            new_bon.date_prescri = timezone.datetime(\
                 date_arr[0], date_arr[1], date_arr[2])
         new_bon.date_served = timezone.now()
 
