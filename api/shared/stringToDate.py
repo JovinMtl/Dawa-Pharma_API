@@ -22,9 +22,16 @@ months = {
 }
 date = 'Thu Dec 05 2024 02:00:00 GMT+0200 (Central Africa Time)'
 def stringToDate(date:str)->list:
-    date_list = date.split()
-    year = int(date_list[3])
-    month = int(months.get(date_list[1]))
+    date_list = str(date).split('-')
+    print(f"Date list: {date_list}; from {date}")
+    year = int(date_list[0])
+    month = 1
+    if not (months.get(date_list[1])): # Date of this form: '2024-12-16'
+        month_ = date_list[1]
+        if month_[0] == '0':
+            month = month_[1]
+    else:
+        month = int(months.get(date_list[1]))
     day = int(date_list[2])
 
     return [year, month, day]
