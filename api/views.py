@@ -1253,7 +1253,7 @@ class ImitiOut(viewsets.ViewSet):
         umuti.save()
         new_vente.save()
         
-        return code
+        return new_vente.code_operation
     
 
 
