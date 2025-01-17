@@ -984,22 +984,24 @@ class ImitiOut(viewsets.ViewSet):
         # create client instance for case 3.
         # otherwise, 1&2, link the existing instance 
         client_obj = None
+        assu_obj = None
+        bon_de_commande = None
         categorie = ''
         rate_assure = 0
         if not client:
             # Client ordinaire, categorie: 'no'
             case = 1
-            client_obj, rate_assure = self._getClient1()
+            client_obj, assu_obj = self._getClient1()
             categorie = 'no'
         elif not client.get('nom_adherant'):
             # Client special, categorie: tv, mt, md
             case = 2
-            client_obj, rate_assure = self._getClient2()
+            client_obj, assu_obj = self._getClient2()
             categorie = client.get('categorie')
         else:
             # Assure: categorie: au
             case = 3
-            client_obj, rate_assure = self._getClient3(client)
+            client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         print(f"The case :{case}, rate:{rate_assure}")
         return JsonResponse({"status": 1,\
@@ -1041,10 +1043,14 @@ class ImitiOut(viewsets.ViewSet):
                             # there is client data, and is special
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
-                                client=client, price=be_sold.prix_vente,\
-                                client_obj=client_obj)
+                                client=client, \
+                                client_obj=client_obj,\
+                                assu_obj=assu_obj,\
+                                categorie=categorie)
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Assurance does ":"not exist"})
+                        # completing bon_de_commande
+                        # here
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
                                     operator=request.user, \
                                         reference_umuti=be_sold,\
@@ -1076,6 +1082,7 @@ class ImitiOut(viewsets.ViewSet):
         beneficiaire = dataClient.get('nom_client')
         rate_assure = int(dataClient.get('rate_assure'))
         assureur = dataClient.get('assureur')
+        assurance = None
         # Check to create assurance
         try:
             assurance = Assurance.objects.get(name=assureur)
@@ -1098,29 +1105,29 @@ class ImitiOut(viewsets.ViewSet):
             client.numero_carte = dataClient.get('numero_carte')
             client.relation = dataClient.get('relation')
             client.save()
-            return [client, rate_assure]
+            return [client, assurance]
         else:
-            return [client, rate_assure]
+            return [client, assurance]
 
     def _getClient2(self)->list:
         """
         Will return the only instance for special client
         """
         query = Client.objects.filter(beneficiaire='Special')
-        assu = Assurance.objects.get(name = "Pharmacie Ubuzima")
-        rate_assure = assu.rate_assure
+        assurance = Assurance.objects.get(name = "Pharmacie Ubuzima")
         if query:
-            return [query[0], rate_assure]
-        return [None, 0]
+            return [query[0], assurance]
+        return [None, assurance]
     
     def _getClient1(self)->list:
         """
         Will return the instance for ordinary Client
         """
+        assurance = Assurance.objects.get(name='Sans')
         query = Client.objects.filter(beneficiaire='Ordinaire')
         if query:
-            return [query[0], 0]
-        return [None, 0]
+            return [query[0], assurance]
+        return [None, assurance]
 
     def _updateReduction(self, \
             bon_de_commande:BonDeCommand, \
@@ -1134,24 +1141,16 @@ class ImitiOut(viewsets.ViewSet):
         return bon_de_commande
     
 
-    def _createBon(self, client, price:int,\
-        client_obj, assu_obj)->int:
+    def _createBon(self, client,\
+        client_obj, assu_obj, \
+        categorie)->int:
         """Will create a new instance of BonDeCommand
         according to client dict.
         """
-        new_bon = BonDeCommand.objects.create()
-        new_bon.beneficiaire = client_obj
-        org = client.get('assureur') # use name of organization
-        try:
-            organization = Assurance.objects.get(name=org)
-        except Assurance.DoesNotExist:
-            # indicate that assurance does not exist
-            return 403
-        else:
-            org = organization
-        new_bon.organization = org
-        new_bon.categorie = client.get('categorie')
-        new_bon.num_beneficiaire = client.get('numero_carte')
+        new_bon = BonDeCommand.objects.create\
+            (beneficiaire=client_obj, \
+            organization=assu_obj)
+        new_bon.categorie = categorie
         # Dealing with uniqueness of num_du_bon
         if new_bon.organization.name \
             == "Pharmacie Ubuzima" or \
@@ -1162,8 +1161,6 @@ class ImitiOut(viewsets.ViewSet):
         else:
             new_bon.num_du_bon = client.get('numero_bon')
         
-        
-        new_bon.montant_dette = org.rate_assure * price
         if client.get('date_bon'):
             date_arr = stringToDate(client.get('date_bon'))
             new_bon.date_du_bon = timezone.datetime(\
