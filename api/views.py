@@ -1041,7 +1041,8 @@ class ImitiOut(viewsets.ViewSet):
                             # there is client data, and is special
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
-                                client=client, price=be_sold.prix_vente)
+                                client=client, price=be_sold.prix_vente,\
+                                client_obj=client_obj)
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Assurance does ":"not exist"})
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
@@ -1073,7 +1074,19 @@ class ImitiOut(viewsets.ViewSet):
     def _getClient3(self, dataClient)->list:
         """Returns a instance created or existed client with the rate_assure."""
         beneficiaire = dataClient.get('nom_client')
-        rate_assure = dataClient.get('rate_assure')
+        rate_assure = int(dataClient.get('rate_assure'))
+        assureur = dataClient.get('assureur')
+        # Check to create assurance
+        try:
+            assurance = Assurance.objects.get(name=assureur)
+        except Assurance.DoesNotExist:
+            assurance = Assurance.objects.create(name=assureur)
+            assurance.rate_assure = rate_assure
+            assurance.save()
+        else:
+            assurance.rate_assure = rate_assure
+        
+        # Check or create client
         try:
             client = Client.objects.get(beneficiaire=beneficiaire)
         except Client.DoesNotExist:
@@ -1121,12 +1134,13 @@ class ImitiOut(viewsets.ViewSet):
         return bon_de_commande
     
 
-    def _createBon(self, client, price:int)->int:
+    def _createBon(self, client, price:int,\
+        client_obj, assu_obj)->int:
         """Will create a new instance of BonDeCommand
         according to client dict.
         """
         new_bon = BonDeCommand.objects.create()
-        new_bon.beneficiaire = client.get('nom_client')
+        new_bon.beneficiaire = client_obj
         org = client.get('assureur') # use name of organization
         try:
             organization = Assurance.objects.get(name=org)
@@ -1144,7 +1158,7 @@ class ImitiOut(viewsets.ViewSet):
             new_bon.organization.name == "Sans":
             code_8 = GenerateCode(7)
             code_bon = code_8.giveCode()
-            new_bon.num_du_bon = 'P_' + code_bon
+            new_bon.num_bon = 'P_' + code_bon
         else:
             new_bon.num_du_bon = client.get('numero_bon')
         
