@@ -138,7 +138,7 @@ class BonDeCommand(models.Model):
     date_served = models.DateField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.beneficaire.beneficiaire}: {self.cout}"
+        return f"{self.beneficiaire.beneficiaire}: {self.cout}"
 
 class BonDeCommande(models.Model):
     """ To be deprecated, kept for compatibility issue"""
@@ -160,9 +160,9 @@ class BonDeCommande(models.Model):
 def getBonDeCommandeInstance():
     new_bon = None
     try:
-        new_bon = BonDeCommande.objects.first()
-    except BonDeCommande.DoesNotExist:
-        new_bon = BonDeCommande.objects.create()
+        new_bon = BonDeCommand.objects.first()
+    except BonDeCommand.DoesNotExist:
+        new_bon = BonDeCommand.objects.create()
         new_bon.save()
     
     return new_bon
@@ -180,7 +180,7 @@ class UmutiSold(models.Model):
     code_operation = models.CharField(max_length=12, default='null') #common with other sold together
     operator = models.CharField(max_length=15, default='null')
     date_operation = models.DateTimeField(default=timezone.now)
-    bon_de_commande = models.ForeignKey(BonDeCommande,\
+    bon_de_commande = models.ForeignKey(BonDeCommand,\
             on_delete=models.CASCADE, default=getBonDeCommandeInstance)
 
 class umutiReportSell(models.Model):

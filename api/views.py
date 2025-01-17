@@ -1009,7 +1009,7 @@ class ImitiOut(viewsets.ViewSet):
         #                         status=200)
         # First checking the client dict, in order to access the
         # BonDeCommand objet to assign to UmutiSold
-        bon_de_commande = BonDeCommand.objects.first()
+        # bon_de_commande = BonDeCommand.objects.first()
         total_facture = 0
         once = 0
         for actual in panier:
@@ -1164,7 +1164,7 @@ class ImitiOut(viewsets.ViewSet):
             code_bon = code_8.giveCode()
             new_bon.num_bon = 'P_' + code_bon
         else:
-            new_bon.num_du_bon = client.get('numero_bon')
+            new_bon.num_bon = client.get('numero_bon')
         
         if client.get('date_bon'):
             date_arr = stringToDate(client.get('date_bon'))
@@ -1228,7 +1228,7 @@ class ImitiOut(viewsets.ViewSet):
     def _imitiSell(self, umuti:UmutiEntree, \
                    qte:int, operator:str, \
                    reference_umuti:ImitiSet,\
-                bon_de_commande:BonDeCommand=None)->str:
+                bon_de_commande:BonDeCommand)->str:
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
 
