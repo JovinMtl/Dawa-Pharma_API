@@ -1050,7 +1050,9 @@ class ImitiOut(viewsets.ViewSet):
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Assurance does ":"not exist"})
                         # completing bon_de_commande
-                        # here
+                        bon_de_commande = self._completeBon(\
+                            bon_de_commande=bon_de_commande,med=umuti[0], \
+                            qte=qte=order[2])
                         sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
                                     operator=request.user, \
                                         reference_umuti=be_sold,\
@@ -1139,7 +1141,9 @@ class ImitiOut(viewsets.ViewSet):
         bon_de_commande.save()
 
         return bon_de_commande
-    
+    def _completeBon(self,bon_de_commande:BonDeCommand,\
+         med, qte)->BonDeCommand:
+        return bon_de_commande
     def _createBon(self, client,\
         client_obj, assu_obj, \
         categorie)->int:
@@ -1222,7 +1226,7 @@ class ImitiOut(viewsets.ViewSet):
     def _imitiSell(self, umuti:UmutiEntree, \
                    qte:int, operator:str, \
                    reference_umuti:ImitiSet,\
-                bon_de_commande:BonDeCommand=None):
+                bon_de_commande:BonDeCommand=None)->str:
         """Will substract the quantite_restante in UmutiEntree and
         write a new instance of UmutiSell"""
 
@@ -1246,7 +1250,7 @@ class ImitiOut(viewsets.ViewSet):
         umuti.save()
         new_vente.save()
         
-        return 200
+        return code
     
 
 
