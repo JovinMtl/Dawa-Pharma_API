@@ -610,6 +610,7 @@ class EntrantImiti(viewsets.ViewSet):
         # umuti_new.description_umuti = (obj.get('description_med'))
         umuti_new.classe_med = obj.get('classe_med') 
         umuti_new.sous_classe_med = obj.get('sous_classe_med') 
+        umuti_new.forme = obj.get('forme')
         # if obj.get('ratio'):
         #     umuti_new.ratio = obj.get('ratio')
         # umuti_new.type_vente = obj.get('type_vente')
