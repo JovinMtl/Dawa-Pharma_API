@@ -527,6 +527,9 @@ class EntrantImiti(viewsets.ViewSet):
         dataReceived = request.data
         data = dataReceived.get('jov')
         print(f"The data Received: {data}")
+        return JsonResponse({"status": 1,\
+                                'reason':"Article ajoutee"},\
+                                status=200)
         # first of all, generate the codes
         code_12 = GenerateCode()
         code_operation = code_12.giveCode()
@@ -605,12 +608,12 @@ class EntrantImiti(viewsets.ViewSet):
             umuti_new.date_peremption = obj.get('date_peremption')
             umuti_new.date_entrant = obj.get('date_entrant')
         # umuti_new.description_umuti = (obj.get('description_med'))
-        umuti_new.type_med = obj.get('famille_med') 
-        umuti_new.type_achat = obj.get('type_achat') 
-        if obj.get('ratio'):
-            umuti_new.ratio = obj.get('ratio')
-        umuti_new.type_vente = obj.get('type_vente')
-        umuti_new.location = obj.get('location')
+        umuti_new.classe_med = obj.get('classe_med') 
+        umuti_new.sous_classe_med = obj.get('sous_classe_med') 
+        # if obj.get('ratio'):
+        #     umuti_new.ratio = obj.get('ratio')
+        # umuti_new.type_vente = obj.get('type_vente')
+        # umuti_new.location = obj.get('location')
         umuti_new.operator = operator
 
         umuti_new.save()
@@ -1005,9 +1008,9 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         print(f"The case :{case}, rate:{rate_assure}")
-        # return JsonResponse({"status": 1,\
-        #                         'reason':"Vente Sent"},\
-        #                         status=200)
+        return JsonResponse({"status": 1,\
+                                'reason':"Vente Sent"},\
+                                status=200)
         # First checking the client dict, in order to access the
         # BonDeCommand objet to assign to UmutiSold
         # bon_de_commande = BonDeCommand.objects.first()
