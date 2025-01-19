@@ -67,6 +67,7 @@ class ImitiSet(models.Model):
     nom_med = models.CharField(max_length=30, default='null')
     classe_med = models.CharField(max_length=30, default='null')
     sous_classe_med = models.CharField(max_length=30, default='null')
+    forme = models.CharField(max_length=8, default='null')
     type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
     type_achat  = models.CharField(max_length=10, default='null') #kurangura
     ratio = models.FloatField(default=1) #ari carton ndayidandaza carton

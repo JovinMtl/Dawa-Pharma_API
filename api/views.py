@@ -527,9 +527,9 @@ class EntrantImiti(viewsets.ViewSet):
         dataReceived = request.data
         data = dataReceived.get('jov')
         print(f"The data Received: {data}")
-        return JsonResponse({"status": 1,\
-                                'reason':"Article ajoutee"},\
-                                status=200)
+        # return JsonResponse({"status": 1,\
+        #                         'reason':"Article ajoutee"},\
+        #                         status=200)
         # first of all, generate the codes
         code_12 = GenerateCode()
         code_operation = code_12.giveCode()
