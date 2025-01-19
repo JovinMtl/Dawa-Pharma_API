@@ -836,6 +836,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.classe_med = (str(umuti.classe_med))[:29]
         umuti_new.sous_classe_med = \
             (str(umuti.sous_classe_med))[:29]
+        umuti_new.forme = (str(umuti.forme))[:7]
         umuti_new.type_med = str(umuti.type_med)
         umuti_new.type_achat = str(umuti.type_achat)
         umuti_new.ratio = str(umuti.ratio)
