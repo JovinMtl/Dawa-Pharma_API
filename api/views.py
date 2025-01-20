@@ -1485,6 +1485,23 @@ class Rapport(viewsets.ViewSet):
             return Response(less_30_seria.data)
         return JsonResponse({"none of":"less 30%"})
     
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def getStockYellow(self, request):
+        """
+        Returns instances with between 30 and 59 %
+        """
+        meds = ImitiSet.objects.all()
+        yellows = []
+        for med in meds:
+            if (med.qte_entrant_big / (med.quantite_restant | 1)) < 3 \
+                and (med.qte_entrant_big / (med.quantite_restant | 1)) > 1.5:
+                yellows.append(med)
+        yellow_seria = ImitiSetSeriazer(yellows, many=True)
+        if yellow_seria.is_valid:
+            return Response(yellow_seria.data)
+        return JsonResponse({"None of":"Yellow"})
+    
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def beneficeEval(self, request):
