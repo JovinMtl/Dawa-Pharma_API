@@ -1494,9 +1494,25 @@ class Rapport(viewsets.ViewSet):
         meds = ImitiSet.objects.all()
         yellows = []
         for med in meds:
-            if (med.qte_entrant_big / (med.quantite_restant | 1)) < 3.3 \
+            if (med.qte_entrant_big / (med.quantite_restant or 1)) < 3.3 \
                 and  \
-                (med.qte_entrant_big / (med.quantite_restant | 1)) > 1.4:
+                (med.qte_entrant_big / (med.quantite_restant or 1)) > 1.6:
+                yellows.append(med)
+        yellow_seria = ImitiSetSeriazer(yellows, many=True)
+        if yellow_seria.is_valid:
+            return Response(yellow_seria.data)
+        return JsonResponse({"None of":"Yellow"})
+    
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def getStockGreen(self, request):
+        """
+        Returns instances with more than 60 %
+        """
+        meds = ImitiSet.objects.all()
+        yellows = []
+        for med in meds:
+            if (float(med.qte_entrant_big / (med.quantite_restant or 1))) < 1.6:
                 yellows.append(med)
         yellow_seria = ImitiSetSeriazer(yellows, many=True)
         if yellow_seria.is_valid:
