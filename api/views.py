@@ -1519,6 +1519,19 @@ class Rapport(viewsets.ViewSet):
             return Response(yellow_seria.data)
         return JsonResponse({"None of":"Yellow"})
     
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def getStockZero(self, request):
+        """
+        Returns instances with Zero %
+        """
+        meds = ImitiSet.objects.filter(quantite_restant=0)
+        meds_seria = ImitiSetSeriazer(meds, many=True)
+        if meds_seria.is_valid:
+            return Response(meds_seria.data)
+        return JsonResponse({"None of":"zero"})
+    
+    
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def beneficeEval(self, request):
