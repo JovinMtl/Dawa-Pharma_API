@@ -1471,7 +1471,7 @@ class Rapport(viewsets.ViewSet):
     
     @action(methods=['get','post'], detail=False,\
              permission_classes= [IsAuthenticated])
-    def getLess30(self, request):
+    def getStockRed(self, request):
         """
         Returns instances of ImitiSet with less 30%
         """
