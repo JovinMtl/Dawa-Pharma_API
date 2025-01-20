@@ -1456,7 +1456,7 @@ class Rapport(viewsets.ViewSet):
         imiti = ImitiSet.objects.all()
         less_35 = []
         for umuti in imiti:
-            if (umuti.qte_entrant_big / (umuti.quantite_restant | 1)) < 3.5:
+            if (umuti.qte_entrant_big / (umuti.quantite_restant or 1)) < 3.5:
                 obj = {
                     'code_med': umuti.code_med,
                     'nom_med' : umuti.nom_med,
