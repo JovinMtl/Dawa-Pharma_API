@@ -527,9 +527,7 @@ class EntrantImiti(viewsets.ViewSet):
         dataReceived = request.data
         data = dataReceived.get('jov')
         print(f"The data Received: {data}")
-        # return JsonResponse({"status": 1,\
-        #                         'reason':"Article ajoutee"},\
-        #                         status=200)
+        return JsonResponse({"ok":1})
         # first of all, generate the codes
         code_12 = GenerateCode()
         code_operation = code_12.giveCode()
@@ -1454,7 +1452,7 @@ class Rapport(viewsets.ViewSet):
 
     def _getLess35(self):
         """THis one returns a list of objects from imitiSet with less than
-          35% of the remaining quantity"""
+          35% of the remaining quantity. for Recommandation"""
         imiti = ImitiSet.objects.all()
         less_35 = []
         for umuti in imiti:
@@ -1470,6 +1468,22 @@ class Rapport(viewsets.ViewSet):
             return less_35
         else:
             return None
+    
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def getLess30(self):
+        """
+        Returns instances of ImitiSet with less 30%
+        """
+        meds = ImitiSet.objects.all()
+        less_30 = []
+        for med in meds:
+            if (med.qte_entrant_big / (med.quantite_restant | 1)) < 3:
+                less_30.append(med)
+        less_30_seria = ImitiSetSeriazer(less_30, many=True)
+        if less_30_seria.is_valid:
+            return Response(less_30_seria.data)
+        return JsonResponse({"none of":"less 30%"})
     
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
