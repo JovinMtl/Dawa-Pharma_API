@@ -1471,14 +1471,14 @@ class Rapport(viewsets.ViewSet):
     
     @action(methods=['get','post'], detail=False,\
              permission_classes= [IsAuthenticated])
-    def getLess30(self):
+    def getLess30(self, request):
         """
         Returns instances of ImitiSet with less 30%
         """
         meds = ImitiSet.objects.all()
         less_30 = []
         for med in meds:
-            if (med.qte_entrant_big / (med.quantite_restant | 1)) < 3:
+            if (med.qte_entrant_big / (med.quantite_restant | 1)) > 3:
                 less_30.append(med)
         less_30_seria = ImitiSetSeriazer(less_30, many=True)
         if less_30_seria.is_valid:
