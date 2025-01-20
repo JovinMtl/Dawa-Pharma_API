@@ -1494,8 +1494,9 @@ class Rapport(viewsets.ViewSet):
         meds = ImitiSet.objects.all()
         yellows = []
         for med in meds:
-            if (med.qte_entrant_big / (med.quantite_restant | 1)) < 3 \
-                and (med.qte_entrant_big / (med.quantite_restant | 1)) > 1.5:
+            if (med.qte_entrant_big / (med.quantite_restant | 1)) < 3.3 \
+                and  \
+                (med.qte_entrant_big / (med.quantite_restant | 1)) > 1.4:
                 yellows.append(med)
         yellow_seria = ImitiSetSeriazer(yellows, many=True)
         if yellow_seria.is_valid:
