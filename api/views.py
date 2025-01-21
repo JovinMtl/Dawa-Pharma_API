@@ -24,7 +24,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
-      BonCommaSeria, SoldAsBonSeria, ClientSeria
+      SoldAsBonSeria, ClientSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -84,7 +84,7 @@ class GeneralOps(viewsets.ViewSet):
             bon_default = BonDeCommand.objects\
                 .create(beneficiaire=client_ordi, \
                     organization=assu_sans)
-            bon_default.num_du_bon = '0001'
+            bon_default.num_bon = '0001'
             bon_default.is_paid = True
             bon_default.save()
             created.append("Default BdC")
@@ -527,7 +527,6 @@ class EntrantImiti(viewsets.ViewSet):
         dataReceived = request.data
         data = dataReceived.get('jov')
         print(f"The data Received: {data}")
-        return JsonResponse({"ok":1})
         # first of all, generate the codes
         code_12 = GenerateCode()
         code_operation = code_12.giveCode()
@@ -567,7 +566,8 @@ class EntrantImiti(viewsets.ViewSet):
         nom_med = obj.get('nom_med')
         code_med = obj.get('code_med')
         if len(code_med) == 6:
-            return code_med
+            pass
+            # return code_med
         try:
             umuti_exist = UmutiEntree.objects.get(nom_med=nom_med)
         except UmutiEntree.DoesNotExist:
@@ -755,6 +755,7 @@ class EntrantImiti(viewsets.ViewSet):
     def _sync_lot(self, lot:str, umutie):
         lot_string = StringToList(lot)
         #the string of list must be made into json
+        # print(f"The lot: {lot}")
         lot_list = lot_string.toList()
         i = 0
 
@@ -1008,9 +1009,9 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         print(f"The case :{case}, rate:{rate_assure}")
-        return JsonResponse({"status": 1,\
-                                'reason':"Vente Sent"},\
-                                status=200)
+        # return JsonResponse({"status": 1,\
+        #                         'reason':"Vente Sent"},\
+        #                         status=200)
         # First checking the client dict, in order to access the
         # BonDeCommand objet to assign to UmutiSold
         # bon_de_commande = BonDeCommand.objects.first()
@@ -1043,7 +1044,7 @@ class ImitiOut(viewsets.ViewSet):
                             return JsonResponse({"Umuti":"does not exist"})
                         be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
                         
-                        if client and (once==0):
+                        if once==0:
                             # there is client data, and is special
                             # create a new instance of commande
                             bon_de_commande = self._createBon(\
@@ -1130,7 +1131,7 @@ class ImitiOut(viewsets.ViewSet):
         Will return the instance for ordinary Client
         """
         assurance = Assurance.objects.get(name='Sans')
-        query = Client.objects.filter(beneficiaire='Ordinaire')
+        query = Client.objects.filter(beneficiaire='Ordinary')
         if query:
             return [query[0], assurance]
         return [None, assurance]
@@ -1156,6 +1157,7 @@ class ImitiOut(viewsets.ViewSet):
         """Will create a new instance of BonDeCommand
         according to client dict.
         """
+        print(f"to create a Bon with beneficiaire: {client_obj}")
         new_bon = BonDeCommand.objects.create\
             (beneficiaire=client_obj, \
             organization=assu_obj)
@@ -1177,6 +1179,8 @@ class ImitiOut(viewsets.ViewSet):
         new_bon.date_served = timezone.now()
 
         new_bon.save()
+        print(f"Bon de Command created successfully")
+
         return new_bon
     
     def _assess_order(self, code_med:str, code_operation:list, qte:int) -> list:
