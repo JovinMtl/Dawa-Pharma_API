@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, UmutiEntreeBackup, UsdToBif,\
-    BonDeCommande, Assurance,\
+    Assurance,\
     SubClassThep, ClassThep,\
     BonDeCommand, Client
 
@@ -13,7 +13,6 @@ admin.site.register(UmutiSold)
 admin.site.register(umutiReportSell)
 admin.site.register(UmutiEntreeBackup)
 admin.site.register(UsdToBif)
-# admin.site.register(BonDeCommande)
 admin.site.register(Assurance)
 admin.site.register(ClassThep)
 admin.site.register(SubClassThep)

@@ -141,22 +141,7 @@ class BonDeCommand(models.Model):
     def __str__(self):
         return f"{self.beneficiaire.beneficiaire}: {self.cout}"
 
-class BonDeCommande(models.Model):
-    """ To be deprecated, kept for compatibility issue"""
-    beneficiaire = models.CharField(max_length=25, default='inconnu')
-    organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
-                            default=getAssuranceInstance)
-    num_beneficiaire = models.CharField(max_length=10, default="0000")
-    categorie = models.CharField(max_length=10, default='null')
-    num_du_bon = models.CharField(max_length=10, unique=True)
-    date_du_bon = models.DateField(default=timezone.now)
-    date_served = models.DateField(default=timezone.now)
-    montant_dette = models.IntegerField(default=0)
-    is_paid = models.BooleanField(default=False)
-    date_is_paid = models.DateField(default=timezone.now)
 
-    def __str__(self):
-        return f"{self.beneficiaire}: {self.num_du_bon}: {self.id}" 
 
 def getBonDeCommandeInstance():
     new_bon = None
