@@ -76,8 +76,8 @@ class GeneralOps(viewsets.ViewSet):
             assu_ph.save()
             created.append(assu_sans.name)
         try:
-            bon_default = BonDeCommand.objects.get\
-                (organization__name='Sans')
+            bon_default = BonDeCommand.objects.filter\
+                (organization__name='Sans').first()
         except BonDeCommand.DoesNotExist:
             client_ordi = Client.objects.get(beneficiaire="Ordinary")
             assu_sans = Assurance.objects.get(name="Sans")
@@ -1067,7 +1067,6 @@ class ImitiOut(viewsets.ViewSet):
         # Should now update the reduction in bon_de_commande
         if client:
             bon_de_commande = self._updateReduction(bon_de_commande, total=total_facture)
-            print("The client is: ", client)
         #  after sell then call compile
         imiti = EntrantImiti()
         jove = imiti.compileImitiSet()
