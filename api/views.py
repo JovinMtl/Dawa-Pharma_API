@@ -1084,7 +1084,10 @@ class ImitiOut(viewsets.ViewSet):
     
     def _getClient3(self, dataClient)->list:
         """Returns a instance created or existed client with the rate_assure."""
+        relation = dataClient.get('relation')
         beneficiaire = dataClient.get('nom_client')
+        if relation == 'Lui-même':
+            beneficiaire = dataClient.get('nom_adherant')
         rate_assure = int(dataClient.get('rate_assure'))
         assureur = dataClient.get('assureur')
         assurance = None
@@ -1097,6 +1100,7 @@ class ImitiOut(viewsets.ViewSet):
             assurance.save()
         else:
             assurance.rate_assure = rate_assure
+            assurance.save()
         
         # Check or create client
         try:
