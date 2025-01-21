@@ -679,8 +679,6 @@ class EntrantImiti(viewsets.ViewSet):
         j = 1
         lot = []
         for umutie in procured:
-            if not umutie.quantite_restant:
-                continue
             code = umutie.code_med
             try:
                 umuti_set = ImitiSet.objects.get(code_med=code)
@@ -1157,7 +1155,6 @@ class ImitiOut(viewsets.ViewSet):
         """Will create a new instance of BonDeCommand
         according to client dict.
         """
-        print(f"to create a Bon with beneficiaire: {client_obj}")
         new_bon = BonDeCommand.objects.create\
             (beneficiaire=client_obj, \
             organization=assu_obj)
