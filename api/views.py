@@ -1531,6 +1531,24 @@ class Rapport(viewsets.ViewSet):
             return Response(meds_seria.data)
         return JsonResponse({"None of":"zero"})
     
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def getMedGreen(self, request):
+        """
+        Returns instances of UmutiEntree with date peremption
+        with 2 years.
+        """
+        today = timezone.now()
+        two_year = today + timedelta(days=680)
+        meds = UmutiEntree.objects.filter(\
+            quantite_restant__gte=1).filter(\
+            date_peremption__gte=two_year)
+        meds_seria = UmutiEntreeSeriazer(meds, many=True)
+        if meds_seria.is_valid:
+            return Response(meds_seria.data)
+        return JsonResponse({"status":0})
+        
+    
     
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
