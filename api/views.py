@@ -565,9 +565,6 @@ class EntrantImiti(viewsets.ViewSet):
         then return that code_med."""
         nom_med = obj.get('nom_med')
         code_med = obj.get('code_med')
-        if len(code_med) == 6:
-            pass
-            # return code_med
         try:
             umuti_exist = UmutiEntree.objects.get(nom_med=nom_med)
         except UmutiEntree.DoesNotExist:
@@ -592,13 +589,16 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.nom_med = obj.get('nom_med')
         umuti_new.code_med = code_med
         umuti_new.code_operation = code_operation
-        umuti_new.quantite_initial = obj.get('quantite_initial')
+        umuti_new.quantite_initial = int(obj.get('quantite_initial'))
         umuti_new.quantite_restant = umuti_new.quantite_initial
         usd_to_bif = UsdToBif.objects.first()
-        umuti_new.prix_achat = obj.get('prix_achat')
-        umuti_new.prix_vente = obj.get('prix_vente')
-        umuti_new.prix_achat_usd = obj.get('prix_achat') / usd_to_bif.actualExchangeRate
-        umuti_new.prix_vente_usd = obj.get('prix_vente') / usd_to_bif.actualExchangeRate
+        umuti_new.prix_achat = int(obj.get('prix_achat'))
+        if (obj.get('prix_vente')):
+            umuti_new.prix_vente = int(obj.get('prix_vente'))
+        else:
+            umuti_new.prix_vente = umuti_new.prix_achat * 1.3
+        umuti_new.prix_achat_usd = umuti_new.prix_achat / usd_to_bif.actualExchangeRate
+        umuti_new.prix_vente_usd = umuti_new.prix_vente / usd_to_bif.actualExchangeRate
         if not single:
             umuti_new.date_peremption = self._giveDate_exp(obj.get('date_peremption'))
             umuti_new.date_entrant = self._giveDate_entree(obj.get('date_entrant'))
