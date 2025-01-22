@@ -2149,7 +2149,7 @@ class Rapport(viewsets.ViewSet):
             vente['categ'] = bon.categorie
             vente['date_operation'] = bon.date_prescri
             vente['date_served'] = bon.date_served
-            vente['num_du_bon'] = bon.num_du_bon
+            vente['num_du_bon'] = bon.num_bon
             vente['is_paid'] = bon.is_paid
 
             bons.append(vente)
