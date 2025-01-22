@@ -227,4 +227,15 @@ class SubClassThep(models.Model):
     def __str__(self):
         return f"{self.name}:{self.n_group}"
 
-    
+
+class BeneficeProgram(models.Model):
+    """
+    This model will hold the benefice rate to be considered
+    to apply from Prix_achat
+    e.g: 1.3
+    """
+    ben = models.FloatField(default=1.3)
+    effect_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self) -> str:
+        return f"Ben:{self.ben}. From {str(self.effect_date)[:7]}."
