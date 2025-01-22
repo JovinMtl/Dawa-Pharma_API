@@ -2147,7 +2147,7 @@ class Rapport(viewsets.ViewSet):
                 vente['caisse'] = bon.montant_dette
             vente['assu'] = assu_name
             vente['categ'] = bon.categorie
-            vente['date_operation'] = bon.date_du_bon
+            vente['date_operation'] = bon.date_prescri
             vente['date_served'] = bon.date_served
             vente['num_du_bon'] = bon.num_du_bon
             vente['is_paid'] = bon.is_paid
