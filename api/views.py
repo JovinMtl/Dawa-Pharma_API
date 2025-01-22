@@ -978,7 +978,7 @@ class ImitiOut(viewsets.ViewSet):
         Handles the sell operation
         """
         data_query = request.data
-        print(f"The data sent is: {data_query}")
+        # print(f"The data sent is: {data_query}")
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
@@ -991,6 +991,7 @@ class ImitiOut(viewsets.ViewSet):
         bon_de_commande = None
         categorie = ''
         rate_assure = 0
+        bon_created = False
         if not client:
             # Client ordinaire, categorie: 'no'
             case = 1
@@ -1006,13 +1007,6 @@ class ImitiOut(viewsets.ViewSet):
             case = 3
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
-        print(f"The case :{case}, rate:{rate_assure}")
-        # return JsonResponse({"status": 1,\
-        #                         'reason':"Vente Sent"},\
-        #                         status=200)
-        # First checking the client dict, in order to access the
-        # BonDeCommand objet to assign to UmutiSold
-        # bon_de_commande = BonDeCommand.objects.first()
         total_facture = 0
         once = 0
         for actual in panier:
@@ -1027,6 +1021,7 @@ class ImitiOut(viewsets.ViewSet):
                                          code_operation=code_operation,\
                                              qte=qte)
                 for order in orders:
+                    print(f"The order is {order}")
                     if order[2] == 0:
                         continue
                     try:
@@ -1037,19 +1032,18 @@ class ImitiOut(viewsets.ViewSet):
                         pass
                     else:
                         #can now perfom the Vente operation
-                        print(f"The Umuti found : {umuti}")
                         if not umuti:
                             return JsonResponse({"Umuti":"does not exist"})
                         be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
                         
-                        if once==0:
-                            # there is client data, and is special
-                            # create a new instance of commande
+                        # Only create a bon_de_commande when this is True
+                        if (int(qte)) and (not bon_created):
                             bon_de_commande = self._createBon(\
                                 client=client, \
                                 client_obj=client_obj,\
                                 assu_obj=assu_obj,\
                                 categorie=categorie)
+                            bon_created = True
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Assurance does ":"not exist"})
                         
@@ -1241,8 +1235,9 @@ class ImitiOut(viewsets.ViewSet):
         write a new instance of UmutiSell"""
 
         print(f"The umuti to work on is : {umuti} with qte: {qte} found with {umuti.quantite_restant}")
+        print(f"To use BonDeCommand: {bon_de_commande}")
         # reference_umuti = ImitiSet.objects.get(code_med=umuti.code_med)
-        new_vente = UmutiSold.objects.create()
+        new_vente = UmutiSold.objects.create(bon_de_commande=bon_de_commande)
         new_vente.code_med = umuti.code_med
         new_vente.nom_med = umuti.nom_med
         new_vente.quantity = qte
@@ -1254,11 +1249,13 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.code_operation = code.giveCode()
         new_vente.operator = str(operator.username)
         new_vente.date_operation = timezone.now()
-        new_vente.bon_de_commande = bon_de_commande
+        # new_vente.bon_de_commande = bon_de_commande
         umuti.quantite_restant -= int(qte)
 
         umuti.save()
         new_vente.save()
+
+        print("Finished to Sell")
         
         return new_vente.code_operation
     
