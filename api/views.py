@@ -239,7 +239,7 @@ class GeneralOps(viewsets.ViewSet):
 
         for id in bon_ids:
             try:
-                bon = BonDeCommand.objects.get(num_du_bon=id)
+                bon = BonDeCommand.objects.get(num_bon=id)
             except BonDeCommand.DoesNotExist:
                 return JsonResponse({"status": 0,\
                             'reason':'Bon invalide'},\
@@ -1156,7 +1156,7 @@ class ImitiOut(viewsets.ViewSet):
             (beneficiaire=client_obj, \
             organization=assu_obj)
         new_bon.categorie = categorie
-        # Dealing with uniqueness of num_du_bon
+        # Dealing with uniqueness of num_bon
         if new_bon.organization.name \
             == "Pharmacie Ubuzima" or \
             new_bon.organization.name == "Sans":
@@ -2149,7 +2149,7 @@ class Rapport(viewsets.ViewSet):
             vente['categ'] = bon.categorie
             vente['date_operation'] = bon.date_prescri
             vente['date_served'] = bon.date_served
-            vente['num_du_bon'] = bon.num_bon
+            vente['num_bon'] = bon.num_bon
             vente['is_paid'] = bon.is_paid
 
             bons.append(vente)
