@@ -756,7 +756,8 @@ class EntrantImiti(viewsets.ViewSet):
         return JsonResponse({"Things went":"well 2"})
     
     def _round100(self, data:int)->int:
-        """expecting data=7215 """
+        """Rounding number according to 100.
+        expecting data = 7215 and return 7300"""
         d = int(data / 100) + 1
         result = d * 100
         return result
