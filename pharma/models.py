@@ -128,7 +128,7 @@ class BonDeCommand(models.Model):
     organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
                             default=getAssuranceInstance)
     meds = models.TextField() # like ['Quinine, 1, 1500','Albendazole, 2, 2400','']
-    cout = models.IntegerField(default=0)
+    cout = models.IntegerField(default=0)  #total
     assu_rate = models.IntegerField(default=0)
     montant_dette = models.IntegerField(default=0)
     num_bon = models.CharField(max_length=12, default='null')
@@ -139,7 +139,7 @@ class BonDeCommand(models.Model):
     date_served = models.DateField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.beneficiaire.beneficiaire}: {self.cout}"
+        return f"{self.beneficiaire.beneficiaire}: {self.num_bon}"
 
 
 
