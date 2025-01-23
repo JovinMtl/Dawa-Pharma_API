@@ -639,11 +639,14 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_backup.date_peremption = instance.date_peremption
         umuti_backup.date_entrant = instance.date_entrant
         # umuti_backup.description_umuti = instance.date_entrant
-        umuti_backup.type_med = instance.type_med
-        umuti_backup.type_achat = instance.type_achat
-        umuti_backup.ratio = instance.ratio
-        umuti_backup.type_vente = instance.type_vente
-        umuti_backup.location = instance.location
+        # umuti_backup.type_med = instance.type_med
+        # umuti_backup.type_achat = instance.type_achat
+        # umuti_backup.ratio = instance.ratio
+        # umuti_backup.type_vente = instance.type_vente
+        # umuti_backup.location = instance.location
+        umuti_backup.classe_med = instance.classe_med
+        umuti_backup.sous_classe_med = instance.sous_classe_med
+        umuti_backup.forme = instance.forme
         umuti_backup.operator = instance.operator
         umuti_backup.save()
 
