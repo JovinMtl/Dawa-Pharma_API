@@ -703,7 +703,10 @@ class EntrantImiti(viewsets.ViewSet):
                     somme_lot = listDictIntSomme3(synced_lot)
                     usd_to_bif = UsdToBif.objects.get(id=1)
                     usd_to_bif = UsdToBif.objects.last()
-                    umuti_set.prix_achat = umutie.prix_achat  # to have the last
+                    # umuti_set.prix_achat = umutie.prix_achat  # to have the last
+                    prix_achat = float(umutie.prix_achat_usd) * \
+                                            usd_to_bif.actualExchangeRate
+                    umuti_set.prix_achat = self._round100(prix_achat)
                     prix_vente = float(umutie.prix_vente_usd) * \
                                         usd_to_bif.actualExchangeRate
                     prix_vente_arondi = (int(prix_vente / 100)) + 1
@@ -752,7 +755,11 @@ class EntrantImiti(viewsets.ViewSet):
         print("compileImitiSet: SYNC done.")
         return JsonResponse({"Things went":"well 2"})
     
-
+    def _round100(self, data:int)->int:
+        """expecting data=7215 """
+        d = int(data / 100) + 1
+        result = d * 100
+        return result
     def _sync_lot(self, lot:str, umutie):
         lot_string = StringToList(lot)
         #the string of list must be made into json
