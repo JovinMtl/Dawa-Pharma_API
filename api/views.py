@@ -1540,7 +1540,7 @@ class Rapport(viewsets.ViewSet):
         with 2 years.
         """
         today = timezone.now()
-        two_year = today + timedelta(days=680)
+        two_year = today + timedelta(days=720)
         meds = UmutiEntree.objects.filter(\
             quantite_restant__gte=1).filter(\
             date_peremption__gte=two_year)
@@ -1557,8 +1557,8 @@ class Rapport(viewsets.ViewSet):
         within 1 - 2 years.
         """
         today = timezone.now()
-        one_year = today + timedelta(days=320)
-        two_year = today + timedelta(days=680)
+        one_year = today + timedelta(days=360)
+        two_year = today + timedelta(days=720)
         meds = UmutiEntree.objects.filter(\
             quantite_restant__gte=1).filter(\
             date_peremption__gte=one_year).\
@@ -1576,8 +1576,8 @@ class Rapport(viewsets.ViewSet):
         with less 1 year and above 6months
         """
         today = timezone.now()
-        six_month = today + timedelta(days=170)
-        one_year = today + timedelta(days=319)
+        six_month = today + timedelta(days=180)
+        one_year = today + timedelta(days=360)
         meds = UmutiEntree.objects.filter(\
             quantite_restant__gte=1).filter(\
             date_peremption__gte=six_month).\
@@ -1594,7 +1594,7 @@ class Rapport(viewsets.ViewSet):
         in critical stage, not to serve the patient
         """
         today = timezone.now()
-        six_month = today + timedelta(days=170)
+        six_month = today + timedelta(days=180)
         meds = UmutiEntree.objects.filter(\
             quantite_restant__gte=1).filter(\
             date_peremption__lt=six_month)
