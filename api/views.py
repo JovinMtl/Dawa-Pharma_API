@@ -2225,7 +2225,6 @@ class Rapport(viewsets.ViewSet):
         - sum of ones UmutiSold without BonDeCommand
         - sum of ones UmutiSold with BonDeCommand 
         """
-        today = timezone.now()
         begin_date, end_date = self._getDate(request.data)
         on_bon, no_bon = 0, 0
         x, y = [], []
@@ -2234,7 +2233,7 @@ class Rapport(viewsets.ViewSet):
         
         queryset = BonDeCommand.objects.filter\
             (Q(date_served__gte=begin_date) & \
-             Q(date_served__lte=today))
+             Q(date_served__lte=end_date))
         query1 = queryset.filter(Q(beneficiaire__beneficiaire=c1) | \
                                  Q(beneficiaire__beneficiaire=c2))
         query2 = queryset.exclude(Q(beneficiaire__beneficiaire=c1) | \
