@@ -1305,7 +1305,6 @@ class Rapport(viewsets.ViewSet):
     def reportVentes(self, request):
         """making an endpoint that will return all the umutisold entries"""
         begin_date, end_date = self._getDate(request.data)
-        # imiti = UmutiSold.objects.all().order_by('-date_operation')
         meds = UmutiSold.objects.filter(date_operation__gte=begin_date)\
             .filter(date_operation__lte=end_date)
         meds_built = self._builtVente(meds)
@@ -2090,11 +2089,10 @@ class Rapport(viewsets.ViewSet):
         print("THe dates are: ", begin_date, end_date)
         x = [] # date
         y = [] # quantifiers
-        while begin_date != end_date:
+        while begin_date <= end_date:
             query = UmutiSold.objects.filter\
-                (date_operation__gte=begin_date)\
-                .filter(date_operation__lt=begin_date+timedelta(days=0.8))
-            # date_str = (str(begin_date)).split()[0]
+                (Q(date_operation__gte=begin_date) & \
+                 Q(date_operation__lt=begin_date+timedelta(days=0.8)))
             week_day = datetime.weekday(begin_date)
             x.append(week_days[week_day+1])
             y.append(len(query))
