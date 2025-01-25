@@ -1309,7 +1309,6 @@ class Rapport(viewsets.ViewSet):
         meds = UmutiSold.objects.filter(date_operation__gte=begin_date)\
             .filter(date_operation__lte=end_date)
         meds_built = self._builtVente(meds)
-        print(f"THe things gotten: {meds_built}")
         imitiSerialized = SoldAsBonSeria(data=meds_built, many=True)
 
         if imitiSerialized.is_valid():
