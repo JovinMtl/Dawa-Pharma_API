@@ -2264,7 +2264,7 @@ class Rapport(viewsets.ViewSet):
         mt = len(queryset.filter(categorie='mt'))
         md = len(queryset.filter(categorie='md'))
         au = len(queryset.filter(categorie='au'))
-        ord = len(queryset.filter(categorie='null'))
+        ord = len(queryset.filter(categorie='no'))
 
         y = ['Taxi_v','Motar', 'Dom_med', 'Assure', 'Ordinaire']
         x = [tv, mt, md, au, ord]
