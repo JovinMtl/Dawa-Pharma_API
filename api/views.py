@@ -2065,28 +2065,7 @@ class Rapport(viewsets.ViewSet):
         This will return ventes journalieres.
         7days for default from today.
         """
-        data_params = request.data
-        end_date = None
-        begin_date = None
-        # checking that there is dates object
-        # the set end_date and begin_date
-        # else, set these defaults value of 7days
-        if data_params.get('dates'):
-            if data_params.get('dates')[0]:
-                date1 = data_params.get('dates')[0]
-                date_arr = shortStr2Date(date1)
-                begin_date = timezone.datetime(date_arr[0],\
-                    date_arr[1], date_arr[2])
-            if data_params.get('dates')[1]:
-                date2 = data_params.get('dates')[1]
-                date_arr = shortStr2Date(date2)
-                end_date = timezone.datetime(date_arr[0],\
-                    date_arr[1], date_arr[2])
-        else:
-            end_date = timezone.now()
-            end_date -= timedelta(hours=end_date.hour) #init to 0:00
-            begin_date = end_date - timedelta(days=7)
-        print("THe dates are: ", begin_date, end_date)
+        begin_date, end_date = self._getDate(request.data)
         x = [] # date
         y = [] # quantifiers
         while begin_date <= end_date:
