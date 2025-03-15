@@ -3,7 +3,7 @@ from .models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, UmutiEntreeBackup, UsdToBif,\
     Assurance,\
     SubClassThep, ClassThep,\
-    BonDeCommand, Client
+    BonDeCommand, Client, BeneficeProgram as MinimumBenefice
 
 # Register your models here.
 
@@ -18,3 +18,4 @@ admin.site.register(ClassThep)
 admin.site.register(SubClassThep)
 admin.site.register(BonDeCommand)
 admin.site.register(Client)
+admin.site.register(MinimumBenefice) 
