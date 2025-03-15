@@ -95,11 +95,18 @@ class GeneralOps(viewsets.ViewSet):
             new_taux = UsdToBif.objects.create()
             new_taux.actualExchangeRate = 6200
             new_taux.save()
+        minimum_benefice = BeneficeProgram.objects.first()
+        ben = 0
+        if not minimum_benefice:
+            minimum_benefice = BeneficeProgram.objects.create()
+            minimum_benefice.save()
+            ben = 1
         
         cls = self._createClasses_cloned()
         
         created.append(f"with {cls} ther. classes")
         created.append(f"{num_client} Init clients")
+        created.apped(f"ben : {ben}")
 
         return JsonResponse({"Setup done" : created})
     
