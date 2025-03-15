@@ -106,7 +106,7 @@ class GeneralOps(viewsets.ViewSet):
         
         created.append(f"with {cls} ther. classes")
         created.append(f"{num_client} Init clients")
-        created.apped(f"ben : {ben}")
+        created.append(f"ben : {ben}")
 
         return JsonResponse({"Setup done" : created})
     
@@ -534,7 +534,9 @@ class EntrantImiti(viewsets.ViewSet):
         """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
         data = dataReceived.get('jov')
-        print(f"The data Received: {data}")
+        print(f"The data Received: {dataReceived.get('imiti')}")
+        if not data:
+            return JsonResponse({"detail":"NoneType"})
         # first of all, generate the codes
         code_12 = GenerateCode()
         code_operation = code_12.giveCode()
@@ -562,9 +564,9 @@ class EntrantImiti(viewsets.ViewSet):
                 error_list.append(i)
         
         if len(error_list):
-            return JsonResponse({"Finished with errors ": error_list})
+            return JsonResponse({"detail": error_list})
 
-        return JsonResponse({"Things ":"well"})
+        return JsonResponse({"detail ":"ok"}, status=200)
     
     def _doesExist(self, obj:dict):
         """This method checks if the umuti already exist with the same
