@@ -18,7 +18,7 @@ import os
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
     BonDeCommand, Assurance, ClassThep, SubClassThep,\
-    Client
+    Client, BeneficeProgram
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -32,6 +32,7 @@ from .shared.stringToList import StringToList
 from .shared.listStrToList import listStrToList, listIntToList,\
       listDictIntSomme, listDictIntSomme2, listDictIntSomme3
 from .shared.stringToDate import stringToDate, shortStr2Date
+from .shared.superiorInput import superiorInput
 
 
 # Making a weekday dict that will be used
@@ -593,10 +594,16 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.quantite_restant = umuti_new.quantite_initial
         usd_to_bif = UsdToBif.objects.first()
         umuti_new.prix_achat = int(obj.get('prix_achat'))
-        if (obj.get('prix_vente')):
-            umuti_new.prix_vente = int(obj.get('prix_vente'))
-        else:
-            umuti_new.prix_vente = umuti_new.prix_achat * 1.3
+        # if (obj.get('prix_vente')):
+        #     umuti_new.prix_vente = superiorInput(BeneficeProgram, \
+        #                             umuti_new.prix_achat, \
+        #                             int(obj.get('prix_vente')) )
+        #     umuti_new.prix_vente = int(obj.get('prix_vente'))
+        # else:
+        #     umuti_new.prix_vente = umuti_new.prix_achat * 1.3
+        umuti_new.prix_vente = superiorInput(BeneficeProgram, \
+                                    umuti_new.prix_achat, \
+                                    int(obj.get('prix_vente')))
         umuti_new.prix_achat_usd = umuti_new.prix_achat / usd_to_bif.actualExchangeRate
         umuti_new.prix_vente_usd = umuti_new.prix_vente / usd_to_bif.actualExchangeRate
         if not single:
