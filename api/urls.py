@@ -20,4 +20,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('login/', TokenObtainPairView.as_view()),
     path('check/', TokenVerifyView.as_view()),
+    path('refresh/', TokenRefreshView.as_view()),
 ]
