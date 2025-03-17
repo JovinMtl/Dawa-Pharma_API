@@ -1164,6 +1164,7 @@ class ImitiOut(viewsets.ViewSet):
         """Updates the total dettes in as reduction."""
         org = bon_de_commande.organization
         paid = total * (org.rate_assure/100)
+        bon_de_commande.cout = paid
         bon_de_commande.montant_dette = total - paid
         bon_de_commande.save()
 
