@@ -769,7 +769,7 @@ class EntrantImiti(viewsets.ViewSet):
                 umuti_set.save()
 
         print("compileImitiSet: SYNC done.")
-        return JsonResponse({"Things went":"well 2"})
+        return JsonResponse({"detail":"ok"}, status=200)
     
     def _round100(self, data:int)->int:
         """Rounding number according to 100.
@@ -1005,7 +1005,7 @@ class ImitiOut(viewsets.ViewSet):
         Handles the sell operation
         """
         data_query = request.data
-        # print(f"The data sent is: {data_query}")
+        print(f"The data sent is: {data_query}")
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
