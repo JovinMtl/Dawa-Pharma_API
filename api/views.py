@@ -533,7 +533,7 @@ class EntrantImiti(viewsets.ViewSet):
     def kurangura(self, request):
         """Kwinjiza umuti nkukwo uwuranguye"""
         dataReceived = request.data
-        data = dataReceived.get('jov')
+        data = dataReceived.get('imiti')
         print(f"The data Received: {dataReceived.get('imiti')}")
         if not data:
             return JsonResponse({"detail":"NoneType"})
@@ -566,7 +566,7 @@ class EntrantImiti(viewsets.ViewSet):
         if len(error_list):
             return JsonResponse({"detail": error_list})
 
-        return JsonResponse({"detail ":"ok"}, status=200)
+        return JsonResponse({"detail":"ok"}, status=200)
     
     def _doesExist(self, obj:dict):
         """This method checks if the umuti already exist with the same
@@ -575,12 +575,17 @@ class EntrantImiti(viewsets.ViewSet):
         then return that code_med."""
         nom_med = obj.get('nom_med')
         code_med = obj.get('code_med')
-        try:
-            umuti_exist = UmutiEntree.objects.get(nom_med=nom_med)
-        except UmutiEntree.DoesNotExist:
-            return None
+        # try:
+        #     umuti_exist = UmutiEntree.objects.get(nom_med=nom_med)
+        # except UmutiEntree.DoesNotExist:
+        #     return None
+        # else:
+        #     return umuti_exist.code_med
+        umuti_exist = UmutiEntree.objects.filter(nom_med=nom_med)
+        if umuti_exist:
+            return umuti_exist[0].code_med
         else:
-            return umuti_exist.code_med
+            return None
     
     def _addUmuti(self, obj:dict, code_med:str, code_operation:str,\
                    single:bool, operator:str):
@@ -612,7 +617,7 @@ class EntrantImiti(viewsets.ViewSet):
         #     umuti_new.prix_vente = umuti_new.prix_achat * 1.3
         umuti_new.prix_vente = superiorInput(BeneficeProgram, \
                                     umuti_new.prix_achat, \
-                                    int(obj.get('prix_vente')))
+                                    (obj.get('prix_vente')))
         umuti_new.prix_achat_usd = umuti_new.prix_achat / usd_to_bif.actualExchangeRate
         umuti_new.prix_vente_usd = umuti_new.prix_vente / usd_to_bif.actualExchangeRate
         if not single:
