@@ -1035,6 +1035,8 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         total_facture = 0
+        # print(f"THe assu_obj: {(assu_obj.rate_assure)}")
+        rate_assure = assu_obj.rate_assure
         once = 0
         for actual in panier:
             code_med = actual.get('code_med')
@@ -1086,8 +1088,9 @@ class ImitiOut(viewsets.ViewSet):
                             total_facture += be_sold.prix_vente * order[2]
                 once += 1 # create bon_de_commande only once
         # Should now update the reduction in bon_de_commande
-        if client:
-            bon_de_commande = self._updateReduction(bon_de_commande, total=total_facture)
+        
+        bon_de_commande = self._updateReduction(bon_de_commande, \
+                total=total_facture, rate_assure=rate_assure)
         #  after sell then call compile
         imiti = EntrantImiti()
         jove = imiti.compileImitiSet()
@@ -1160,12 +1163,17 @@ class ImitiOut(viewsets.ViewSet):
 
     def _updateReduction(self, \
             bon_de_commande:BonDeCommand, \
-                total:int=0)->BonDeCommand:
+                total:int=0, \
+                rate_assure:int=0)->BonDeCommand:
         """Updates the total dettes in as reduction."""
-        org = bon_de_commande.organization
-        paid = total * (org.rate_assure/100)
-        bon_de_commande.cout = paid
-        bon_de_commande.montant_dette = total - paid
+        if rate_assure:
+            org = bon_de_commande.organization
+            paid = total * ((org.rate_assure/100) or 1)
+            bon_de_commande.cout = total - paid
+            bon_de_commande.assu_rate = rate_assure
+            bon_de_commande.montant_dette = paid
+        else:
+            bon_de_commande.cout = total
         bon_de_commande.save()
 
         return bon_de_commande
