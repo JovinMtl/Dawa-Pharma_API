@@ -608,13 +608,6 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.quantite_restant = umuti_new.quantite_initial
         usd_to_bif = UsdToBif.objects.first()
         umuti_new.prix_achat = int(obj.get('prix_achat'))
-        # if (obj.get('prix_vente')):
-        #     umuti_new.prix_vente = superiorInput(BeneficeProgram, \
-        #                             umuti_new.prix_achat, \
-        #                             int(obj.get('prix_vente')) )
-        #     umuti_new.prix_vente = int(obj.get('prix_vente'))
-        # else:
-        #     umuti_new.prix_vente = umuti_new.prix_achat * 1.3
         umuti_new.prix_vente = superiorInput(BeneficeProgram, \
                                     umuti_new.prix_achat, \
                                     (obj.get('prix_vente')))
