@@ -238,4 +238,4 @@ class BeneficeProgram(models.Model):
     effect_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
-        return f"Ben:{self.ben}. From {str(self.effect_date)[:7]}."
+        return f"Ben:{self.ben}. From {str(self.effect_date)[:10]}."
