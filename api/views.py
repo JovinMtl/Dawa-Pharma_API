@@ -287,6 +287,16 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'erreur du serveur'},\
                             status=406)
     
+    @action(methods=['post', 'get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getClients(self, request):
+        """Should return infos for ImitiSold"""
+        sent_data = request.data.get('imiti').get('_value')
+        codes = sent_data.split(';')
+        codes = codes[:len(codes)-1]
+        print(f"requesting: {codes}")
+        return JsonResponse({"response":1})
+    
     def _createClasses_cloned(self)->int:
         """
         For creating therap. class and sub-class
