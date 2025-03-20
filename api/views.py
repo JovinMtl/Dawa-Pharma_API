@@ -24,7 +24,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
-      SoldAsBonSeria, ClientSeria
+      SoldAsBonSeria, ClientSeria, BonDeCommandSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -1033,7 +1033,7 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         total_facture = 0
-        # print(f"THe assu_obj: {(assu_obj.rate_assure)}")
+        print(f"THe assu_obj: {(assu_obj.rate_assure)}, case:{case}")
         rate_assure = assu_obj.rate_assure
         once = 0
         for actual in panier:
@@ -1172,6 +1172,7 @@ class ImitiOut(viewsets.ViewSet):
             bon_de_commande.montant_dette = paid
         else:
             bon_de_commande.cout = total
+        bon_de_commande.total = total
         bon_de_commande.save()
 
         return bon_de_commande
@@ -1328,6 +1329,7 @@ class Rapport(viewsets.ViewSet):
     def reportVentes(self, request):
         """making an endpoint that will return all the umutisold entries"""
         begin_date, end_date = self._getDate(request.data)
+        print(f"B:{begin_date}, E:{end_date}")
         meds = UmutiSold.objects.filter(date_operation__gte=begin_date)\
             .filter(date_operation__lte=end_date)
         meds_built = self._builtVente(meds)
@@ -1337,7 +1339,21 @@ class Rapport(viewsets.ViewSet):
             return Response(imitiSerialized.data)
 
         return JsonResponse({"response": meds_built})
+    
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def reportBons(self, request):
+        """
+        Will return all the instances of BonDeCommand.
+        """
+        bons = BonDeCommand.objects.all()[::-1]
+        bons_serialized = BonDeCommandSeria(bons, many=True)
+        if bons_serialized.is_valid:
+            return JsonResponse({"response": bons_serialized.data})
+        return JsonResponse({"response": []})
 
+    
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def reportSell(self, request):
@@ -2122,6 +2138,7 @@ class Rapport(viewsets.ViewSet):
             end_date = timezone.now()
             end_date -= timedelta(hours=end_date.hour) #init to 0:00
             begin_date = end_date - timedelta(days=7)
+            end_date = timezone.now()
         print("THe dates are: ", begin_date, end_date)
 
         return [begin_date, end_date]
