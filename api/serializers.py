@@ -40,8 +40,8 @@ class ClientSeria(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
-        
-class BonDeCommandSeria(serializers.ModelSerializer)
+
+class BonDeCommandSeria(serializers.ModelSerializer):
     class Meta:
         model = BonDeCommand
         fields = '__all__'
