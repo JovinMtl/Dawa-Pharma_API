@@ -121,7 +121,7 @@ class Client(models.Model):
     joined_on = models.DateField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.beneficiaire}:{self.nom_adherant}"
+        return f"{self.beneficiaire}:{self.nom_adherant}. id:{self.id}"
 
 class BonDeCommand(models.Model):
     beneficiaire = models.ForeignKey(Client, on_delete=models.CASCADE)
