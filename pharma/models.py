@@ -128,7 +128,8 @@ class BonDeCommand(models.Model):
     organization = models.ForeignKey(Assurance, on_delete=models.CASCADE,\
                             default=getAssuranceInstance)
     meds = models.TextField() # like ['Quinine, 1, 1500','Albendazole, 2, 2400','']
-    cout = models.IntegerField(default=0)  #total
+    total = models.IntegerField(default=0)  #total
+    cout = models.IntegerField(default=0)  #total paid
     assu_rate = models.IntegerField(default=0)
     montant_dette = models.IntegerField(default=0)
     num_bon = models.CharField(max_length=12, default='null')
