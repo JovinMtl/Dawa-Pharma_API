@@ -290,12 +290,22 @@ class GeneralOps(viewsets.ViewSet):
     @action(methods=['post', 'get'], detail=False,\
              permission_classes= [AllowAny])
     def getClients(self, request):
-        """Should return infos for ImitiSold"""
+        """
+        Should return infos from code_operation in UmutiSold.
+        """
         sent_data = request.data.get('imiti').get('_value')
         codes = sent_data.split(';')
         codes = codes[:len(codes)-1]
-        print(f"requesting: {codes}")
-        return JsonResponse({"response":1})
+        infos = []
+        for code in codes:
+            obj = {}
+            umuti = UmutiSold.objects.get(code_operation=code)
+            obj['nom_med'] = umuti.nom_med
+            obj['quantity'] = umuti.quantity
+            obj['prix_vente'] = umuti.prix_vente
+            obj['operator'] = umuti.operator
+            infos.append(obj)
+        return JsonResponse({"response":infos})
     
     def _createClasses_cloned(self)->int:
         """
