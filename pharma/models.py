@@ -169,6 +169,9 @@ class UmutiSold(models.Model):
     date_operation = models.DateTimeField(default=timezone.now)
     bon_de_commande = models.ForeignKey(BonDeCommand,\
             on_delete=models.CASCADE, default=getBonDeCommandeInstance)
+    
+    def __str__(self):
+        return f"{self.code_operation}: {self.nom_med}, {self.quantity}"
 
 class umutiReportSell(models.Model):
     """THis will contain report of its sale in a given period of time"""
