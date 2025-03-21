@@ -1040,6 +1040,7 @@ class ImitiOut(viewsets.ViewSet):
         categorie = ''
         rate_assure = 0
         bon_created = False
+        existing_bon = False
         if not client:
             # Client ordinaire, categorie: 'no'
             case = 1
@@ -1058,9 +1059,12 @@ class ImitiOut(viewsets.ViewSet):
         total_facture = 0
         
         if case ==3:
-            numero_carte = client.get("numero_carte")
-            print(f"THe client_obj: {(client_obj)}, case:{case}, num_crt:{numero_carte}")
-            check_num_bon = self._checkNumBon(numero_carte)
+            num_bon = client.get("numero_bon")
+            existing_bon = self._checkNumBon(num_bon)
+        print(f"THe client_obj: {(client_obj)}, case:{case}, num_crt:{num_bon}\
+            and existing_bon:{existing_bon}")
+        if existing_bon:
+            return JsonResponse({"sold":"FailedBecauseAlreadyExist"})
         rate_assure = assu_obj.rate_assure
         once = 0
         for actual in panier:
@@ -1130,8 +1134,8 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"sold": len(imiti_sold)})
 
-    def _checkNumBon(numero_carte:str='')->bool:
-        bon = BonDeCommand.objects.filter(numero_carte=numero_carte)
+    def _checkNumBon(self, num_bon:str='')->bool:
+        bon = BonDeCommand.objects.filter(num_bon=num_bon)
         if bon:
             return True
         else:
