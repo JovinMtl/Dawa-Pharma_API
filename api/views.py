@@ -287,13 +287,16 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'erreur du serveur'},\
                             status=406)
     
-    @action(methods=['post', 'get'], detail=False,\
+    @action(methods=['post'], detail=False,\
              permission_classes= [AllowAny])
-    def getClients(self, request):
+    def getInfo(self, request):
         """
         Should return infos from code_operation in UmutiSold.
         """
         sent_data = request.data.get('imiti').get('_value')
+        print(f"The sent_data: {sent_data}")
+        if not sent_data:
+            return JsonResponse({"response": 'NoneType'})
         codes = sent_data.split(';')
         codes = codes[:len(codes)-1]
         infos = []
