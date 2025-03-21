@@ -1056,7 +1056,11 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         total_facture = 0
-        print(f"THe assu_obj: {(assu_obj.rate_assure)}, case:{case}")
+        
+        if case ==3:
+            numero_carte = client.get("numero_carte")
+            print(f"THe client_obj: {(client_obj)}, case:{case}, num_crt:{numero_carte}")
+            check_num_bon = self._checkNumBon(numero_carte)
         rate_assure = assu_obj.rate_assure
         once = 0
         for actual in panier:
@@ -1125,6 +1129,13 @@ class ImitiOut(viewsets.ViewSet):
             date_operation__gte=year_start)
 
         return JsonResponse({"sold": len(imiti_sold)})
+
+    def _checkNumBon(numero_carte:str='')->bool:
+        bon = BonDeCommand.objects.filter(numero_carte=numero_carte)
+        if bon:
+            return True
+        else:
+            return False
     
     def _getClient3(self, dataClient)->list:
         """Returns a instance created or existed client with the rate_assure."""
