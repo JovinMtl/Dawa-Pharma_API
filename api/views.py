@@ -963,8 +963,8 @@ class ImitiOut(viewsets.ViewSet):
         get_data = request.query_params
         page = 0
         if get_data:
-            # print(f"Your queryParams: {get_data}")
-            page = int(get_data.get('page'))
+            print(f"Your queryParams: {get_data}")
+            # page = int(get_data.get('page'))
         else:
             # print(f"No param")
             pass
