@@ -1056,8 +1056,6 @@ class ImitiOut(viewsets.ViewSet):
         if case ==3:
             num_bon = client.get("numero_bon")
             existing_bon = self._checkNumBon(num_bon)
-        print(f"THe client_obj: {(client_obj)}, case:{case}, num_crt:{num_bon}\
-            and existing_bon:{existing_bon}")
         if existing_bon:
             return JsonResponse({"sold":"FailedBecauseAlreadyExist"})
         rate_assure = assu_obj.rate_assure
@@ -1415,6 +1413,10 @@ class Rapport(viewsets.ViewSet):
                     date_arr[1], date_arr[2])
         else:
             end_date = timezone.now()
+        if begin_date > end_date:
+            tmp = begin_date
+            begin_date = end_date
+            end_date = tmp
         
         return [begin_date, end_date]
 
