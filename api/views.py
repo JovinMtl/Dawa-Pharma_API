@@ -987,6 +987,29 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
     
+    def _getDate1(self, date1='', date2=''):
+        """Takes two arguments of dates and return
+        date_begin , date_end.
+        """
+        end_date = None
+        begin_date = None
+        if date1:
+            date_arr = shortStr2Date(date1)
+            begin_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
+        else:
+            # should bring the beginning of today.
+            begin_date = timezone.now() - timedelta(hours=timezone.now().hour)
+        if date2:
+            date_arr = shortStr2Date(date2)
+            end_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
+        else:
+            end_date = timezone.now()
+        
+        return [begin_date, end_date]
+
+    
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def dispo_date(self, request):
