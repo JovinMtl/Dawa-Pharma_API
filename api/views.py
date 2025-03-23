@@ -1335,7 +1335,16 @@ class Rapport(viewsets.ViewSet):
     def reportEntree(self, request):
         """making an endpoint that will return all the UmutiEntreeBackup instead of
           UmutiEntree entries."""
-        imiti = UmutiEntreeBackup.objects.all().order_by('-date_entrant')
+        get_data = request.query_params
+        begin_date, end_date = self._getDate1()
+        dates = None
+        if get_data:
+            dates = [get_data.get('date_debut'), get_data.get('date_fin')]
+            print(f"Dates are: {dates}")
+            begin_date, end_date = self._getDate1(date1=dates[0],\
+            date2=dates[1])
+        imiti = UmutiEntreeBackup.objects.filter(Q(date_entrant__gte=begin_date) &\
+                    Q(date_entrant__lte=end_date)).order_by('-date_entrant')
         imitiSerialized = UmutiEntreeSeriazer(imiti, many=True)
 
         if imitiSerialized.is_valid:
