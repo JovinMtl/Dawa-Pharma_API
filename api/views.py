@@ -960,14 +960,7 @@ class ImitiOut(viewsets.ViewSet):
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def dispo(self, request):
-        get_data = request.query_params
         page = 0
-        if get_data:
-            print(f"Your queryParams: {get_data}")
-            # page = int(get_data.get('page'))
-        else:
-            # print(f"No param")
-            pass
         imiti = ImitiSet.objects.all().order_by('-date_last_vente')
         # numbering total/syntesis
         syntesis = self.__make_syntesis(imiti=imiti)
@@ -987,27 +980,6 @@ class ImitiOut(viewsets.ViewSet):
 
         return JsonResponse({"THings are":"okay"})
     
-    def _getDate1(self, date1='', date2=''):
-        """Takes two arguments of dates and return
-        date_begin , date_end.
-        """
-        end_date = None
-        begin_date = None
-        if date1:
-            date_arr = shortStr2Date(date1)
-            begin_date = timezone.datetime(date_arr[0],\
-                    date_arr[1], date_arr[2])
-        else:
-            # should bring the beginning of today.
-            begin_date = timezone.now() - timedelta(hours=timezone.now().hour)
-        if date2:
-            date_arr = shortStr2Date(date2)
-            end_date = timezone.datetime(date_arr[0],\
-                    date_arr[1], date_arr[2])
-        else:
-            end_date = timezone.now()
-        
-        return [begin_date, end_date]
 
     
     @action(methods=['post'], detail=False,\
@@ -1408,11 +1380,43 @@ class Rapport(viewsets.ViewSet):
         """
         Will return all the instances of BonDeCommand.
         """
-        bons = BonDeCommand.objects.all()[::-1]
+        get_data = request.query_params
+        begin_date, end_date = self._getDate1()
+        dates = None
+        if get_data:
+            dates = [get_data.get('date_debut'), get_data.get('date_fin')]
+            print(f"Dates are: {dates}")
+            begin_date, end_date = self._getDate1(date1=dates[0],\
+            date2=dates[1])
+        bons = BonDeCommand.objects.filter(Q(date_served__gte=begin_date) &\
+                    Q(date_served__lte=end_date))[::-1]
+        # bons = BonDeCommand.objects.all()[::-1]
         bons_serialized = BonDeCommandSeria(bons, many=True)
         if bons_serialized.is_valid:
             return JsonResponse({"response": bons_serialized.data})
         return JsonResponse({"response": []})
+    
+    def _getDate1(self, date1='', date2=''):
+        """Takes two arguments of dates and return
+        date_begin , date_end.
+        """
+        end_date = None
+        begin_date = None
+        if date1:
+            date_arr = shortStr2Date(date1)
+            begin_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
+        else:
+            # should bring the beginning of today.
+            begin_date = timezone.now() - timedelta(hours=timezone.now().hour)
+        if date2:
+            date_arr = shortStr2Date(date2)
+            end_date = timezone.datetime(date_arr[0],\
+                    date_arr[1], date_arr[2])
+        else:
+            end_date = timezone.now()
+        
+        return [begin_date, end_date]
 
     
     @action(methods=['post'], detail=False,\
