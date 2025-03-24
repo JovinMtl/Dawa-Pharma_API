@@ -1368,10 +1368,16 @@ class Rapport(viewsets.ViewSet):
              permission_classes= [IsAuthenticated])
     def reportVentes(self, request):
         """making an endpoint that will return all the umutisold entries"""
-        begin_date, end_date = self._getDate(request.data)
-        print(f"B:{begin_date}, E:{end_date}")
-        meds = UmutiSold.objects.filter(date_operation__gte=begin_date)\
-            .filter(date_operation__lte=end_date)
+        get_data = request.query_params
+        begin_date, end_date = self._getDate1()
+        dates = None
+        if get_data:
+            dates = [get_data.get('date_debut'), get_data.get('date_fin')]
+            print(f"Dates are: {dates}")
+            begin_date, end_date = self._getDate1(date1=dates[0],\
+            date2=dates[1])
+        meds = UmutiSold.objects.filter(Q(date_operation__gte=begin_date) &\
+                    Q(date_operation__lte=end_date))[::-1]
         meds_built = self._builtVente(meds)
         imitiSerialized = SoldAsBonSeria(data=meds_built, many=True)
 
