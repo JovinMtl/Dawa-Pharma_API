@@ -1,4 +1,7 @@
 
+#  Written on March 31, 2025. Thierry Nsanzumukiza.
+#  muteule Jove.
+
 def roundNumber(val:int=0)->int:
     principe = 1
     product = 1
