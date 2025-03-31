@@ -10,3 +10,8 @@ pharma/migrations/__pycache__
 
 Dawa_Pharma_API/settings.py
 db.sqlite3
+
+static/
+staticfiles/
+run_django.bat
+run.py
