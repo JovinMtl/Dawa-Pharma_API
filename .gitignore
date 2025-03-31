@@ -7,6 +7,7 @@ api/shared/__pycache__
 Dawa_Pharma_API/__pycache__
 pharma/__pycache__
 pharma/migrations/__pycache__
+pharma/migrations
 
 Dawa_Pharma_API/settings.py
 db.sqlite3
