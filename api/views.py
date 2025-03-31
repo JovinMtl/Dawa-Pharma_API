@@ -1124,10 +1124,10 @@ class ImitiOut(viewsets.ViewSet):
         today_number = timezone.now().day
         year_start = timezone.now() - timedelta(\
             days=((30*elapsed_month)+today_number))
-        imiti_sold = UmutiSold.objects.filter(\
-            date_operation__gte=year_start)
+        facture_number = BonDeCommand.objects.filter(\
+            date_served__gte=year_start)
 
-        return JsonResponse({"sold": len(imiti_sold)})
+        return JsonResponse({"sold": len(facture_number)})
 
     def _checkNumBon(self, num_bon:str='')->bool:
         bon = BonDeCommand.objects.filter(num_bon=num_bon)
