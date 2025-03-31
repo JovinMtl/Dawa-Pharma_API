@@ -11,6 +11,6 @@ def roundNumber(val:int=0)->int:
     elif val > 10000:
         principe = 1000
     product = int(val / principe) + 1
-    result = product * result
+    result = product * principe
 
     return result
