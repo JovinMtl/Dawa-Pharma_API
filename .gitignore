@@ -16,3 +16,4 @@ static/
 staticfiles/
 run_django.bat
 run.py
+.env
