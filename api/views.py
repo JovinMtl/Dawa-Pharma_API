@@ -33,6 +33,7 @@ from .shared.listStrToList import listStrToList, listIntToList,\
       listDictIntSomme, listDictIntSomme2, listDictIntSomme3
 from .shared.stringToDate import stringToDate, shortStr2Date
 from .shared.superiorInput import superiorInput
+from .shared.roundingNumber import roundNumber
 
 
 # Making a weekday dict that will be used
@@ -746,8 +747,8 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_set.prix_achat = self._round100(prix_achat)
                     prix_vente = float(umutie.prix_vente_usd) * \
                                         usd_to_bif.actualExchangeRate
-                    prix_vente_arondi = (int(prix_vente / 100)) + 1
-                    umuti_set.prix_vente = prix_vente_arondi * 100
+                    # prix_vente_arondi = (int(prix_vente / 100)) + 1
+                    umuti_set.prix_vente = roundNumber(prix_vente)
                     umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
