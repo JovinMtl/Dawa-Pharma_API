@@ -318,118 +318,149 @@ class GeneralOps(viewsets.ViewSet):
         c1 = ['Anesthesie_et_Reanimation',
                 'Anesthésiques généraux',
                 'Anesthésiques locaux',
-                'Agents de réanimation'
+                'Agents de réanimation',
+                'Autre'
                 ]
         c2 = ['Antalgiques_Analgesiques',
                 'Antalgiques périphériques',
-                "Antalgiques centraux (Opioïdes et dérivés)"
+                "Antalgiques centraux (Opioïdes et dérivés)",
+                'Autre'
                 ]
         c3 = ['Anti_inflammatoires',
                 "AINS (Anti-Inflammatoires Non Stéroïdiens)",
                 "Corticostéroïdes",
-                "Inhibiteurs de COX-2"
+                "Inhibiteurs de COX-2",
+                'Autre'
                 ]
         c4 = ['Cancerologie_et_Hematologie',
                 'Chimiothérapies',
                 'Immunothérapies',
                 "Thérapies ciblées",
-                "Agents hématopoïétiques"
+                "Agents hématopoïétiques",
+                'Autre'
                 ]
         c5 = ['Cardiologie_et_Angiologie'
                 "Anti-hypertenseurs",
                 "Antiarythmiques",
                 "Antiangineux",
                 "Anticoagulants",
-                "Diurétiques"
+                "Diurétiques",
+                'Autre'
                 ]
         c6 = ['Contraception_et_Interruption_de_Grossesse',
                 "Contraceptifs oraux",
                 "Contraceptifs injectables",
                 "Dispositifs intra-utérins",
+                'Autre'
                 ]
         c7 = ['Dermatologie',
                 "Antifongiques locaux",
                 "Antibactériens locaux",
-                "Corticostéroïdes topiques"
+                "Corticostéroïdes topiques",
+                'Autre'
                 ]
         c8 = ['Endocrinologie',
                 "Antidiabétiques oraux",
                 'Insulines',
-                'Hormonothérapies'
+                'Hormonothérapies',
+                'Autre'
                 ]
         c9 = ['Gastro_Entero_Hepatologie',
                 "Antiulcéreux et Antiacides",
                 'Laxatifs',
                 'Antidiarrhéiques',
-                'Hépatoprotecteurs'
+                'Hépatoprotecteurs',
+                'Autre'
                 ]
         c10 = ['Gynecologie',
                 "Oestrogènes et Progestatifs",
-                "Traitement des infections gynécologiques"
+                "Traitement des infections gynécologiques",
+                'Autre'
                 ]
         c11 = ['Hemostase_et_Sang',
                 "Facteurs de coagulation",
                 "Antifibrinolytiques",
-                "Produits sanguins"
+                "Produits sanguins",
+                'Autre'
                 ]
         c12 = ['Immunologie',
                 'Vaccins',
                 'Immunoglobulines',
-                'Immunosuppresseurs'
+                'Immunosuppresseurs',
+                'Autre'
                 ]
         c13 = ['Infectiologie_Parasitologie',
                 'Antibiotiques',
                 'Antiviraux',
                 'Antiparasitaires',
-                'Antifongiques'
+                'Antifongiques',
+                'Autre'
                 ]
         c14 = ['Metabolisme_et_Nutrition',
                 "Suppléments nutritionnels",
-                "Régulateurs de l'appétit"
+                "Régulateurs de l'appétit",
+                'Autre'
                 ]
         c15 = ['Neurologie_Psychiatrie',
                 'Antidépresseurs',
                 'Anxiolytiques',
                 'Antipsychotiques',
-                'Antiépileptiques'
+                'Antiépileptiques',
+                'Autre'
                 ]
         c16 = ['Ophtalmologie',
                 'Antiglaucomateux',
                 'Mydriatiques',
-                "Lubrifiants oculaires"
+                "Lubrifiants oculaires",
+                'Autre'
                 ]
         c17 = ['Oto_Rhino_Laryngologie',
                 'Antihistaminiques',
                 'Décongestionnants',
-                "Anti-inflammatoires"
+                "Anti-inflammatoires",
+                'Autre'
                 ]
         c18 = ['Pneumologie',
                 'Bronchodilatateurs',
                 "Corticostéroïdes inhalés",
-                'Antileucotriènes'
+                'Antileucotriènes',
+                'Autre'
                 ]
         c19 = ['Rhumatologie',
                 "DMARDs (Disease-Modifying Antirheumatic Drugs)",
                 "Anti-inflammatoires",
-                'Biothérapies'
+                'Biothérapies',
+                'Autre'
                 ]
         c20 = ['Sang_et_Derives',
                 'Érythropoïétine',
                 'Plasma',
-                "Concentrés de plaquettes"
+                "Concentrés de plaquettes",
+                'Autre'
                 ]
         c21 = ['Stomatologie'
                 "Antiseptiques buccaux"
-                "Analgésiques bucco-dentaires"
+                "Analgésiques bucco-dentaires",
+                'Autre'
                 ]
         c22 = ['Toxicologie',
                 'Antidotes',
-                'Chélateurs'
+                'Chélateurs',
+                'Autre'
                 ]
         c23 = ['Urologie_et_Nephrologie',
                 'Diurétiques',
                 'Anticholinergiques',
-                "Suppléments de potassium"
+                "Suppléments de potassium",
+                'Autre'
+                ]
+        c24 = ['Hygiene_et_Protection',
+                'Gants',
+                'Masques',
+                'Blouses',
+                'Bottes',
+                "Produits antisceptiques",
+                'Autre'
                 ]
         all_cs = [c1, c2, c3, c4, c5, c6, c7,\
             c7, c8, c9, c10, c11, c12, c13, c14,\
