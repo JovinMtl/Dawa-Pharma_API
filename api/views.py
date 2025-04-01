@@ -462,10 +462,13 @@ class GeneralOps(viewsets.ViewSet):
                 "Produits antisceptiques",
                 'Autre'
                 ]
+        c25 = ['Autre',
+                'Autre'
+                ]
         all_cs = [c1, c2, c3, c4, c5, c6, c7,\
             c7, c8, c9, c10, c11, c12, c13, c14,\
             c15, c16, c17, c18, c19, c20, c21,\
-            c22, c23]
+            c22, c23, c24, c25]
         all_cs.reverse()
         i, counter = 0, 0
         len_cs = len(all_cs)
