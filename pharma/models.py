@@ -34,7 +34,7 @@ class UmutiEntree(models.Model):
     operator = models.CharField(max_length=15, default='null')
 
     def __str__(self) -> str:
-        return f"{self.code_med} {(str(self.date_entrant))[:7]}"
+        return f"{self.code_med} : {(str(self.date_entrant))[:7]} : {self.nom_med}"
 
 class UmutiEntreeBackup(models.Model):
     date_entrant = models.DateTimeField(default=timezone.now)
@@ -89,7 +89,7 @@ class ImitiSet(models.Model):
     checked_qte = models.TextField() # for tracking qte on each umutiEntree
 
     def __str__(self) -> str:
-        return f"{self.code_med}:{self.quantite_restant}"
+        return f"{self.code_med}:{self.quantite_restant} : {self.nom_med}"
 
 
 class Assurance(models.Model):
