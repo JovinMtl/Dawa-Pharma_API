@@ -577,6 +577,62 @@ class GeneralOps(viewsets.ViewSet):
         y.remove([]) # removing the initial empty list
 
         return JsonResponse({"x":x, "y":y})
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def getPrInterest(self, request):
+        """Will return a Pr-Interest."""
+        pr = BeneficeProgram.objects.first()
+        return Response({
+            'pr_interest': pr.ben
+        })
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def setPrInterest(self, request):
+        """Will return a Pr-Interest."""
+        in_sent = request.data
+        sent_pr = in_sent.get('imiti').get('_value')
+        pr = BeneficeProgram.objects.first()
+        pr_interest = float(sent_pr)
+        if pr_interest > 0 and pr_interest < 2:
+            pr.ben = pr_interest
+            pr.save()
+            return Response({
+                'status': pr.ben
+            })
+        return Response({
+                'status': 0
+            })
+
+    @action(methods=['get'], detail=False,\
+            permission_classes= [IsAdminUser])
+    def getTxChange(self, request):
+        """Will return a Pr-Interest."""
+        tx = UsdToBif.objects.first()
+        return Response({
+            'txChange': tx.actualExchangeRate
+        })
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def setTxChange(self, request):
+        """Will set a UsdToBif."""
+        in_sent = request.data
+        sent_pr = in_sent.get('imiti').get('_value')
+        tx = UsdToBif.objects.first()
+        tx_change = float(sent_pr)
+        if tx_change > 1000 and tx_change < 10000:
+            tx.actualExchangeRate = tx_change
+            tx.save()
+            return Response({
+                'status': tx.actualExchangeRate
+            })
+        return Response({
+                'status': 0
+            })
+
+
                 
             
 
