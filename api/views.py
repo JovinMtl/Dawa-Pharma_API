@@ -1117,56 +1117,48 @@ class ImitiOut(viewsets.ViewSet):
                     print(f"The order is {order}")
                     if order[2] == 0:
                         continue
-                    try:
-                        umuti = UmutiEntree.objects.\
-                            filter(code_med=code_med).\
-                            filter(code_operation=order[1])
-                    except UmutiEntree.DoesNotExist:
-                        pass
-                    else:
-                        #can now perfom the Vente operation
-                        if not umuti:
-                            return JsonResponse({
-                                "imperfect": success, 
-                                "num_facture": created_facture_number,
-                                })
-                        be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
-                        
-                        # Only create a bon_de_commande when this is True
-                        if (int(qte)) and (not bon_created):
-                            bon_de_commande = self._createBon(\
-                                client=client, \
-                                client_obj=client_obj,\
-                                assu_obj=assu_obj,\
-                                categorie=categorie)
-                            bon_created = True
-                            created_facture_number = len(BonDeCommand.objects.filter(\
-                                                        date_served__gte=year_start))
-                            if bon_de_commande == 403:
-                                return JsonResponse({"The Assurance does ":"not exist"})
-                        
-                        sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
-                                    operator=request.user, \
-                                        reference_umuti=be_sold,\
-                                        bon_de_commande=bon_de_commande)
-                        # completing bon_de_commande
-                        bon_de_commande = self._completeBon(\
-                            bon_de_commande=bon_de_commande,\
-                            code_operation=sold)
-                        if sold:
-                            total_facture += be_sold.prix_vente * order[2]
-                            success += 1
+                    umuti = UmutiEntree.objects.\
+                        filter(code_med=code_med).\
+                        filter(code_operation=order[1])
+                    #can now perfom the Vente operation
+                    if not umuti:
+                        return JsonResponse({
+                            "imperfect": success, 
+                            "num_facture": created_facture_number,
+                            })
+                    be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
+                    
+                    # Only create a bon_de_commande when this is True
+                    if (int(qte)) and (not bon_created):
+                        bon_de_commande = self._createBon(\
+                            client=client, \
+                            client_obj=client_obj,\
+                            assu_obj=assu_obj,\
+                            categorie=categorie)
+                        bon_created = True
+                        created_facture_number = len(BonDeCommand.objects.filter(\
+                                                    date_served__gte=year_start))
+                        if bon_de_commande == 403:
+                            return JsonResponse({"The Assurance does ":"not exist"})
+                    
+                    sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
+                                operator=request.user, \
+                                    reference_umuti=be_sold,\
+                                    bon_de_commande=bon_de_commande)
+                    # completing bon_de_commande
+                    bon_de_commande = self._completeBon(\
+                        bon_de_commande=bon_de_commande,\
+                        code_operation=sold)
+                    if sold:
+                        total_facture += be_sold.prix_vente * order[2]
+                        success += 1
                 once += 1 # create bon_de_commande only once
         # Should now update the reduction in bon_de_commande
-        
         bon_de_commande = self._updateReduction(bon_de_commande, \
                 total=total_facture, rate_assure=rate_assure)
         #  after sell then call compile
         imiti = EntrantImiti()
         jove = imiti.compileImitiSet()
-
-        # should calculate the number of sold in this year
-        
 
         return JsonResponse({"sold": created_facture_number})
 
