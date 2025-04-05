@@ -1114,15 +1114,16 @@ class ImitiOut(viewsets.ViewSet):
                 orders = self._assess_order(code_med=code_med,\
                                          code_operation=code_operation,\
                                              qte=qte)
-                print(f"THe orders are: {orders}")
                 if not orders:
+                    if created_facture_number:
+                        bon_de_commande = self._updateReduction(bon_de_commande, \
+                                    total=total_facture, rate_assure=rate_assure)
                     return Response({
                         "imperfect": 1,
                         "suceeded": success,
                         "num_facture": created_facture_number,
                     })
                 for order in orders:
-                    print(f"The order is {order}")
                     if order[2] == 0:
                         continue
                     umuti = UmutiEntree.objects.\
@@ -1130,11 +1131,13 @@ class ImitiOut(viewsets.ViewSet):
                         filter(code_operation=order[1])
                     #can now perfom the Vente operation
                     if not umuti:
-                        print(f"SUCCESS is ZERO, found: {len(umuti)}")
-                        return JsonResponse({
-                            "imperfect": success, 
+                        bon_de_commande = self._updateReduction(bon_de_commande, \
+                                    total=total_facture, rate_assure=rate_assure)
+                        return Response({
+                            "imperfect": 1,
+                            "suceeded": success,
                             "num_facture": created_facture_number,
-                            })
+                        })
                     be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
                     
                     # Only create a bon_de_commande when this is True
