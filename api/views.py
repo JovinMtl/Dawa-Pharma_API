@@ -1072,6 +1072,12 @@ class ImitiOut(viewsets.ViewSet):
         rate_assure = 0
         bon_created = False
         existing_bon = False
+        success = 0
+        created_facture_number = 0
+        elapsed_month = timezone.now().month
+        today_number = timezone.now().day
+        year_start = timezone.now() - timedelta(\
+            days=((30*elapsed_month)+today_number))
         if not client:
             # Client ordinaire, categorie: 'no'
             case = 1
@@ -1120,7 +1126,10 @@ class ImitiOut(viewsets.ViewSet):
                     else:
                         #can now perfom the Vente operation
                         if not umuti:
-                            return JsonResponse({"Umuti":"does not exist"})
+                            return JsonResponse({
+                                "imperfect": success, 
+                                "num_facture": created_facture_number,
+                                })
                         be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
                         
                         # Only create a bon_de_commande when this is True
@@ -1131,6 +1140,8 @@ class ImitiOut(viewsets.ViewSet):
                                 assu_obj=assu_obj,\
                                 categorie=categorie)
                             bon_created = True
+                            created_facture_number = len(BonDeCommand.objects.filter(\
+                                                        date_served__gte=year_start))
                             if bon_de_commande == 403:
                                 return JsonResponse({"The Assurance does ":"not exist"})
                         
@@ -1144,6 +1155,7 @@ class ImitiOut(viewsets.ViewSet):
                             code_operation=sold)
                         if sold:
                             total_facture += be_sold.prix_vente * order[2]
+                            success += 1
                 once += 1 # create bon_de_commande only once
         # Should now update the reduction in bon_de_commande
         
@@ -1154,14 +1166,9 @@ class ImitiOut(viewsets.ViewSet):
         jove = imiti.compileImitiSet()
 
         # should calculate the number of sold in this year
-        elapsed_month = timezone.now().month
-        today_number = timezone.now().day
-        year_start = timezone.now() - timedelta(\
-            days=((30*elapsed_month)+today_number))
-        facture_number = BonDeCommand.objects.filter(\
-            date_served__gte=year_start)
+        
 
-        return JsonResponse({"sold": len(facture_number)})
+        return JsonResponse({"sold": created_facture_number})
 
     def _checkNumBon(self, num_bon:str='')->bool:
         bon = BonDeCommand.objects.filter(num_bon=num_bon)
