@@ -280,7 +280,7 @@ class GeneralOps(viewsets.ViewSet):
                             status=406)
             else:
                 request_bons.append(query)
-        bons_seria = BonCommaSeria(request_bons, many=True)
+        bons_seria = BonDeCommandSeria(request_bons, many=True)
         if bons_seria.is_valid:
             return Response(bons_seria.data)
         
@@ -1057,7 +1057,7 @@ class ImitiOut(viewsets.ViewSet):
         Handles the sell operation
         """
         data_query = request.data
-        print(f"The data sent is: {data_query}")
+        # print(f"The data sent is: {data_query}")
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
@@ -1078,6 +1078,7 @@ class ImitiOut(viewsets.ViewSet):
         today_number = timezone.now().day
         year_start = timezone.now() - timedelta(\
             days=((30*elapsed_month)+today_number))
+        
         if not client:
             # Client ordinaire, categorie: 'no'
             case = 1
@@ -1101,7 +1102,7 @@ class ImitiOut(viewsets.ViewSet):
         if existing_bon:
             return JsonResponse({"sold":"FailedBecauseAlreadyExist"})
         rate_assure = assu_obj.rate_assure
-        once = 0
+        
         for actual in panier:
             code_med = actual.get('code_med')
             lot = actual.get('lot')
@@ -1113,6 +1114,13 @@ class ImitiOut(viewsets.ViewSet):
                 orders = self._assess_order(code_med=code_med,\
                                          code_operation=code_operation,\
                                              qte=qte)
+                print(f"THe orders are: {orders}")
+                if not orders:
+                    return Response({
+                        "imperfect": 1,
+                        "suceeded": success,
+                        "num_facture": created_facture_number,
+                    })
                 for order in orders:
                     print(f"The order is {order}")
                     if order[2] == 0:
@@ -1122,6 +1130,7 @@ class ImitiOut(viewsets.ViewSet):
                         filter(code_operation=order[1])
                     #can now perfom the Vente operation
                     if not umuti:
+                        print(f"SUCCESS is ZERO, found: {len(umuti)}")
                         return JsonResponse({
                             "imperfect": success, 
                             "num_facture": created_facture_number,
@@ -1151,8 +1160,7 @@ class ImitiOut(viewsets.ViewSet):
                         code_operation=sold)
                     if sold:
                         total_facture += be_sold.prix_vente * order[2]
-                        success += 1
-                once += 1 # create bon_de_commande only once
+                success += 1
         # Should now update the reduction in bon_de_commande
         bon_de_commande = self._updateReduction(bon_de_commande, \
                 total=total_facture, rate_assure=rate_assure)
@@ -1323,7 +1331,7 @@ class ImitiOut(viewsets.ViewSet):
             elif reste == -1:
                 dat[2] = 0
             else:
-                return ['Empty',]
+                return []
         
         return data
 
@@ -2078,9 +2086,9 @@ class Rapport(viewsets.ViewSet):
         """Will query the instances requested."""
         data_sent = request.data
         imiti_entree = UmutiEntree.objects.filter(id__gte=\
-                    data_sent.get(last_umutiEntree))
+                    data_sent.get('last_umutiEntree'))
         imiti_sold = UmutiSold.objects.filter(id__gte=\
-                    data_sent.get(last_umutiSold))
+                    data_sent.get('last_umutiSold'))
         
         imiti_entree_serialized = UmutiEntreeSeriazer(imiti_entree,\
                                      many=True)
