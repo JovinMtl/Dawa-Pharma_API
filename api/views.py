@@ -430,6 +430,7 @@ class GeneralOps(viewsets.ViewSet):
                 'Bronchodilatateurs',
                 "Corticostéroïdes inhalés",
                 'Antileucotriènes',
+                'Expectorants',
                 'Autre'
                 ]
         c19 = ['Rhumatologie',
