@@ -666,6 +666,7 @@ class EntrantImiti(viewsets.ViewSet):
         error_list = []
         i = 0
         single = False
+        success = 0
         for obj in data:
             if (len(data) > 2) and (i == 0):
                 i += 1 #to skip the title string
@@ -685,6 +686,8 @@ class EntrantImiti(viewsets.ViewSet):
                                         single=single, operator=request.user.username) # 200 if ok
             if reponse != 200:
                 error_list.append(i)
+            else:
+                success += 1
         
         if len(error_list):
             return JsonResponse({"detail": error_list})
@@ -794,8 +797,13 @@ class EntrantImiti(viewsets.ViewSet):
         """ This function checks the expiring date sent in the format:
             "04/01/27" and return datetime.datetime(2027, 4, 1, 0, 0)
         """
+        result = timezone.now()
         if date_peremption:
-            return datetime.strptime(date_peremption, "%m/%d/%y")
+            try:
+                return datetime.strptime(date_peremption, "%m/%d/%y")
+            except ValueError:
+                print(f"THE WRONG DATE FORMAT as: {date_peremption}")
+                return result
         else:
             return timezone.now()
 
@@ -1180,6 +1188,7 @@ class ImitiOut(viewsets.ViewSet):
                                          code_operation=code_operation,\
                                              qte=qte)
                 if not orders:
+                    continue
                     if created_facture_number:
                         bon_de_commande = self._updateReduction(bon_de_commande, \
                                     total=total_facture, rate_assure=rate_assure)
