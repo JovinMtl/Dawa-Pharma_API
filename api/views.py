@@ -658,6 +658,7 @@ class EntrantImiti(viewsets.ViewSet):
         dataReceived = request.data
         data = dataReceived.get('imiti')
         print(f"The data Received: {dataReceived.get('imiti')}")
+        
         if not data:
             return JsonResponse({"detail":"NoneType"})
         # first of all, generate the codes
@@ -847,15 +848,17 @@ class EntrantImiti(viewsets.ViewSet):
                                         qte_tracked )
                     synced_lot = self._sync_lot(umuti_set.lot, umutie)
                     somme_lot = listDictIntSomme3(synced_lot)
-                    usd_to_bif = UsdToBif.objects.get(id=1)
+                    # usd_to_bif = UsdToBif.objects.get(id=1)
                     usd_to_bif = UsdToBif.objects.last()
-                    # umuti_set.prix_achat = umutie.prix_achat  # to have the last
-                    prix_achat = float(umutie.prix_achat_usd) * \
-                                            usd_to_bif.actualExchangeRate
-                    umuti_set.prix_achat = self._round100(prix_achat)
-                    prix_vente = float(umutie.prix_vente_usd) * \
-                                        usd_to_bif.actualExchangeRate
+                    pr_interest = BeneficeProgram.objects.first()
+                    # prix_achat = float(umutie.prix_achat_usd) * \
+                    #                         usd_to_bif.actualExchangeRate  # usd
+                    # umuti_set.prix_achat = self._round100(prix_achat)
+                    umuti_set.prix_achat = umutie.prix_achat
+                    # prix_vente = float(umutie.prix_vente_usd) * \
+                    #                     usd_to_bif.actualExchangeRate   # usd
                     # prix_vente_arondi = (int(prix_vente / 100)) + 1
+                    prix_vente = umuti_set.prix_achat * pr_interest.ben
                     umuti_set.prix_vente = roundNumber(prix_vente)
                     umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
