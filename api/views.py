@@ -370,11 +370,14 @@ class GeneralOps(viewsets.ViewSet):
                 'Laxatifs',
                 'Antidiarrhéiques',
                 'Hépatoprotecteurs',
+                'Antispasmodiques',
                 'Autre'
                 ]
         c10 = ['Gynecologie',
                 "Oestrogènes et Progestatifs",
                 "Traitement des infections gynécologiques",
+                "Uterotoniques",
+                "Antispasmodiques",
                 'Autre'
                 ]
         c11 = ['Hemostase_et_Sang',
@@ -412,6 +415,8 @@ class GeneralOps(viewsets.ViewSet):
                 'Antiglaucomateux',
                 'Mydriatiques',
                 "Lubrifiants oculaires",
+                "Antibiotiques",
+                "Corticoides",
                 'Autre'
                 ]
         c17 = ['Oto_Rhino_Laryngologie',
@@ -430,6 +435,7 @@ class GeneralOps(viewsets.ViewSet):
                 "DMARDs (Disease-Modifying Antirheumatic Drugs)",
                 "Anti-inflammatoires",
                 'Biothérapies',
+                "Myorelaxants",
                 'Autre'
                 ]
         c20 = ['Sang_et_Derives',
