@@ -372,6 +372,7 @@ class GeneralOps(viewsets.ViewSet):
                 'Antidiarrhéiques',
                 'Hépatoprotecteurs',
                 'Antispasmodiques',
+                'Anti-vomitique',
                 'Autre'
                 ]
         c10 = ['Gynecologie',
