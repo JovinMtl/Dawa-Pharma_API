@@ -357,6 +357,7 @@ class GeneralOps(viewsets.ViewSet):
                 "Antifongiques locaux",
                 "Antibactériens locaux",
                 "Corticostéroïdes topiques",
+                "Anti-allergiques",
                 'Autre'
                 ]
         c8 = ['Endocrinologie',
