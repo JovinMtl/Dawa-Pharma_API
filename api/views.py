@@ -32,7 +32,7 @@ from .shared.stringToList import StringToList
 from .shared.listStrToList import listStrToList, listIntToList,\
       listDictIntSomme, listDictIntSomme2, listDictIntSomme3
 from .shared.stringToDate import stringToDate, shortStr2Date
-from .shared.superiorInput import superiorInput
+# from .shared.superiorInput import superiorInput
 from .shared.roundingNumber import roundNumber
 
 
@@ -658,7 +658,7 @@ class EntrantImiti(viewsets.ViewSet):
         dataReceived = request.data
         data = dataReceived.get('imiti')
         print(f"The data Received: {dataReceived.get('imiti')}")
-        
+        # return JsonResponse({"detail":"NoneType"})
         if not data:
             return JsonResponse({"detail":"NoneType"})
         # first of all, generate the codes
@@ -667,28 +667,27 @@ class EntrantImiti(viewsets.ViewSet):
         error_list = []
         i = 0
         single = False
-        success = 0
+        pr_interest = BeneficeProgram.objects.first().ben
         for obj in data:
-            if (len(data) > 2) and (i == 0):
-                i += 1 #to skip the title string
-                continue
-            elif (len(data) == 1):
+            # if (len(data) > 2) and (i == 0): # no title is sent
+            #     i += 1 #to skip the title string
+            #     continue
+            if (len(data) == 1):
                 single = True
             
             code_6 = GenerateCode(6)
             code_med = code_6.giveCode()
-            print(f"using code: {code_med}")
+            # print(f"using code: {code_med}")
             # We should check the existence of umuti with that code or nom_med
             check_exist = self._doesExist(obj=obj)
             if check_exist:
                 code_med = check_exist # in case there is a match.
             reponse = self._addUmuti(obj=obj,code_med=code_med,\
                                       code_operation=code_operation, \
-                                        single=single, operator=request.user.username) # 200 if ok
+                                        single=single, operator=request.user.username,
+                                        pr_interest=pr_interest) # 200 if ok
             if reponse != 200:
                 error_list.append(i)
-            else:
-                success += 1
         
         if len(error_list):
             return JsonResponse({"detail": error_list})
@@ -715,7 +714,7 @@ class EntrantImiti(viewsets.ViewSet):
             return None
     
     def _addUmuti(self, obj:dict, code_med:str, code_operation:str,\
-                   single:bool, operator:str):
+                   single:bool, operator:str, pr_interest:float=1.0):
         """THis method is in charge of creating and filling a new instance
         of UmutiEntree, of this type: 
 
@@ -726,21 +725,19 @@ class EntrantImiti(viewsets.ViewSet):
                'prix_vente': '1500', 'prix_vente': '1800', 
                'quantite_initial': '15', 'location': ''}
         """
-        print(f"THe operator is : {operator}")
+        # print(f"THe operator is : {operator}")
         umuti_new = UmutiEntree.objects.create()
         umuti_new.nom_med = obj.get('nom_med')
         umuti_new.code_med = code_med
         umuti_new.code_operation = code_operation
         umuti_new.quantite_initial = int(obj.get('quantite_initial'))
         umuti_new.quantite_restant = umuti_new.quantite_initial
-        usd_to_bif = UsdToBif.objects.first()
+        # usd_to_bif = UsdToBif.objects.first()
         umuti_new.prix_achat = int(obj.get('prix_achat'))
-        prix_vente = superiorInput(BeneficeProgram, \
-                                    umuti_new.prix_achat, \
-                                    (obj.get('prix_vente')))
+        prix_vente = umuti_new.prix_achat * pr_interest
         umuti_new.prix_vente = roundNumber(prix_vente)
-        umuti_new.prix_achat_usd = umuti_new.prix_achat / usd_to_bif.actualExchangeRate
-        umuti_new.prix_vente_usd = umuti_new.prix_vente / usd_to_bif.actualExchangeRate
+        # umuti_new.prix_achat_usd = umuti_new.prix_achat / usd_to_bif.actualExchangeRate
+        # umuti_new.prix_vente_usd = umuti_new.prix_vente / usd_to_bif.actualExchangeRate
         if not single:
             umuti_new.date_peremption = self._giveDate_exp(obj.get('date_peremption'))
             umuti_new.date_entrant = self._giveDate_entree(obj.get('date_entrant'))
@@ -759,7 +756,7 @@ class EntrantImiti(viewsets.ViewSet):
 
         umuti_new.save()
 
-        print("THe new saved Med: ", umuti_new.nom_med)
+        # print("THe new saved Med: ", umuti_new.nom_med)
 
         # Creating a backup of UmutiEntree which will keep unchanged initial state.
         # This is to copy each new instance of UmutiEntree into backup.
@@ -858,7 +855,7 @@ class EntrantImiti(viewsets.ViewSet):
                     # prix_vente = float(umutie.prix_vente_usd) * \
                     #                     usd_to_bif.actualExchangeRate   # usd
                     # prix_vente_arondi = (int(prix_vente / 100)) + 1
-                    prix_vente = umuti_set.prix_achat * pr_interest.ben
+                    prix_vente = umuti_set.prix_achat * pr_interest.ben 
                     umuti_set.prix_vente = roundNumber(prix_vente)
                     umuti_set.quantite_restant = somme_lot
                     umuti_set.lot = synced_lot
