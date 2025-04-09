@@ -822,9 +822,7 @@ class EntrantImiti(viewsets.ViewSet):
         """Compile all the list of the Medicament procured, according
         the code_med and date_echeance"""
         procured = UmutiEntree.objects.all()
-        i = 1
-        j = 1
-        lot = []
+        pr_interest = BeneficeProgram.objects.first()
         for umutie in procured:
             code = umutie.code_med
             try:
@@ -846,8 +844,8 @@ class EntrantImiti(viewsets.ViewSet):
                     synced_lot = self._sync_lot(umuti_set.lot, umutie)
                     somme_lot = listDictIntSomme3(synced_lot)
                     # usd_to_bif = UsdToBif.objects.get(id=1)
-                    usd_to_bif = UsdToBif.objects.last()
-                    pr_interest = BeneficeProgram.objects.first()
+                    # usd_to_bif = UsdToBif.objects.last()
+                    
                     # prix_achat = float(umutie.prix_achat_usd) * \
                     #                         usd_to_bif.actualExchangeRate  # usd
                     # umuti_set.prix_achat = self._round100(prix_achat)
@@ -876,12 +874,13 @@ class EntrantImiti(viewsets.ViewSet):
                 #mugihe iyo code ihari muri Set
                 lot_list = self._check_lot(umuti_set.lot, umutie)
                 # umuti_set.prix_vente = umutie.prix_vente # setting prix_vente to the last entrie
-                usd_to_bif = UsdToBif.objects.get(id=1)
-                umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
-                        usd_to_bif.actualExchangeRate
-                umuti_set.prix_vente_usd = float(umutie.prix_vente_usd)
+                # usd_to_bif = UsdToBif.objects.get(id=1)
+                # umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
+                #         usd_to_bif.actualExchangeRate
+                # umuti_set.prix_vente_usd = float(umutie.prix_vente_usd)
                 # 
                 # umuti_set.quantite_restant += umutie.quantite_restant
+                umuti_set.prix_vente = umuti_set.prix_achat * pr_interest.ben 
                 umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
                 umuti_set.lot = lot_list
                 last_date = self._findLastDate(code_med=umuti_set.code_med)
