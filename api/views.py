@@ -1211,6 +1211,15 @@ class ImitiOut(viewsets.ViewSet):
                             "suceeded": success,
                             "num_facture": created_facture_number,
                         })
+                    if umuti[0].quantite_restant > int(order[2]):
+                        bon_de_commande = self._updateReduction(bon_de_commande, \
+                                    total=total_facture, rate_assure=rate_assure)
+                        return Response({
+                            "imperfect": 1,
+                            "suceeded": success,
+                            "num_facture": created_facture_number,
+                        })
+
                     be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
                     
                     # Only create a bon_de_commande when this is True
@@ -1440,7 +1449,7 @@ class ImitiOut(viewsets.ViewSet):
         umuti.save()
         new_vente.save()
 
-        print("Finished to Sell")
+        # print("Finished to Sell")
         
         return new_vente.code_operation
     
