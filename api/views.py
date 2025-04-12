@@ -33,7 +33,8 @@ from .shared.listStrToList import listStrToList, listIntToList,\
       listDictIntSomme, listDictIntSomme2, listDictIntSomme3
 from .shared.stringToDate import stringToDate, shortStr2Date
 # from .shared.superiorInput import superiorInput
-from .shared.roundingNumber import roundNumber
+from .shared.roundingNumber import roundNumberPrixVente
+from .shared.stringToDict import StringToDict
 
 
 # Making a weekday dict that will be used
@@ -735,7 +736,7 @@ class EntrantImiti(viewsets.ViewSet):
         # usd_to_bif = UsdToBif.objects.first()
         umuti_new.prix_achat = int(obj.get('prix_achat'))
         prix_vente = umuti_new.prix_achat * pr_interest
-        umuti_new.prix_vente = roundNumber(prix_vente)
+        umuti_new.prix_vente = roundNumberPrixVente(prix_vente)
         # umuti_new.prix_achat_usd = umuti_new.prix_achat / usd_to_bif.actualExchangeRate
         # umuti_new.prix_vente_usd = umuti_new.prix_vente / usd_to_bif.actualExchangeRate
         if not single:
@@ -822,74 +823,34 @@ class EntrantImiti(viewsets.ViewSet):
         """Compile all the list of the Medicament procured, according
         the code_med and date_echeance"""
         procured = UmutiEntree.objects.all()
-        pr_interest = BeneficeProgram.objects.first()
+        pr_interest = BeneficeProgram.objects.first().ben
         for umutie in procured:
+            print(f"compiling: {umutie}")
             code = umutie.code_med
             try:
                 umuti_set = ImitiSet.objects.get(code_med=code)
             except ImitiSet.DoesNotExist:
-                #when the code is new in the ImitiSet
-                #we create that entry in the ImitiSet
-                umuti_new = self._umutiMushasha(umutie)
+                umuti_new = self._umutiSetMushasha(umutie, pr_interest=pr_interest)
             else:
-                qte_saved =  StringToList(umuti_set.checked_qte)
-                qte_tracked = qte_saved.toList()
-                # print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
-                converted_list = listStrToList(umuti_set.checked_imiti)
-                if umutie.code_operation in converted_list:
-                    # sync quantite_restant according to umutie
-                    synced = self._check_qte(umutie.code_operation, \
-                                        umutie.quantite_restant, \
-                                        qte_tracked )
-                    synced_lot = self._sync_lot(umuti_set.lot, umutie)
-                    somme_lot = listDictIntSomme3(synced_lot)
-                    # usd_to_bif = UsdToBif.objects.get(id=1)
-                    # usd_to_bif = UsdToBif.objects.last()
-                    
-                    # prix_achat = float(umutie.prix_achat_usd) * \
-                    #                         usd_to_bif.actualExchangeRate  # usd
-                    # umuti_set.prix_achat = self._round100(prix_achat)
-                    umuti_set.prix_achat = umutie.prix_achat
-                    # prix_vente = float(umutie.prix_vente_usd) * \
-                    #                     usd_to_bif.actualExchangeRate   # usd
-                    # prix_vente_arondi = (int(prix_vente / 100)) + 1
-                    prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                    umuti_set.prix_vente = roundNumber(prix_vente)
-                    umuti_set.quantite_restant = somme_lot
-                    umuti_set.lot = synced_lot
-                    umuti_set.checked_qte = synced
-                    umuti_set.save()
-                    continue  # skip to treat is as new
-                else:
-                    converted_list.append(umutie.code_operation)
-                    qte_tracked.append(
-                        {'code_operation':umutie.code_operation, 
-                         'qte_restant': umutie.quantite_restant})
-                    umuti_set.checked_imiti = converted_list
-                    umuti_set.checked_qte = qte_tracked
-                # check that the actual code_operation has passed,
-                # i should add those code_operation in a fields in umutiSet
-                # divided by a comma.
+                # know first the already checked.
+                lot = StringToDict(umuti_set.lot).toDist()
+                # print(f"Verify the lot {lot[umutie.code_med]}, Date: ")
+                lot[str(umutie.date_peremption)] = {
+                    umutie.code_operation : umutie.quantite_restant,
+                }
+                umuti_set.lot = lot
+                umuti_set.prix_vente = roundNumberPrixVente(umuti_set.prix_achat * pr_interest )
 
-                #mugihe iyo code ihari muri Set
-                lot_list = self._check_lot(umuti_set.lot, umutie)
-                # umuti_set.prix_vente = umutie.prix_vente # setting prix_vente to the last entrie
-                # usd_to_bif = UsdToBif.objects.get(id=1)
-                # umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
-                #         usd_to_bif.actualExchangeRate
-                # umuti_set.prix_vente_usd = float(umutie.prix_vente_usd)
-                # 
-                # umuti_set.quantite_restant += umutie.quantite_restant
-                umuti_set.prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
-                umuti_set.lot = lot_list
+                ops = {key: value for subdict in lot.values() for key, value in subdict.items()}
+                umuti_set.quantite_restant = sum(ops.values())
+
                 last_date = self._findLastDate(code_med=umuti_set.code_med)
                 if last_date:
                     umuti_set.date_last_vente = last_date
                 #checking if there is qte_entrant bigger than before
                 if (int(umuti_set.qte_entrant_big)) < (int(umutie.quantite_initial)):
                     umuti_set.qte_entrant_big = int(umutie.quantite_initial)
-#                     print(f"The Umutie is bigger {umutie.quantite_initial}\
+# #                     print(f"The Umutie is bigger {umutie.quantite_initial}\
 #  out of {umuti_set.qte_entrant_big}")
                 # else:
 #                     print(f"The Existing UmutiSet :\
@@ -980,9 +941,10 @@ class EntrantImiti(viewsets.ViewSet):
 
         return qte_tracked
     
-    def _umutiMushasha(self, umuti:UmutiEntree):
+    def _umutiSetMushasha(self, umuti:UmutiEntree, pr_interest:float=1):
         """Creates an instance of ImitiSet, it's input is 
         an instance of UmutiEntree"""
+        # print(f"The umuti given: {umuti}")
         umuti_new = ImitiSet.objects.create()
         umuti_new.code_med = str(umuti.code_med)
         umuti_new.nom_med = str(umuti.nom_med)
@@ -990,58 +952,46 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.sous_classe_med = \
             (str(umuti.sous_classe_med))[:29]
         umuti_new.forme = (str(umuti.forme))[:7]
-        umuti_new.type_med = str(umuti.type_med)
-        umuti_new.type_achat = str(umuti.type_achat)
-        umuti_new.ratio = str(umuti.ratio)
-        umuti_new.type_vente = str(umuti.type_vente)
-        usd_to_bif = UsdToBif.objects.get(id=1)
-        try:
-            last_umuti = UmutiEntree.objects.filter(code_med=umuti_new.code_med).last()
-            umuti_new.prix_achat = int(last_umuti.prix_achat)
-            # umuti_new.prix_vente = int(last_umuti.prix_vente)
-            umuti_new.prix_vente = int(last_umuti.prix_vente_usd) * \
-                usd_to_bif.actualExchangeRate
-        except AttributeError:
-            umuti_new.prix_achat = int(umuti.prix_achat)
-            # umuti_new.prix_vente = int(umuti.prix_vente)
-            umuti_new.prix_vente = int(last_umuti.prix_vente_usd) * \
-                usd_to_bif.actualExchangeRate
-            pass
+        # umuti_new.type_med = str(umuti.type_med)
+        # umuti_new.type_achat = str(umuti.type_achat)
+        # umuti_new.ratio = str(umuti.ratio)
+        # umuti_new.type_vente = str(umuti.type_vente)
+        # usd_to_bif = UsdToBif.objects.get(id=1)
+        # last_umuti = UmutiEntree.objects.filter(code_med=umuti_new.code_med).last() # already shared as a parameter
+        umuti_new.prix_achat = int(umuti.prix_achat)
+        umuti_new.prix_vente = roundNumberPrixVente(umuti.prix_vente * pr_interest)
+        # umuti_new.prix_vente = int(umuti.prix_vente_usd) * \
+        #     usd_to_bif.actualExchangeRate
         
         umuti_new.quantite_restant = int(umuti.quantite_restant)
-        umuti_new.location = str(umuti.location)
+        # umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
         umuti_new.date_last_vente = umuti.date_entrant
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
 
-        obj = {
-            'date': (str(umuti.date_peremption))[:7],
-            'qte': int(umuti.quantite_restant),
-            'code_operation': [
-                        { 
-                            str(umuti.code_operation) : int(umuti.quantite_restant)
-                        }
-                    ],
-            'to_panier': 0
+        lot = {}
+        lot[str(umuti.date_peremption)] = {
+            umuti.code_operation : umuti.quantite_restant,
         }
-        lot = []
-        lot.append(obj)
+        # lot = []
+        # lot.append(obj)
 
-        checked = []
-        qte_obj= {
-            'code_operation': umuti.code_operation,
-            'qte_restant': umuti_new.quantite_restant
-        }
-        checked_qte = []
-        checked_qte.append(qte_obj)
-        checked.append(umuti.code_operation)
-        umuti_new.checked_imiti = checked
-        umuti_new.checked_qte = checked_qte
+        # checked = []
+        # qte_obj= {
+        #     'code_operation': umuti.code_operation,
+        #     'qte_restant': umuti_new.quantite_restant
+        # }
+        # checked_qte = []
+        # checked_qte.append(qte_obj)
+        # checked.append(umuti.code_operation)
+        # umuti_new.checked_imiti = checked
+        # umuti_new.checked_qte = checked_qte
         umuti_new.lot = lot
 
         umuti_new.save()
 
         return umuti_new
+  
     
     def _findLastDate(self, code_med:str):
         sell_done = UmutiSold.objects.filter(code_med=code_med).last()
