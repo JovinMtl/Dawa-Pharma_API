@@ -1207,7 +1207,8 @@ class ImitiOut(viewsets.ViewSet):
                     
                     if (not umuti) and (success):
                         bon_de_commande = self._updateReduction(bon_de_commande, \
-                                    total=total_facture, rate_assure=rate_assure)
+                                    total=total_facture, rate_assure=rate_assure, \
+                                    num_facture=created_facture_number)
                         return Response({
                             "imperfect": 1,
                             "suceeded": success,
@@ -1262,7 +1263,8 @@ class ImitiOut(viewsets.ViewSet):
                 success += 1
         # Should now update the reduction in bon_de_commande
         bon_de_commande = self._updateReduction(bon_de_commande, \
-                total=total_facture, rate_assure=rate_assure)
+                total=total_facture, rate_assure=rate_assure, \
+                num_facture=created_facture_number)
         #  after sell then call compile
         # imiti = EntrantImiti() # should not compile
         # jove = imiti.compileImitiSet() #should not compile
@@ -1336,7 +1338,8 @@ class ImitiOut(viewsets.ViewSet):
     def _updateReduction(self, \
             bon_de_commande:BonDeCommand, \
                 total:int=0, \
-                rate_assure:int=0)->BonDeCommand:
+                rate_assure:int=0, \
+                num_facture:int=0)->BonDeCommand:
         """Updates the total dettes in as reduction."""
         print(f"The bons is: {bon_de_commande}")
         if rate_assure:
@@ -1348,6 +1351,7 @@ class ImitiOut(viewsets.ViewSet):
         else:
             bon_de_commande.cout = total
         bon_de_commande.total = total
+        bon_de_commande.num_facture = num_facture
         bon_de_commande.save()
 
         return bon_de_commande
