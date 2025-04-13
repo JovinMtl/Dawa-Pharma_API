@@ -133,6 +133,7 @@ class BonDeCommand(models.Model):
     assu_rate = models.IntegerField(default=0)
     montant_dette = models.IntegerField(default=0)
     num_bon = models.CharField(max_length=12, default='null')
+    num_facture = models.IntegerField(default=0)
     categorie = models.CharField(max_length=4, default='null') # no, tv, mt, md, au
     is_paid = models.BooleanField(default=False)
     date_paid = models.DateField(default=year_1970)
