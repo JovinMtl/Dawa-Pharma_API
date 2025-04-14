@@ -76,7 +76,7 @@ class ImitiSet(models.Model):
     prix_vente = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
     prix_vente_usd = models.FloatField(default=0) #8: ayo plaquette tuyidandaza muri usd
     difference = models.IntegerField(default=0) #9: benefice ONY ADMIN
-    quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
+    quantite_restant = models.FloatField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     lot = models.TextField() #dates izohererako 
     # [
@@ -87,6 +87,7 @@ class ImitiSet(models.Model):
     date_last_vente = models.DateTimeField(default=timezone.now) #aho uwo muti uheruka gusohoka ku murwayi
     checked_imiti = models.TextField() # for tracking imitiEntree checked(array of code_operation)
     checked_qte = models.TextField() # for tracking qte on each umutiEntree
+    is_decimal = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f"{self.code_med}:{self.quantite_restant} : {self.nom_med}"
