@@ -28,7 +28,7 @@ class UmutiEntree(models.Model):
     prix_achat_usd = models.FloatField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
     prix_vente_usd = models.FloatField(default=0) #8: ayo plaquette tuyidandaza muri usd
     quantite_initial = models.IntegerField(default=0) # izinjiye ubwambere
-    quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
+    quantite_restant = models.FloatField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
     operator = models.CharField(max_length=15, default='null')
@@ -52,7 +52,7 @@ class UmutiEntreeBackup(models.Model):
     prix_vente = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
     prix_achat_usd = models.FloatField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
     prix_vente_usd = models.FloatField(default=0) #8: ayo plaquette tuyidandaza muri usd
-    quantite_initial = models.IntegerField(default=0) # izinjiye ubwambere
+    quantite_initial = models.FloatField(default=0) # izinjiye ubwambere
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
