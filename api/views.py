@@ -1129,7 +1129,7 @@ class ImitiOut(viewsets.ViewSet):
         Handles the sell operation
         """
         data_query = request.data
-        # print(f"The data sent is: {data_query}")
+        print(f"The data sent is: {data_query}")
         bundle = data_query.get('imiti')
         panier = bundle.get('panier')
         client = bundle.get('client')
