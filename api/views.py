@@ -1008,7 +1008,7 @@ class EntrantImiti(viewsets.ViewSet):
                 usd_to_bif.actualExchangeRate
             pass
         
-        umuti_new.quantite_restant = int(umuti.quantite_restant)
+        umuti_new.quantite_restant = umuti.quantite_restant
         umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
         umuti_new.date_last_vente = umuti.date_entrant
@@ -1111,7 +1111,7 @@ class ImitiOut(viewsets.ViewSet):
             'benefice': 0,
         }
         for umuti in imiti:
-            syntesis['qte'] += int(umuti.quantite_restant)
+            syntesis['qte'] += umuti.quantite_restant
             syntesis['pa_t'] += int(umuti.quantite_restant * \
                                 umuti.prix_achat)
             syntesis['pv_t'] += int(umuti.quantite_restant * \
@@ -1221,13 +1221,13 @@ class ImitiOut(viewsets.ViewSet):
                             "num_facture": created_facture_number,
                         })
                        
-                    if umuti[0].quantite_restant < int(order[2]):
+                    if umuti[0].quantite_restant < float(order[2]):
                         return Response({
                             "imperfect": 1,
                             "suceeded": success,
                             "num_facture": created_facture_number,
                         })
-                    if (int(qte)) and (not bon_created):
+                    if (float(qte)) and (not bon_created):
                         bon_de_commande = self._createBon(\
                             client=client, \
                             client_obj=client_obj,\
@@ -1403,7 +1403,7 @@ class ImitiOut(viewsets.ViewSet):
         for obj in code_operation:
             code = (str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(',')[1]
-            qtee = int((str(obj)).replace('[',"").replace(']','').\
+            qtee = float((str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(" ")[1].split('}')[0])
             
             data.append([code_med, code, qtee])
@@ -1496,7 +1496,7 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.operator = str(operator.username)
         new_vente.date_operation = timezone.now()
         # new_vente.bon_de_commande = bon_de_commande
-        umuti.quantite_restant -= int(qte)
+        umuti.quantite_restant -= float(qte)
 
         umuti.save()
         new_vente.save()
@@ -1716,7 +1716,7 @@ class Rapport(viewsets.ViewSet):
                                 int (umuti.quantity)
         try:
             current = ImitiSet.objects.get(code_med=umuti.code_med)
-            record_new.nb_rest = int(current.quantite_restant)
+            record_new.nb_rest = float(current.quantite_restant)
             record_new.px_T_rest = int(current.quantite_restant * \
                                     current.prix_vente)
         except ImitiSet.DoesNotExist:
