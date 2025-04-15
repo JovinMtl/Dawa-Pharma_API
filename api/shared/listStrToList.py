@@ -24,8 +24,8 @@ def listIntToList(data:str):
     data2 = data1.split(',')
     data3 = []
     for dat in data2:
-        if int(dat):
-            data3.append(int(dat))
+        if float(dat):
+            data3.append(float(dat))
 
     return(data3)
     
@@ -33,7 +33,7 @@ def listIntSomme(data: list):
     """This function returns the sum of the Int list"""
     data2 = 0
     for dat in data:
-        if int(dat):
+        if float(dat):
             data2 += dat
     return (data2)
 
@@ -47,11 +47,11 @@ def listDictIntSomme(data:list):
     data2 = 0
     
     for dat in data:
-        if int(dat['qte_restant']):
-            data2 += int (dat['qte_restant'])
+        if float(dat['qte_restant']):
+            data2 += float (dat['qte_restant'])
     return (data2)
 
-def listDictIntSomme2(data:list)->int:
+def listDictIntSomme2(data:list)->float:
     """ THis function will return the sum of the int values contained 
     in a list of dict of type:
     data = [
@@ -62,8 +62,8 @@ def listDictIntSomme2(data:list)->int:
     
     dict_val = 0
     for dat in data:
-        if int((str(dat.values())).split('[')[1].split(']')[0]):
-            dict_val += int((str(dat.values())).split('[')[1].split(']')[0])
+        if float((str(dat.values())).split('[')[1].split(']')[0]):
+            dict_val += float((str(dat.values())).split('[')[1].split(']')[0])
     
     # print(f"The code operation is : {data} and the answer is {dict_val}")
     return (dict_val)
@@ -102,7 +102,7 @@ def _assess_order(code_umuti:str, code_operatio:list) -> list:
         for obj in code_operation:
             code = (str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(',')[1]
-            qte = int((str(obj)).replace('[',"").replace(']','').\
+            qte = float((str(obj)).replace('[',"").replace(']','').\
                 replace("'",",", -1).split(" ")[1].split('}')[0])
             
             data.append([code_umuti, code, qte])
