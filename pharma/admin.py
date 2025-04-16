@@ -19,3 +19,7 @@ admin.site.register(SubClassThep)
 admin.site.register(BonDeCommand)
 admin.site.register(Client)
 admin.site.register(MinimumBenefice) 
+
+admin.site.site_title = "Pharmacie UBUZIMA"
+admin.site.site_header = "Pharmacie Ubuzima Administration"
+admin.site.index_title = "Soyez prudent dans cette zone, vous signale Jov."
