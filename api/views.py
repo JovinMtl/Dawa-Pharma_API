@@ -640,6 +640,38 @@ class GeneralOps(viewsets.ViewSet):
         return Response({
                 'status': 0
             })
+    
+
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def setUmutiSet(self, request):
+        """
+        Will get the id for umutiSet and return or update it.
+        """
+        data_sent = request.data.get('imiti')
+        print(f"The data sent: {data_sent}")
+        if not data_sent:
+            return JsonResponse({
+            'response': 0
+        })
+        code_med = data_sent.get('code_med')
+        try:
+            umuti_set = ImitiSet.objects.get(code_med=code_med)
+            umuti_set_seria = ImitiSetSeriazer(umuti_set)
+        except ImitiSet.DoesNotExist:
+            return JsonResponse({
+                'response': 404,
+            })
+        else:
+            if data_sent.get('request') == 'get':
+                if umuti_set_seria.is_valid:
+                    return Response(umuti_set_seria.data)
+            elif data_sent.get('request') == 'post':
+                umuti_set.is_decimal = bool(data_sent.get('is_decimal'))
+                umuti_set.save()
+        return JsonResponse({
+            'response': 1
+        })
 
 
                 
@@ -855,7 +887,7 @@ class EntrantImiti(viewsets.ViewSet):
                     # prix_vente_arondi = (int(prix_vente / 100)) + 1
                     prix_vente = umuti_set.prix_achat * pr_interest.ben 
                     umuti_set.prix_vente = roundNumber(prix_vente)
-                    umuti_set.quantite_restant = somme_lot
+                    umuti_set.quantite_restant = round(somme_lot, 1)
                     umuti_set.lot = synced_lot
                     umuti_set.checked_qte = synced
                     umuti_set.save()
@@ -881,7 +913,7 @@ class EntrantImiti(viewsets.ViewSet):
                 # 
                 # umuti_set.quantite_restant += umutie.quantite_restant
                 umuti_set.prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                umuti_set.quantite_restant = listDictIntSomme(umuti_set.checked_qte)
+                umuti_set.quantite_restant = round(listDictIntSomme(umuti_set.checked_qte), 1)
                 umuti_set.lot = lot_list
                 last_date = self._findLastDate(code_med=umuti_set.code_med)
                 if last_date:
@@ -1496,7 +1528,7 @@ class ImitiOut(viewsets.ViewSet):
         new_vente.operator = str(operator.username)
         new_vente.date_operation = timezone.now()
         # new_vente.bon_de_commande = bon_de_commande
-        umuti.quantite_restant -= float(qte)
+        umuti.quantite_restant -= round(float(qte), 1)
 
         umuti.save()
         new_vente.save()
@@ -1716,7 +1748,7 @@ class Rapport(viewsets.ViewSet):
                                 int (umuti.quantity)
         try:
             current = ImitiSet.objects.get(code_med=umuti.code_med)
-            record_new.nb_rest = float(current.quantite_restant)
+            record_new.nb_rest = round(current.quantite_restant, 1)
             record_new.px_T_rest = int(current.quantite_restant * \
                                     current.prix_vente)
         except ImitiSet.DoesNotExist:
@@ -2187,7 +2219,7 @@ class Rapport(viewsets.ViewSet):
             if not len(now_umuti): 
                 continue
             
-            now_umuti[0].quantite_restant -= umutisold.get('quantity')         
+            now_umuti[0].quantite_restant -= umutisold.get('quantity')      
 
             # creating UmutiSold instance and clone umutisold
             umuti_new = self.__cloneUmutisold(instance=umutisold)
