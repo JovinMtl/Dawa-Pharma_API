@@ -644,9 +644,10 @@ class GeneralOps(viewsets.ViewSet):
 
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAdminUser])
-    def setUmutiSet(self, request):
+    def setDecimal(self, request):
         """
-        Will get the id for umutiSet and return or update it.
+        Will get the id for umutiSet and return or 
+        update its decimal field.
         """
         data_sent = request.data.get('imiti')
         print(f"The data sent: {data_sent}")
@@ -668,6 +669,40 @@ class GeneralOps(viewsets.ViewSet):
                     return Response(umuti_set_seria.data)
             elif data_sent.get('request') == 'post':
                 umuti_set.is_decimal = bool(data_sent.get('is_decimal'))
+                umuti_set.save()
+        return JsonResponse({
+            'response': 1
+        })
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def setPrInterest(self, request):
+        """
+        Will get the id for umutiSet and return or 
+        update its pr_interest.
+        """
+        data_sent = request.data.get('imiti')
+        print(f"The data sent: {data_sent}")
+        if not data_sent:
+            return JsonResponse({
+            'response': 0
+        })
+        code_med = data_sent.get('code_med')
+        try:
+            umuti_set = ImitiSet.objects.get(code_med=code_med)
+            umuti_set_seria = ImitiSetSeriazer(umuti_set)
+        except ImitiSet.DoesNotExist:
+            return JsonResponse({
+                'response': 404,
+            })
+        else:
+            if data_sent.get('request') == 'get':
+                if umuti_set_seria.is_valid:
+                    return Response(umuti_set_seria.data)
+            elif data_sent.get('request') == 'post':
+                umuti_set.is_pr_interest = bool(data_sent.get('is_pr_interest'))
+                if float(data_sent.get('pr_interest')):
+                    umuti_set.pr_interest = float(data_sent.get('pr_interest'))
                 umuti_set.save()
         return JsonResponse({
             'response': 1
