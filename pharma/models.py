@@ -88,6 +88,9 @@ class ImitiSet(models.Model):
     checked_imiti = models.TextField() # for tracking imitiEntree checked(array of code_operation)
     checked_qte = models.TextField() # for tracking qte on each umutiEntree
     is_decimal = models.BooleanField(default=False)
+    is_pr_interest = models.BooleanField(default=False)
+    pr_interest = models.FloatField(default=1.5)
+
 
     def __str__(self) -> str:
         return f"{self.code_med}:{self.quantite_restant} : {self.nom_med}"
