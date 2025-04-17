@@ -729,7 +729,7 @@ class GeneralOps(viewsets.ViewSet):
             former_interest = actual_interest
         imiti_entree = UmutiEntree.objects.filter(code_med=code_med)
         for umuti in imiti_entree:
-            umuti.prix_vente = umuti.prix_achat * float(actual_interest)
+            umuti.prix_vente = roundNumber(umuti.prix_achat * float(actual_interest))
             umuti.save()
         
         return former_interest
