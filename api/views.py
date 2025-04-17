@@ -700,13 +700,45 @@ class GeneralOps(viewsets.ViewSet):
                 if umuti_set_seria.is_valid:
                     return Response(umuti_set_seria.data)
             elif data_sent.get('request') == 'post':
+                former_interest = 1
                 umuti_set.is_pr_interest = bool(data_sent.get('is_pr_interest'))
-                if float(data_sent.get('pr_interest')):
+                cond_1 = float(data_sent.get('pr_interest'))
+                cond_2 = bool(data_sent.get('is_pr_interest'))
+                
+                if cond_1:
                     umuti_set.pr_interest = float(data_sent.get('pr_interest'))
+                if cond_2:
+                    former_interest = self._updatePrixVenteEntree(code_med=code_med, \
+                                            pr_interest=umuti_set.pr_interest, \
+                                            is_individual=True)
+                if cond_1 and cond_2:
+                    umuti_set.prix_vente = self.__updatePvSet(val=umuti_set.prix_vente, \
+                                                    former_interest=former_interest, \
+                                                    new_interest=umuti_set.pr_interest)
                 umuti_set.save()
         return JsonResponse({
             'response': 1
         })
+    def _updatePrixVenteEntree(self, code_med,pr_interest:float=1, is_individual:bool=False):
+        actual_interest = 1
+        former_interest = 1
+        if is_individual:
+            actual_interest = pr_interest
+        else:
+            actual_interest = BeneficeProgram.objects.first().ben
+            former_interest = actual_interest
+        imiti_entree = UmutiEntree.objects.filter(code_med=code_med)
+        for umuti in imiti_entree:
+            umuti.prix_vente = umuti.prix_achat * float(actual_interest)
+            umuti.save()
+        
+        return former_interest
+    
+    def __updatePvSet(self, val:int=1, former_interest:float=1, new_interest:float=1)->int:
+        prix_achat = val / former_interest
+        prix_vente = prix_achat * new_interest
+        return prix_vente
+        
 
 
                 
