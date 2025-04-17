@@ -952,7 +952,10 @@ class EntrantImiti(viewsets.ViewSet):
                     # prix_vente = float(umutie.prix_vente_usd) * \
                     #                     usd_to_bif.actualExchangeRate   # usd
                     # prix_vente_arondi = (int(prix_vente / 100)) + 1
-                    prix_vente = umuti_set.prix_achat * pr_interest.ben 
+                    if umuti_set.is_pr_interest:
+                        prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
+                    else:
+                        prix_vente = umuti_set.prix_achat * pr_interest.ben 
                     umuti_set.prix_vente = roundNumber(prix_vente)
                     umuti_set.quantite_restant = round(somme_lot, 1)
                     umuti_set.lot = synced_lot
