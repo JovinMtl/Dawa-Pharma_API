@@ -1891,7 +1891,7 @@ class Rapport(viewsets.ViewSet):
         meds = ImitiSet.objects.all()
         less_30 = []
         for med in meds:
-            if (med.qte_entrant_big / (med.quantite_restant | 1)) > 3:
+            if (med.qte_entrant_big / (med.quantite_restant or 1)) > 3:
                 less_30.append(med)
         less_30_seria = ImitiSetSeriazer(less_30, many=True)
         if less_30_seria.is_valid:
