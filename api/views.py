@@ -773,6 +773,41 @@ class GeneralOps(viewsets.ViewSet):
         return JsonResponse({
             'response': 200
         })
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def setPachatEntree(self, request):
+        """
+        Will get the id for umutiSet and return or 
+        update its pr_interest.
+        """
+        data_sent = request.data.get('imiti')
+        print(f"The data sent: {data_sent}")
+        if not data_sent:
+            return JsonResponse({
+            'response': 0
+        })
+        code_med = data_sent.get('code_med')
+        if data_sent.get('request') == 'get':
+            imiti_entree = UmutiEntree.objects.filter(Q(code_med=code_med) & \
+                                                    Q(quantite_restant__gte=1))
+            if not imiti_entree:
+                return JsonResponse({
+                    'response': 404,
+                })
+            imiti_serialized = UmutiEntreeSeriazer(imiti_entree, many=True)
+            if imiti_serialized.is_valid:
+                return Response(imiti_serialized.data)
+        elif data_sent.get('request') == 'post':
+            # former_interest = 1
+            code_operation = data_sent.get('code_operation')
+            print(f"The code operation: {code_operation}")
+            # umuti_entree = UmutiEntree.objects.get(Q(code_med=code_med) & \
+            #                                        Q(code_operation=''))
+            
+        return JsonResponse({
+            'response': 1
+        })
         
 
 
