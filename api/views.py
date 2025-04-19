@@ -728,8 +728,16 @@ class GeneralOps(viewsets.ViewSet):
         else:
             actual_interest = BeneficeProgram.objects.first().ben
             former_interest = actual_interest
-        imiti_entree = UmutiEntree.objects.filter(code_med=code_med)
+        imiti_entree = UmutiEntree.objects.filter(Q(code_med=code_med) & \
+                                                  Q(quantite_restant__gte=1))
+
+        imiti_entree_backup = UmutiEntree.objects.filter(Q(code_med=code_med) & \
+                                                  Q(quantite_restant__gte=1))
+        
         for umuti in imiti_entree:
+            umuti.prix_vente = roundNumber(umuti.prix_achat * float(actual_interest))
+            umuti.save()
+        for umuti in imiti_entree_backup:
             umuti.prix_vente = roundNumber(umuti.prix_achat * float(actual_interest))
             umuti.save()
         
