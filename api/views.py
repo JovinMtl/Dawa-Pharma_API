@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 import os
 
@@ -738,6 +739,33 @@ class GeneralOps(viewsets.ViewSet):
         prix_achat = val / former_interest
         prix_vente = prix_achat * new_interest
         return prix_vente
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def changePasswd(self, request):
+        """Update the password of the connected User"""
+        data_sent = request.data.get('imiti')
+        # print(f"The data sent: {data_sent}")
+        pwd1 = data_sent.get('pwd1')
+        pwd2 = data_sent.get('pwd2')
+
+        c1_1 = len(str(pwd1)) > 7
+        c1_2 = len(str(pwd2)) > 7
+        c1_3 = c1_1 == c1_2
+        all_conditions_match = c1_1 and c1_2 and c1_3
+        if not all_conditions_match:
+            return JsonResponse({
+                'response': 403
+            })
+        
+        user = request.user
+        user_obj = User.objects.get(username=user)
+        print(f"The user is : {user}, found: {user_obj.username}")
+        user_obj.set_password(pwd1)
+        user_obj.save()
+        return JsonResponse({
+            'response': 1
+        })
         
 
 
