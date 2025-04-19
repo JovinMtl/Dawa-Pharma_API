@@ -745,7 +745,6 @@ class GeneralOps(viewsets.ViewSet):
     def changePasswd(self, request):
         """Update the password of the connected User"""
         data_sent = request.data.get('imiti')
-        # print(f"The data sent: {data_sent}")
         pwd1 = data_sent.get('pwd1')
         pwd2 = data_sent.get('pwd2')
 
@@ -764,7 +763,7 @@ class GeneralOps(viewsets.ViewSet):
         user_obj.set_password(pwd1)
         user_obj.save()
         return JsonResponse({
-            'response': 1
+            'response': 200
         })
         
 
