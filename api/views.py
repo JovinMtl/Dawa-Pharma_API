@@ -1506,6 +1506,7 @@ class ImitiOut(viewsets.ViewSet):
             code_8 = GenerateCode(7)
             code_bon = code_8.giveCode()
             new_bon.num_bon = 'P_' + code_bon
+            new_bon.is_paid = True
         else:
             new_bon.num_bon = client.get('numero_bon')
         
