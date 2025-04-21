@@ -909,11 +909,12 @@ class EntrantImiti(viewsets.ViewSet):
         # umuti_new.prix_vente_usd = umuti_new.prix_vente / usd_to_bif.actualExchangeRate
         if not single:
             umuti_new.date_peremption = self._giveDate_exp(obj.get('date_peremption'))
-            umuti_new.date_entrant = self._giveDate_entree(obj.get('date_entrant'))
+            # umuti_new.date_entrant = self._giveDate_entree(obj.get('date_entrant'))
         else:
             umuti_new.date_peremption = obj.get('date_peremption')
-            umuti_new.date_entrant = obj.get('date_entrant')
+            # umuti_new.date_entrant = obj.get('date_entrant')
         # umuti_new.description_umuti = (obj.get('description_med'))
+        umuti_new.date_entrant = datetime.now()
         umuti_new.classe_med = obj.get('classe_med') 
         umuti_new.sous_classe_med = obj.get('sous_classe_med') 
         umuti_new.forme = obj.get('forme')
@@ -1157,10 +1158,10 @@ class EntrantImiti(viewsets.ViewSet):
         an instance of UmutiEntree"""
         umuti_new = ImitiSet.objects.create()
         umuti_new.code_med = str(umuti.code_med)
-        umuti_new.nom_med = str(umuti.nom_med)
-        umuti_new.classe_med = (str(umuti.classe_med))[:29]
+        umuti_new.nom_med = str(umuti.nom_med)[:65]
+        umuti_new.classe_med = (str(umuti.classe_med))[:65]
         umuti_new.sous_classe_med = \
-            (str(umuti.sous_classe_med))[:29]
+            (str(umuti.sous_classe_med))[:65]
         umuti_new.forme = (str(umuti.forme))[:7]
         umuti_new.type_med = str(umuti.type_med)
         umuti_new.type_achat = str(umuti.type_achat)

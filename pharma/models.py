@@ -15,9 +15,9 @@ class UmutiEntree(models.Model):
     date_entrant = models.DateTimeField(default=timezone.now)
     date_peremption = models.DateField(default=timezone.now)
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
-    nom_med = models.CharField(max_length=30, default='null')
-    classe_med = models.CharField(max_length=30, default='null')
-    sous_classe_med = models.CharField(max_length=30, default='null')
+    nom_med = models.CharField(max_length=65, default='null')
+    classe_med = models.CharField(max_length=65, default='null')
+    sous_classe_med = models.CharField(max_length=65, default='null')
     forme = models.CharField(max_length=8, default='null')
     type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
     type_achat  = models.CharField(max_length=10, default='null') #kurangura  carton
@@ -31,7 +31,7 @@ class UmutiEntree(models.Model):
     quantite_restant = models.FloatField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
-    operator = models.CharField(max_length=15, default='null')
+    operator = models.CharField(max_length=20, default='null')
 
     def __str__(self) -> str:
         return f"{self.code_med} : {(str(self.date_entrant))[:7]} : {self.nom_med}"
@@ -40,9 +40,9 @@ class UmutiEntreeBackup(models.Model):
     date_entrant = models.DateTimeField(default=timezone.now)
     date_peremption = models.DateField(default=timezone.now)
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
-    nom_med = models.CharField(max_length=30, default='null')
-    classe_med = models.CharField(max_length=30, default='null')
-    sous_classe_med = models.CharField(max_length=30, default='null')
+    nom_med = models.CharField(max_length=65, default='null')
+    classe_med = models.CharField(max_length=65, default='null')
+    sous_classe_med = models.CharField(max_length=65, default='null')
     forme = models.CharField(max_length=8, default='null')
     type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
     type_achat  = models.CharField(max_length=10, default='null') #kurangura  carton
@@ -56,7 +56,7 @@ class UmutiEntreeBackup(models.Model):
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
-    operator = models.CharField(max_length=15, default='null')
+    operator = models.CharField(max_length=20, default='null')
 
     def __str__(self) -> str:
         return f"{self.code_med} {(str(self.date_entrant))[:7]}"
@@ -64,9 +64,9 @@ class UmutiEntreeBackup(models.Model):
 class ImitiSet(models.Model):
     """THis one will contain the unique Umuti and its availability"""
     code_med = models.CharField(max_length=8, default='null')  #igizwe na Lettre zitatu hamwe na chiffres zibiri
-    nom_med = models.CharField(max_length=30, default='null')
-    classe_med = models.CharField(max_length=30, default='null')
-    sous_classe_med = models.CharField(max_length=30, default='null')
+    nom_med = models.CharField(max_length=65, default='null')
+    classe_med = models.CharField(max_length=65, default='null')
+    sous_classe_med = models.CharField(max_length=65, default='null')
     forme = models.CharField(max_length=8, default='null')
     type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
     type_achat  = models.CharField(max_length=10, default='null') #kurangura
@@ -162,7 +162,7 @@ def getBonDeCommandeInstance():
 class UmutiSold(models.Model):
     """This one will record all the sale and benefit as well"""
     code_med = models.CharField(max_length=8, default='null')
-    nom_med = models.CharField(max_length=30, default='null')
+    nom_med = models.CharField(max_length=65, default='null')
     quantity = models.FloatField(default=1) #quantity sold
     prix_vente = models.IntegerField(default=0) #unit price
     price_total = models.IntegerField(default=1) # q * p
@@ -170,7 +170,7 @@ class UmutiSold(models.Model):
     difference = models.IntegerField(default=0) #9: benefice
     code_operation_entrant = models.CharField(max_length=12, default='null') #code operation uyo muti winjiriyeko
     code_operation = models.CharField(max_length=12, default='null') #common with other sold together
-    operator = models.CharField(max_length=15, default='null')
+    operator = models.CharField(max_length=20, default='null')
     date_operation = models.DateTimeField(default=timezone.now)
     bon_de_commande = models.ForeignKey(BonDeCommand,\
             on_delete=models.CASCADE, default=getBonDeCommandeInstance)
@@ -181,7 +181,7 @@ class UmutiSold(models.Model):
 class umutiReportSell(models.Model):
     """THis will contain report of its sale in a given period of time"""
     code_med = models.CharField(max_length=8, default='null')
-    nom_med = models.CharField(max_length=30, default='null')
+    nom_med = models.CharField(max_length=65, default='null')
     nb_vente = models.IntegerField(default=0)
     px_T_vente = models.IntegerField(default=0)
     benefice = models.IntegerField(default=0)
@@ -193,7 +193,7 @@ class imitiSuggest(models.Model):
     on each completion of endpoint's execution, it gets reinitialized.
     """
     code_med = models.CharField(max_length=8, default='null')
-    nom_med = models.CharField(max_length=30, default='null')
+    nom_med = models.CharField(max_length=65, default='null')
     qte = models.IntegerField(default=0)
     p_achat = models.IntegerField(default=0)
     p_vente = models.IntegerField(default=0)
