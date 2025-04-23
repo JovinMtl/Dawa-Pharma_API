@@ -119,6 +119,7 @@ def getAssuranceInstance():
 class Client(models.Model):
     nom_adherant = models.CharField(max_length=25, default='adhe')
     numero_carte = models.IntegerField(default=0)
+    phone_number = models.IntegerField(default=0)
     employeur = models.CharField(max_length=25, default='empl')
     beneficiaire = models.CharField(max_length=25, default='inconnu', unique=True) # 
     relation = models.CharField(max_length=10, default='lui-meme') #lui-meme, enfant, conjoint
