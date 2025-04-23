@@ -1318,6 +1318,7 @@ class ImitiOut(viewsets.ViewSet):
         bon_created = False
         existing_bon = False
         success = 0
+        client_name = ''
         created_facture_number = 0
         elapsed_month = timezone.now().month
         today_number = timezone.now().day
@@ -1340,6 +1341,7 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         total_facture = 0
+        client_name = client_obj.get('beneficiaire')
         
         if case ==3:
             num_bon = client.get("numero_bon")
@@ -1366,6 +1368,7 @@ class ImitiOut(viewsets.ViewSet):
                         "imperfect": 1,
                         "suceeded": success,
                         "num_facture": created_facture_number,
+                        "client_name": client_name,
                     })
                 counter = 0
                 for order in orders:
@@ -1386,12 +1389,14 @@ class ImitiOut(viewsets.ViewSet):
                             "imperfect": 1,
                             "suceeded": success,
                             "num_facture": created_facture_number,
+                            "client_name": client_name,
                         })
                     elif (not umuti) and (not success):
                         return Response({
                             "imperfect": 1,
                             "suceeded": success,
                             "num_facture": created_facture_number,
+                            "client_name": client_name,
                         })
                        
                     if umuti[0].quantite_restant < float(order[2]):
@@ -1414,6 +1419,7 @@ class ImitiOut(viewsets.ViewSet):
                                 "imperfect": 1,
                                 "suceeded": success,
                                 "num_facture": created_facture_number,
+                                "client_name": client_name,
                             })
                             return JsonResponse({"The Assurance does ":"not exist"})
                      
@@ -1442,7 +1448,7 @@ class ImitiOut(viewsets.ViewSet):
         # imiti = EntrantImiti() # should not compile
         # jove = imiti.compileImitiSet() #should not compile
 
-        return JsonResponse({"sold": created_facture_number})
+        return JsonResponse({"sold": [created_facture_number, client_name]})
 
 
     def _checkNumBon(self, num_bon:str='')->bool:
