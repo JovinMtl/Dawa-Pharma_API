@@ -800,14 +800,39 @@ class GeneralOps(viewsets.ViewSet):
                 return Response(imiti_serialized.data)
         elif data_sent.get('request') == 'post':
             # former_interest = 1
+            update_status = 0
             code_operation = data_sent.get('code_operation')
+            if code_operation:
+                update_status = self._updateAchatEntree(\
+                    code_med=code_med, \
+                    code_operation=code_operation, \
+                    data=data_sent)
             print(f"The code operation: {code_operation}")
-            # umuti_entree = UmutiEntree.objects.get(Q(code_med=code_med) & \
-            #                                        Q(code_operation=''))
+            if update_status == 200:
+                return JsonResponse({
+                    'response': 200
+                })
+            else:
+                return JsonResponse({'response': 404})
             
         return JsonResponse({
             'response': 1
         })
+    
+    def _updateAchatEntree(self, code_med, code_operation, data)->int:
+        try:
+            umuti = UmutiEntree.objects.get(\
+                Q(code_med=code_med) & \
+                Q(code_operation=code_operation))
+        except UmutiEntree.DoesNotExist:
+            return 404
+        else:
+            umuti.quantite_initial = int(data.get('quantite_initial'))
+            umuti.prix_achat = int(data.get('prix_achat'))
+            umuti.date_peremption = data.get('date_peremption')
+            umuti.save()
+        return 200
+
         
 
 
