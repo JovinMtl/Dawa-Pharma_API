@@ -1332,7 +1332,7 @@ class ImitiOut(viewsets.ViewSet):
         elif not client.get('nom_adherant'):
             # Client special, categorie: tv, mt, md
             case = 2
-            client_obj, assu_obj = self._getClient2()
+            client_obj, assu_obj = self._getClient2(client)
             categorie = client.get('categorie')
         else:
             # Assure: categorie: au
@@ -1488,12 +1488,32 @@ class ImitiOut(viewsets.ViewSet):
         else:
             return [client, assurance]
 
-    def _getClient2(self)->list:
+    def _getClient2(self, dataClient)->list:
         """
         Will return the only instance for special client
         """
-        query = Client.objects.filter(beneficiaire='Special')
+        client = None 
+        beneficiaire = str(dataClient.get('nom_client'))[:24]
+        # rate_assure = int(dataClient.get('rate_assure'))
+        numero_tel = dataClient.get('numero_tel')
+        # assureur = dataClient.get('assureur')
+
+        # query = Client.objects.filter(beneficiaire='Special')
         assurance = Assurance.objects.get(name = "Pharmacie Ubuzima")
+        try:
+            client = Client.objects.get(phone_number=numero_tel)
+        except Client.DoesNotExist:
+            # create that client
+            client = Client.objects.create(beneficiaire=beneficiaire)
+            client.joined_on = timezone.now()
+            client.nom_adherant = beneficiaire
+            client.phone_number = numero_tel
+            client.save()
+            return [client, assurance]
+        else:
+            return [client, assurance]
+
+        return 0
         if query:
             return [query[0], assurance]
         return [None, assurance]
