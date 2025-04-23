@@ -1341,14 +1341,19 @@ class ImitiOut(viewsets.ViewSet):
             client_obj, assu_obj= self._getClient3(client)
             categorie = client.get('categorie')
         total_facture = 0
-        client_name = client_obj.get('beneficiaire')
-        
         if case ==3:
             num_bon = client.get("numero_bon")
             existing_bon = self._checkNumBon(num_bon)
         if existing_bon:
             return JsonResponse({"sold":"FailedBecauseAlreadyExist"})
         rate_assure = assu_obj.rate_assure
+        
+        # Take the client_name 
+        try:
+            client_name = client_obj.beneficiaire
+        except AttributeError:
+            client_name = '' # should call him 'Visiteur'
+        
         
         for actual in panier:
             code_med = actual.get('code_med')
