@@ -47,6 +47,12 @@ week_days = {
     6: 'Sam',
     7: 'Dim'
 }
+# Global function
+def recordOperation(who_did_id:str='unknownUser', what_operation:str="endpoint_name", from_value:str="previous_value", to_value:str="new_value")->int:
+    """
+    creates an instance: CriticalOperation
+    """
+    return 200
 
 # Create your views here.
 

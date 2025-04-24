@@ -249,3 +249,10 @@ class BeneficeProgram(models.Model):
 
     def __str__(self) -> str:
         return f"Ben:{self.ben}. From {str(self.effect_date)[:10]}."
+
+class CriticalOperation(models.Model):
+    """
+    This model tends to notice/record every critical operation done 
+    by superuser or regular user on the database.
+    """
+    # whodidit, operation, date 
