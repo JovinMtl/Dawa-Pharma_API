@@ -830,13 +830,20 @@ class GeneralOps(viewsets.ViewSet):
             umuti = UmutiEntree.objects.get(\
                 Q(code_med=code_med) & \
                 Q(code_operation=code_operation))
+            umuti_ = UmutiEntreeBackup.objects.get(\
+                Q(code_med=code_med) & \
+                Q(code_operation=code_operation))
         except UmutiEntree.DoesNotExist:
             return 404
         else:
             umuti.quantite_initial = int(data.get('quantite_initial'))
+            umuti_.quantite_initial = umuti.quantite_initial
             umuti.prix_achat = int(data.get('prix_achat'))
+            umuti_.prix_achat = umuti.prix_achat
             umuti.date_peremption = data.get('date_peremption')
+            umuti_.date_peremption = umuti.date_peremption
             umuti.save()
+            umuti_.save()
         return 200
 
         
