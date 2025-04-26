@@ -2648,6 +2648,46 @@ class Rapport(viewsets.ViewSet):
 
         return [begin_date, end_date]
     
+    # def _builtVente(self, meds):
+    #     """
+    #     Will return a mixed info from
+    #       UmutiSold, BonDeCommand and Assurance.
+    #     needed dict: {
+    #         'nom_med', 'qte', 'pa','pv','total','bnf',
+    #         'caisse', 'dette', 'assu', 'categ','date',
+    #         'id_bon', 'is_paid'
+    #     }
+    #     """
+    #     bons = []
+    #     for umuti_sold in meds:
+    #         vente = {}
+    #         vente['nom_med'] = umuti_sold.nom_med
+    #         vente['qte'] = umuti_sold.quantity
+    #         vente['prix_achat'] = umuti_sold.prix_achat
+    #         vente['prix_vente'] = umuti_sold.prix_vente
+    #         vente['total'] = umuti_sold.prix_vente * umuti_sold.quantity
+    #         vente['bnf'] = (umuti_sold.prix_vente - umuti_sold.prix_achat)\
+    #                         * umuti_sold.quantity
+    #         bon = umuti_sold.bon_de_commande
+    #         assu = bon.organization
+    #         assu_name = assu.name
+    #         rate = assu.rate_assure
+    #         vente['dette'] = bon.montant_dette
+    #         vente['caisse'] = vente['total'] - bon.montant_dette
+    #         if bon.montant_dette:
+    #             vente['dette'] = vente['total'] - bon.montant_dette
+    #             vente['caisse'] = bon.montant_dette
+    #         vente['assu'] = assu_name
+    #         vente['categ'] = bon.categorie
+    #         vente['date_operation'] = bon.date_prescri
+    #         vente['date_served'] = bon.date_served
+    #         vente['num_bon'] = bon.num_bon
+    #         vente['is_paid'] = bon.is_paid
+
+    #         bons.append(vente)
+        
+    #     return bons
+    
     def _builtVente(self, meds):
         """
         Will return a mixed info from
@@ -2671,12 +2711,11 @@ class Rapport(viewsets.ViewSet):
             bon = umuti_sold.bon_de_commande
             assu = bon.organization
             assu_name = assu.name
-            rate = assu.rate_assure
             vente['dette'] = bon.montant_dette
             vente['caisse'] = vente['total'] - bon.montant_dette
             if bon.montant_dette:
-                vente['dette'] = vente['total'] - bon.montant_dette
-                vente['caisse'] = bon.montant_dette
+                vente['dette'] = vente['total'] * (bon.assu_rate / 100)
+                vente['caisse'] = vente['total'] - vente['dette']
             vente['assu'] = assu_name
             vente['categ'] = bon.categorie
             vente['date_operation'] = bon.date_prescri
