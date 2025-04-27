@@ -1748,6 +1748,73 @@ class ImitiOut(viewsets.ViewSet):
         
         return new_vente.code_operation
     
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def cancelSell(self, request):
+        """
+        Cancel the operation of Sell, for a given 
+        ID in umutiSold.
+        """
+        data_sent = request.data.get('imiti', {'_value': 0}).get('_value')
+        umuti_sold_id = int(data_sent)
+        umuti_sold = None
+        try:
+            umuti_sold = UmutiSold.objects.get(id=umuti_sold_id)
+        except UmutiSold.DoesNotExist:
+            return JsonResponse({
+                'response': 404
+            })
+        retribution = self._retributeBon(umuti_sold)
+        print(f"The retribution: {retribution}")
+        if retribution == 200:
+            umuti_sold.cancelled = True
+            umuti_sold.save()
+            return JsonResponse({
+                'response': 200
+            })
+        return JsonResponse({
+            'response': 403
+        })
+    
+    def _retributeBon(self, umuti_sold)->int:
+        # umuti_sold = UmutiSold.objects.last()
+        code_med = umuti_sold.code_med
+        qte = umuti_sold.quantity 
+        total_cost = qte * umuti_sold.prix_vente
+        bon = umuti_sold.bon_de_commande
+        assu_rate = bon.assu_rate
+        code_operation = umuti_sold.code_operation
+        code_operation_entrant = umuti_sold.code_operation_entrant
+
+        meds = str(bon.meds).split(';')
+        
+        if not(code_operation in meds):
+            return 404
+        meds.remove(code_operation)
+        if bon.total > total_cost:
+            bon.total -= total_cost
+            bon.cout = bon.total * ((100 - assu_rate) / 100)
+            bon.montant_dette = bon.total * (assu_rate / 100)
+        elif bon.total == total_cost:
+            bon.cancelled = True
+        r_achat = self._retributeAchat(code_med=code_med, \
+                        code_operation_entrant=code_operation_entrant, \
+                        qte=qte )
+        if r_achat is not 200:
+            return 404
+        bon.save()
+        
+        return 200
+    
+    def _retributeAchat(self, code_med, code_operation_entrant, qte)->int:
+        try:
+            umuti_entree = UmutiEntree.objects.get(Q(code_med=code_med) & \
+                                Q(code_operation=code_operation_entrant))
+        except UmutiEntree.DoesNotExist:
+            return 404
+        umuti_entree.quantite_restant += qte
+        umuti_entree.save()
+        return 200
 
 
 class Rapport(viewsets.ViewSet):
@@ -2723,6 +2790,7 @@ class Rapport(viewsets.ViewSet):
             vente['num_bon'] = bon.num_bon
             vente['is_paid'] = bon.is_paid
             vente['rate'] = bon.assu_rate
+            vente['id'] = umuti_sold.id
 
             bons.append(vente)
 
