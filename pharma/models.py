@@ -144,6 +144,7 @@ class BonDeCommand(models.Model):
     date_paid = models.DateField(default=year_1970)
     date_prescri = models.DateField(default=year_1970)
     date_served = models.DateField(default=timezone.now)
+    cancelled = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.beneficiaire.beneficiaire}: {self.num_bon}"
@@ -175,6 +176,7 @@ class UmutiSold(models.Model):
     date_operation = models.DateTimeField(default=timezone.now)
     bon_de_commande = models.ForeignKey(BonDeCommand,\
             on_delete=models.CASCADE, default=getBonDeCommandeInstance)
+    cancelled = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.code_operation}: {self.nom_med}, {self.quantity}"
