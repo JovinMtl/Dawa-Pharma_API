@@ -1794,6 +1794,10 @@ class ImitiOut(viewsets.ViewSet):
             bon.total -= total_cost
             bon.cout = bon.total * ((100 - assu_rate) / 100)
             bon.montant_dette = bon.total * (assu_rate / 100)
+            medstr = ''
+            for med in meds:
+                medstr += med + ';'
+            bon.meds = medstr[:-1]
         elif bon.total == total_cost:
             bon.cancelled = True
         r_achat = self._retributeAchat(code_med=code_med, \
@@ -1891,7 +1895,7 @@ class Rapport(viewsets.ViewSet):
             begin_date, end_date = self._getDate1(date1=dates[0],\
             date2=dates[1])
         bons = BonDeCommand.objects.filter(Q(date_served__gte=begin_date) &\
-                    Q(date_served__lte=end_date))[::-1]
+                    Q(date_served__lte=end_date) & Q(cancelled=False))[::-1]
         # bons = BonDeCommand.objects.all()[::-1]
         bons_serialized = BonDeCommandSeria(bons, many=True)
         if bons_serialized.is_valid:
