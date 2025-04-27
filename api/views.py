@@ -1765,7 +1765,6 @@ class ImitiOut(viewsets.ViewSet):
                 'response': 404
             })
         retribution = self._retributeBon(umuti_sold)
-        print(f"The retribution: {retribution}")
         if retribution == 200:
             umuti_sold.cancelled = True
             umuti_sold.save()
@@ -1867,7 +1866,7 @@ class Rapport(viewsets.ViewSet):
             begin_date, end_date = self._getDate1(date1=dates[0],\
             date2=dates[1])
         meds = UmutiSold.objects.filter(Q(date_operation__gte=begin_date) &\
-                    Q(date_operation__lte=end_date))[::-1]
+                    Q(date_operation__lte=end_date) & Q(cancelled=False))[::-1]
         meds_built = self._builtVente(meds)
         imitiSerialized = SoldAsBonSeria(data=meds_built, many=True)
 
