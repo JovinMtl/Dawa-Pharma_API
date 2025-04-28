@@ -1803,7 +1803,7 @@ class ImitiOut(viewsets.ViewSet):
         r_achat = self._retributeAchat(code_med=code_med, \
                         code_operation_entrant=code_operation_entrant, \
                         qte=qte )
-        if r_achat is not 200:
+        if r_achat != 200:
             return 404
         bon.save()
         
