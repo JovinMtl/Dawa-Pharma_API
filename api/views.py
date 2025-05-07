@@ -1684,7 +1684,7 @@ class ImitiOut(viewsets.ViewSet):
         print(f"QteReceived:{qte}, assessed:{data}")
         return data
     
-    def __place_order(self, data:list, qte:int) -> list:
+    def __place_order_(self, data:list, qte:int) -> list:
         """ The function takes a list of order and make a repartition of qte
         based on input data of this type:
             data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
@@ -1707,6 +1707,43 @@ class ImitiOut(viewsets.ViewSet):
                 cp = elm
                 cp[2] = reste
                 local_data.append(cp)
+                reste = 0
+                break
+        print(f"Have done: {local_data}")
+        if reste:
+            return []
+        else:
+            return local_data
+    
+
+    def __place_order(self, data:list, qte:int) -> list:
+        """ The function takes a list of order and make a repartition of qte
+        based on input data of this type:
+            data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
+
+            with: qte = 1
+
+        and return :  [['AL123', 'xt10', 1], ['AL123', 'xt11', 0]]
+        """
+        # print(f"The qte received: {qte} from {data}") 
+        reste = qte
+
+        code_med = data[0][0]
+        imiti = UmutiEntree.objects.filter(Q(code_med=code_med) & Q(quantite_restant__gte=1)).order_by('-date_peremption')
+        print(f"code: {data[0][0]}. The imiti: {imiti}")
+        # return []
+        local_data = []
+        if qte < 1:
+            return []
+        i = 0
+        for elm in imiti:
+            if (elm.quantite_restant > 0) and (elm.quantite_restant <= reste):
+                to_add = [code_med, elm.code_operation, elm.quantite_restant]
+                local_data.append(to_add)
+                reste -= elm.quantite_restant
+            elif elm.quantite_restant > reste:
+                to_add = [code_med, elm.code_operation, reste]
+                local_data.append(to_add)
                 reste = 0
                 break
         print(f"Have done: {local_data}")
