@@ -1029,7 +1029,9 @@ class EntrantImiti(viewsets.ViewSet):
     def compileImitiSet(self, request=None):
         """Compile all the list of the Medicament procured, according
         the code_med and date_echeance"""
-        procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
+        # procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
+        procured = UmutiEntree.objects.filter(code_med='106855').order_by('date_peremption')[:2]
+        print(f"GOtten len: {len(procured)}")
         pr_interest = BeneficeProgram.objects.first()
         for umutie in procured:
             code = umutie.code_med
@@ -1041,75 +1043,55 @@ class EntrantImiti(viewsets.ViewSet):
                 umuti_new = self._umutiMushasha(umutie)
             else:
                 qte_saved =  StringToList(umuti_set.checked_qte)
-                qte_tracked = qte_saved.toList()
-                # print(f"The converted qte: {qte_tracked} out of {umuti_set.checked_qte}")
-                converted_list = listStrToList(umuti_set.checked_imiti)
-                if umutie.code_operation in converted_list:
-                    # sync quantite_restant according to umutie
-                    synced = self._check_qte(umutie.code_operation, \
-                                        umutie.quantite_restant, \
-                                        qte_tracked )
-                    synced_lot = self._sync_lot(umuti_set.lot, umutie)
-                    somme_lot = listDictIntSomme3(synced_lot)
-                    # usd_to_bif = UsdToBif.objects.get(id=1)
-                    # usd_to_bif = UsdToBif.objects.last()
-                    
-                    # prix_achat = float(umutie.prix_achat_usd) * \
-                    #                         usd_to_bif.actualExchangeRate  # usd
-                    # umuti_set.prix_achat = self._round100(prix_achat)
-                    umuti_set.prix_achat = umutie.prix_achat
-                    # prix_vente = float(umutie.prix_vente_usd) * \
-                    #                     usd_to_bif.actualExchangeRate   # usd
-                    # prix_vente_arondi = (int(prix_vente / 100)) + 1
-                    if umuti_set.is_pr_interest:
-                        prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
-                    else:
-                        prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                    umuti_set.prix_vente = roundNumber(prix_vente)
-                    umuti_set.quantite_restant = round(somme_lot, 1)
-                    umuti_set.lot = synced_lot
-                    umuti_set.checked_qte = synced
-                    umuti_set.save()
-                    continue  # skip to treat is as new
-                else:
-                    converted_list.append(umutie.code_operation)
-                    qte_tracked.append(
-                        {'code_operation':umutie.code_operation, 
-                         'qte_restant': umutie.quantite_restant})
-                    umuti_set.checked_imiti = converted_list
-                    umuti_set.checked_qte = qte_tracked
-                # check that the actual code_operation has passed,
-                # i should add those code_operation in a fields in umutiSet
-                # divided by a comma.
+                qte_tracked = dict(qte_saved.toList())
+                current_operation = {
+                    umutie.code_operation: umutie.quantite_restant
+                }
+                qte_tracked.update(current_operation)
+                somme_lot = sum(qte_tracked.values())
+                print(f"The qte_tracked: {sum(qte_tracked.values())}")
+                
+                # lot = self._check_lot(lot=umuti_set.lot, umutie=umutie)
+                
+                # synced_lot = self._check_lot(umuti_set.lot, umutie)
 
-                #mugihe iyo code ihari muri Set
-                lot_list = self._check_lot(umuti_set.lot, umutie)
-                # umuti_set.prix_vente = umutie.prix_vente # setting prix_vente to the last entrie
-                # usd_to_bif = UsdToBif.objects.get(id=1)
-                # umuti_set.prix_vente = float(umutie.prix_vente_usd) * \
-                #         usd_to_bif.actualExchangeRate
-                # umuti_set.prix_vente_usd = float(umutie.prix_vente_usd)
-                # 
-                # umuti_set.quantite_restant += umutie.quantite_restant
-                umuti_set.prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                umuti_set.quantite_restant = round(listDictIntSomme(umuti_set.checked_qte), 1)
-                umuti_set.lot = lot_list
+                # checked_imiti = StringToList(umuti_set.checked_imiti).toList()
+                # print(f"Checked: {checked_imiti}: {umutie.code_operation}")
+                # synced_lot = None
+                # counter = 0
+                # if umutie.code_operation in checked_imiti:
+                #     synced_lot = self._sync_lot(
+                #         umuti_set.lot, umutie=umutie
+                #     )
+                #     print(f"Counter: {counter}")
+                #     counter += 1
+                # else:
+                synced_lot = self._check_lot(umuti_set.lot, umutie)
+
+                
+                umuti_set.prix_achat = umutie.prix_achat
+                
+                if umuti_set.is_pr_interest:
+                    prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
+                else:
+                    prix_vente = umuti_set.prix_achat * pr_interest.ben 
+                umuti_set.prix_vente = roundNumber(prix_vente)
+                umuti_set.quantite_restant = round(somme_lot, 1)
+                umuti_set.lot = synced_lot
+                umuti_set.checked_qte = qte_tracked
+
                 last_date = self._findLastDate(code_med=umuti_set.code_med)
                 if last_date:
                     umuti_set.date_last_vente = last_date
                 #checking if there is qte_entrant bigger than before
                 if (int(umuti_set.qte_entrant_big)) < (int(umutie.quantite_initial)):
                     umuti_set.qte_entrant_big = int(umutie.quantite_initial)
-#                     print(f"The Umutie is bigger {umutie.quantite_initial}\
-#  out of {umuti_set.qte_entrant_big}")
-                # else:
-#                     print(f"The Existing UmutiSet :\
-#  {umutie.quantite_initial}  \
-# isn't bigger than {umuti_set.qte_entrant_big}.")
                 umuti_set.save()
 
         print("compileImitiSet: SYNC done.")
         return JsonResponse({"detail":"ok"}, status=200)
+    
+    
     
     def _round100(self, data:int)->int:
         """Rounding number according to 100.
@@ -1145,7 +1127,8 @@ class EntrantImiti(viewsets.ViewSet):
         return lot_list
 
     
-    def _check_lot(self, lot:str, umutie:UmutiEntree):
+    def _check_lot_(self, lot:str, umutie:UmutiEntree):
+        """Has to take this if this umutie is new."""
         lot_string = StringToList(lot)
         #the string of list must be made into json
         lot_list = lot_string.toList()
@@ -1154,7 +1137,7 @@ class EntrantImiti(viewsets.ViewSet):
         for lote in lot_list:
             if lote.get('date') == (str(umutie.date_peremption))[:7]:
                 obj = { 
-                            str(umutie.code_operation) : int(umutie.quantite_restant)
+                            str(umutie.code_operation) : umutie.quantite_restant
                         }
                 lote['code_operation'].append(obj)
                 lote['qte'] = int(listDictIntSomme2(lote['code_operation']))
@@ -1163,10 +1146,10 @@ class EntrantImiti(viewsets.ViewSet):
         if not j:
             obj = {
                 'date': (str(umutie.date_peremption))[:7],
-                'qte': int(umutie.quantite_restant),
+                'qte': (umutie.quantite_restant), # was int.
                 'code_operation': [
                         { 
-                            str(umutie.code_operation) : int(umutie.quantite_restant)
+                            str(umutie.code_operation) : umutie.quantite_restant
                         }
                     ],
                 'to_panier': 0
@@ -1175,6 +1158,62 @@ class EntrantImiti(viewsets.ViewSet):
             lot_list.append(obj)
 
         return lot_list
+    
+
+    def _check_lot(self, lot:str, umutie:UmutiEntree):
+        """Has to take this if this umutie is new."""
+        lot_string = StringToList(lot)
+        #the string of list must be made into json
+        lot_list = lot_string.toList()
+        code_operation = umutie.code_operation
+        i = 0
+        j = 0
+        once = 0
+        for lote in lot_list:
+            add_ope = False
+            updated = False
+            if lote.get('date') == (str(umutie.date_peremption))[:7]:
+                codes_operation = lote.get('code_operation')
+                for ope in codes_operation:
+                    cp_ope = dict(ope)
+                    code_ope_str = cp_ope.popitem()[0]
+                    if code_ope_str == umutie.code_operation:
+                        # should update
+                        ope[code_operation] = umutie.quantite_restant
+                        updated = True
+                        
+                    else:
+                        # should add new
+                        add_ope = True
+                        continue
+                once += 1
+                if updated:
+                    lote['qte'] = (listDictIntSomme2(lote['code_operation']))
+                if add_ope:
+                    obj = { 
+                                str(umutie.code_operation) : umutie.quantite_restant
+                            }
+                    lote['code_operation'].append(obj)
+                    lote['qte'] = int(listDictIntSomme2(lote['code_operation']))
+                    j += 1
+                    once +=1
+            
+        if (not j) and (not once):
+            obj = {
+                'date': (str(umutie.date_peremption))[:7],
+                'qte': (umutie.quantite_restant), # was int.
+                'code_operation': [
+                        { 
+                            str(umutie.code_operation) : umutie.quantite_restant
+                        }
+                    ],
+                'to_panier': 0
+            }
+            i += 1
+            lot_list.append(obj)
+
+        return lot_list
+    
     
 
     def _check_qte(self, code_operation:str, quantite_restant:int,\
@@ -1239,15 +1278,18 @@ class EntrantImiti(viewsets.ViewSet):
         lot.append(obj)
 
         checked = []
-        qte_obj= {
-            'code_operation': umuti.code_operation,
-            'qte_restant': umuti_new.quantite_restant
+        # qte_obj= {
+        #     'code_operation': umuti.code_operation,
+        #     'qte_restant': umuti_new.quantite_restant
+        # }
+        operations_checked = {
+            umuti.code_operation: umuti_new.quantite_restant
         }
         checked_qte = []
-        checked_qte.append(qte_obj)
+        # checked_qte.append(qte_obj)
         checked.append(umuti.code_operation)
         umuti_new.checked_imiti = checked
-        umuti_new.checked_qte = checked_qte
+        umuti_new.checked_qte = operations_checked
         umuti_new.lot = lot
 
         umuti_new.save()
