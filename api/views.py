@@ -1397,7 +1397,6 @@ class ImitiOut(viewsets.ViewSet):
             code_med = actual.get('code_med')
             lot = actual.get('lot')
             qte = actual.get('qte')
-            print(f"The lot: {lot} and qte {qte}")
             if not lot:
                 continue
             # for lote in lot:
@@ -1407,8 +1406,10 @@ class ImitiOut(viewsets.ViewSet):
                 # orders = self._assess_order(code_med=code_med,\
                 #                          code_operation=code_operation,\
                 #                              qte=qte)
+
+                # should indent the all below to take
+                # the frontend in consideration.
             orders = self._place_order(code_med=code_med, qte=qte)
-            print(f"The orders gotten: {orders}")
             if not orders:
                 return Response({
                     "imperfect": 1,
@@ -1467,7 +1468,7 @@ class ImitiOut(viewsets.ViewSet):
                             "num_facture": created_facture_number,
                             "client_name": client_name,
                         })
-                        return JsonResponse({"The Assurance does ":"not exist"})
+                        # in case "The Assurance does ":"not exist"
                     
 
                 be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
@@ -1490,9 +1491,6 @@ class ImitiOut(viewsets.ViewSet):
         bon_de_commande = self._updateReduction(bon_de_commande, \
                 total=total_facture, rate_assure=rate_assure, \
                 num_facture=created_facture_number)
-        #  after sell then call compile
-        # imiti = EntrantImiti() # should not compile
-        # jove = imiti.compileImitiSet() #should not compile
 
         return JsonResponse({"sold": [created_facture_number, client_name]})
 
@@ -1731,10 +1729,9 @@ class ImitiOut(viewsets.ViewSet):
         # print(f"The qte received: {qte} from {data}") 
         reste = qte
 
-        imiti = UmutiEntree.objects.filter(code_med=code_med).filter(quantite_restant__gte=1).order_by("date_peremption")
-        # imiti = UmutiEntree.objects.filter(Q(code_med=code_med) & Q(quantite_restant__gte=1)).order_by('-date_peremption')
-        print(f"code: {code_med}. The imiti: {imiti}. of len({len(imiti)}); with qte:{qte}")
-        # return []
+        # imiti = UmutiEntree.objects.filter(code_med=code_med).filter(quantite_restant__gte=1).order_by("date_peremption")
+        imiti = UmutiEntree.objects.filter(Q(code_med=code_med) & Q(quantite_restant__gte=1)).order_by('date_peremption')
+        # print(f"code: {code_med}. The imiti: {imiti}. of len({len(imiti)}); with qte:{qte}")
         local_data = []
         if qte < 1:
             return []
@@ -1749,8 +1746,8 @@ class ImitiOut(viewsets.ViewSet):
                 local_data.append(to_add)
                 reste = 0
                 break
-        print(f"Have done: {local_data}")
-        return []
+        # print(f"Have done: {local_data}")
+        # return []
         if reste:
             return []
         else:
