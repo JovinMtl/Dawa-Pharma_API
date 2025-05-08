@@ -1396,93 +1396,96 @@ class ImitiOut(viewsets.ViewSet):
         for actual in panier:
             code_med = actual.get('code_med')
             lot = actual.get('lot')
+            qte = actual.get('qte')
+            print(f"The lot: {lot} and qte {qte}")
             if not lot:
                 continue
-            for lote in lot:
-                code_operation = lote.get('code_operation')
-                qte = lote.get('qte')
-                print(f"Things to assess: {code_med}, {code_operation}, {qte}")
-                orders = self._assess_order(code_med=code_med,\
-                                         code_operation=code_operation,\
-                                             qte=qte)
-                print(f"The orders gotten: {orders}")
-                if not orders:
+            # for lote in lot:
+            #     code_operation = lote.get('code_operation')
+            #     qte = lote.get('qte')
+            #     print(f"Things to assess: {code_med}, {code_operation}, {qte}")
+                # orders = self._assess_order(code_med=code_med,\
+                #                          code_operation=code_operation,\
+                #                              qte=qte)
+            orders = self._place_order(code_med=code_med, qte=qte)
+            print(f"The orders gotten: {orders}")
+            if not orders:
+                return Response({
+                    "imperfect": 1,
+                    "suceeded": success,
+                    "num_facture": created_facture_number,
+                    "client_name": client_name,
+                })
+            counter = 0
+            for order in orders:
+                print(f"Counted: {counter}")
+                counter += 1
+                if order[2] == 0:
+                    continue
+                umuti = UmutiEntree.objects.\
+                    filter(code_med=code_med).\
+                    filter(code_operation=order[1])
+                #can now perfom the Vente operation
+                
+                if (not umuti) and (success):
+                    bon_de_commande = self._updateReduction(bon_de_commande, \
+                                total=total_facture, rate_assure=rate_assure, \
+                                num_facture=created_facture_number)
                     return Response({
                         "imperfect": 1,
                         "suceeded": success,
                         "num_facture": created_facture_number,
                         "client_name": client_name,
                     })
-                counter = 0
-                for order in orders:
-                    print(f"Counted: {counter}")
-                    counter += 1
-                    if order[2] == 0:
-                        continue
-                    umuti = UmutiEntree.objects.\
-                        filter(code_med=code_med).\
-                        filter(code_operation=order[1])
-                    #can now perfom the Vente operation
+                elif (not umuti) and (not success):
+                    return Response({
+                        "imperfect": 1,
+                        "suceeded": success,
+                        "num_facture": created_facture_number,
+                        "client_name": client_name,
+                    })
                     
-                    if (not umuti) and (success):
-                        bon_de_commande = self._updateReduction(bon_de_commande, \
-                                    total=total_facture, rate_assure=rate_assure, \
-                                    num_facture=created_facture_number)
+                if umuti[0].quantite_restant < float(order[2]):
+                    return Response({
+                        "imperfect": 1,
+                        "suceeded": success,
+                        "num_facture": created_facture_number,
+                    })
+                if (float(qte)) and (not bon_created):
+                    bon_de_commande = self._createBon(\
+                        client=client, \
+                        client_obj=client_obj,\
+                        assu_obj=assu_obj,\
+                        categorie=categorie)
+                    bon_created = True
+                    created_facture_number = len(BonDeCommand.objects.filter(\
+                                                date_served__gte=year_start))
+                    if bon_de_commande == 403:
                         return Response({
                             "imperfect": 1,
                             "suceeded": success,
                             "num_facture": created_facture_number,
                             "client_name": client_name,
                         })
-                    elif (not umuti) and (not success):
-                        return Response({
-                            "imperfect": 1,
-                            "suceeded": success,
-                            "num_facture": created_facture_number,
-                            "client_name": client_name,
-                        })
-                       
-                    if umuti[0].quantite_restant < float(order[2]):
-                        return Response({
-                            "imperfect": 1,
-                            "suceeded": success,
-                            "num_facture": created_facture_number,
-                        })
-                    if (float(qte)) and (not bon_created):
-                        bon_de_commande = self._createBon(\
-                            client=client, \
-                            client_obj=client_obj,\
-                            assu_obj=assu_obj,\
-                            categorie=categorie)
-                        bon_created = True
-                        created_facture_number = len(BonDeCommand.objects.filter(\
-                                                    date_served__gte=year_start))
-                        if bon_de_commande == 403:
-                            return Response({
-                                "imperfect": 1,
-                                "suceeded": success,
-                                "num_facture": created_facture_number,
-                                "client_name": client_name,
-                            })
-                            return JsonResponse({"The Assurance does ":"not exist"})
-                     
+                        return JsonResponse({"The Assurance does ":"not exist"})
+                    
 
-                    be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
-                    
-                    # Only create a bon_de_commande when this is True
-                    # print(f"and qte before creating Bon: {qte}")
-                    
-                    sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
-                                operator=request.user, \
-                                    reference_umuti=be_sold,\
-                                    bon_de_commande=bon_de_commande)
-                    # completing bon_de_commande
-                    bon_de_commande = self._completeBon(\
-                        bon_de_commande=bon_de_commande,\
-                        code_operation=sold)
-                    if sold:
-                        total_facture += be_sold.prix_vente * order[2]
-                success += 1
+                be_sold = ImitiSet.objects.get(code_med=umuti[0].code_med)
+                
+                # Only create a bon_de_commande when this is True
+                # print(f"and qte before creating Bon: {qte}")
+                
+                sold = self._imitiSell(umuti=umuti[0], qte=order[2], \
+                            operator=request.user, \
+                                reference_umuti=be_sold,\
+                                bon_de_commande=bon_de_commande)
+                # completing bon_de_commande
+                bon_de_commande = self._completeBon(\
+                    bon_de_commande=bon_de_commande,\
+                    code_operation=sold)
+                if sold:
+                    total_facture += be_sold.prix_vente * order[2]
+            success += 1
         # Should now update the reduction in bon_de_commande
         bon_de_commande = self._updateReduction(bon_de_commande, \
                 total=total_facture, rate_assure=rate_assure, \
@@ -1716,7 +1719,7 @@ class ImitiOut(viewsets.ViewSet):
             return local_data
     
 
-    def __place_order(self, data:list, qte:int) -> list:
+    def _place_order(self, code_med:str='000', qte:int=0) -> list:
         """ The function takes a list of order and make a repartition of qte
         based on input data of this type:
             data = [['AL123', 'xt10', 2], ['AL123', 'xt11', 5]]
@@ -1728,9 +1731,9 @@ class ImitiOut(viewsets.ViewSet):
         # print(f"The qte received: {qte} from {data}") 
         reste = qte
 
-        code_med = data[0][0]
-        imiti = UmutiEntree.objects.filter(Q(code_med=code_med) & Q(quantite_restant__gte=1)).order_by('-date_peremption')
-        print(f"code: {data[0][0]}. The imiti: {imiti}")
+        imiti = UmutiEntree.objects.filter(code_med=code_med).filter(quantite_restant__gte=1).order_by("date_peremption")
+        # imiti = UmutiEntree.objects.filter(Q(code_med=code_med) & Q(quantite_restant__gte=1)).order_by('-date_peremption')
+        print(f"code: {code_med}. The imiti: {imiti}. of len({len(imiti)}); with qte:{qte}")
         # return []
         local_data = []
         if qte < 1:
@@ -1747,6 +1750,7 @@ class ImitiOut(viewsets.ViewSet):
                 reste = 0
                 break
         print(f"Have done: {local_data}")
+        return []
         if reste:
             return []
         else:
