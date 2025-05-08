@@ -1169,9 +1169,16 @@ class EntrantImiti(viewsets.ViewSet):
         i = 0
         j = 0
         once = 0
+        zero_qte = []
+        is_zero = False
+        counter = 0
         for lote in lot_list:
             add_ope = False
             updated = False
+            if is_zero:
+                del lot_list[counter - 1]
+            if lote['qte'] == 0:
+                is_zero = True
             if lote.get('date') == (str(umutie.date_peremption))[:7]:
                 codes_operation = lote.get('code_operation')
                 for ope in codes_operation:
@@ -1197,6 +1204,7 @@ class EntrantImiti(viewsets.ViewSet):
                     lote['qte'] = int(listDictIntSomme2(lote['code_operation']))
                     j += 1
                     once +=1
+            counter += 1
             
         if (not j) and (not once):
             obj = {
@@ -1209,8 +1217,14 @@ class EntrantImiti(viewsets.ViewSet):
                     ],
                 'to_panier': 0
             }
+            if obj['qte'] == 0:
+                zero_qte.append(counter)
             i += 1
             lot_list.append(obj)
+        
+        print(f"Index with zero: {zero_qte}")
+        # for zero in zero_qte:
+        #     del lot_list[zero]
 
         return lot_list
     
