@@ -1030,7 +1030,7 @@ class EntrantImiti(viewsets.ViewSet):
         """Compile all the list of the Medicament procured, according
         the code_med and date_echeance"""
         # procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
-        procured = UmutiEntree.objects.filter(code_med='106855').order_by('date_peremption')[:2]
+        procured = UmutiEntree.objects.filter(code_med='106855').order_by('date_peremption')
         print(f"GOtten len: {len(procured)}")
         pr_interest = BeneficeProgram.objects.first()
         for umutie in procured:
