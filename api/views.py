@@ -1030,7 +1030,7 @@ class EntrantImiti(viewsets.ViewSet):
         """Compile all the list of the Medicament procured, according
         the code_med and date_echeance"""
         # procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
-        procured = UmutiEntree.objects.filter(code_med='106855').order_by('date_peremption')
+        procured = UmutiEntree.objects.filter(code_med='106855').filter(quantite_restant__gte=1).order_by('date_peremption')
         print(f"GOtten len: {len(procured)}")
         pr_interest = BeneficeProgram.objects.first()
         for umutie in procured:
@@ -1049,23 +1049,7 @@ class EntrantImiti(viewsets.ViewSet):
                 }
                 qte_tracked.update(current_operation)
                 somme_lot = sum(qte_tracked.values())
-                print(f"The qte_tracked: {sum(qte_tracked.values())}")
                 
-                # lot = self._check_lot(lot=umuti_set.lot, umutie=umutie)
-                
-                # synced_lot = self._check_lot(umuti_set.lot, umutie)
-
-                # checked_imiti = StringToList(umuti_set.checked_imiti).toList()
-                # print(f"Checked: {checked_imiti}: {umutie.code_operation}")
-                # synced_lot = None
-                # counter = 0
-                # if umutie.code_operation in checked_imiti:
-                #     synced_lot = self._sync_lot(
-                #         umuti_set.lot, umutie=umutie
-                #     )
-                #     print(f"Counter: {counter}")
-                #     counter += 1
-                # else:
                 synced_lot = self._check_lot(umuti_set.lot, umutie)
 
                 
@@ -1099,6 +1083,7 @@ class EntrantImiti(viewsets.ViewSet):
         d = int(data / 100) + 1
         result = d * 100
         return result
+    
     def _sync_lot(self, lot:str, umutie):
         lot_string = StringToList(lot)
         #the string of list must be made into json
@@ -1126,38 +1111,6 @@ class EntrantImiti(viewsets.ViewSet):
 
         return lot_list
 
-    
-    def _check_lot_(self, lot:str, umutie:UmutiEntree):
-        """Has to take this if this umutie is new."""
-        lot_string = StringToList(lot)
-        #the string of list must be made into json
-        lot_list = lot_string.toList()
-        i = 0
-        j = 0
-        for lote in lot_list:
-            if lote.get('date') == (str(umutie.date_peremption))[:7]:
-                obj = { 
-                            str(umutie.code_operation) : umutie.quantite_restant
-                        }
-                lote['code_operation'].append(obj)
-                lote['qte'] = int(listDictIntSomme2(lote['code_operation']))
-                j += 1
-            
-        if not j:
-            obj = {
-                'date': (str(umutie.date_peremption))[:7],
-                'qte': (umutie.quantite_restant), # was int.
-                'code_operation': [
-                        { 
-                            str(umutie.code_operation) : umutie.quantite_restant
-                        }
-                    ],
-                'to_panier': 0
-            }
-            i += 1
-            lot_list.append(obj)
-
-        return lot_list
     
 
     def _check_lot(self, lot:str, umutie:UmutiEntree):
@@ -1217,14 +1170,8 @@ class EntrantImiti(viewsets.ViewSet):
                     ],
                 'to_panier': 0
             }
-            if obj['qte'] == 0:
-                zero_qte.append(counter)
             i += 1
             lot_list.append(obj)
-        
-        print(f"Index with zero: {zero_qte}")
-        # for zero in zero_qte:
-        #     del lot_list[zero]
 
         return lot_list
     
