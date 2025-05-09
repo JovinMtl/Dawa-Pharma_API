@@ -846,6 +846,18 @@ class GeneralOps(viewsets.ViewSet):
             umuti_.save()
         return 200
 
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def doublonManagement(self, request):
+        """
+        Will attribute a new code_operation of 4letters for
+        the one having same date entrant and code_med.
+        """
+        fixed = 0
+        return JsonResponse({
+            "corrected": fixed
+        })
+
         
 
 
