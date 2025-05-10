@@ -854,8 +854,28 @@ class GeneralOps(viewsets.ViewSet):
         the one having same date entrant and code_med.
         """
         fixed = 0
+        new_code_operation =  "dfdou"
+        doublon = []
+        # GenerateCode(4).giveCode()
+
+        # imitisets = ImitiSet.objects.all()
+        meds = UmutiEntree.objects.all()
+        # meds = UmutiEntree.objects.filter(code_med='3OYkTL')
+        code_med_list = {x.code_med:[] for x in meds}
+
+        
+        for med in meds:
+            if med.code_operation in code_med_list[med.code_med]:
+                doublon.append({med.code_med: med.code_operation})
+                med.code_operation = new_code_operation
+                code_med_list[med.code_med].append(med.code_operation)
+                # med.save()
+                fixed += 1
+            else:
+                code_med_list[med.code_med].append(med.code_operation)
+
         return JsonResponse({
-            "corrected": fixed
+            "corrected": doublon
         })
 
         
