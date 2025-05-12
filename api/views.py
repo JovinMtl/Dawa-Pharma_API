@@ -854,43 +854,40 @@ class GeneralOps(viewsets.ViewSet):
         the one having same date entrant and code_med.
         """
         fixed = 0
-        new_code_operation =  "dfdou" # GenerateCode(4).giveCode()
+        code_generator8 = GenerateCode(8)
+        new_code_operation = code_generator8.giveCode()
         codes = []
         codes.append(new_code_operation)
-        doublon = []
-        
         counter = 0
-        codes_number = []
-        
 
-        # imitisets = ImitiSet.objects.all()
         meds = UmutiEntree.objects.all()
-        # meds = UmutiEntree.objects.filter(code_med='3OYkTL')
+        # meds = UmutiEntree.objects.filter(code_med='963326')
         code_med_list = {x.code_med:[] for x in meds}
 
         
         for med in meds:
             if med.code_operation in code_med_list[med.code_med]:
-                doublon.append({med.code_med: med.code_operation})
                 med.code_operation = codes[counter]
                 while med.code_operation in code_med_list[med.code_med]:
                     try:
                         actual_code = codes[counter + 1]
                     except IndexError:
                         # generate a new code
-                        codes.append(f"jjovv{counter + 1}")
+                        code_generator8 = GenerateCode(8)
+                        new_code_operation = code_generator8.giveCode()
+                        codes.append(new_code_operation)
                         med.code_operation = codes[counter + 1]
                         break
                     else:
-                        med.code_operation = codes[counter + 1]
-                        if med.code_operation in code_med_list[med.code_med]:
+                        actual_code = codes[counter + 1]
+                        if actual_code in code_med_list[med.code_med]:
                             pass
                         else:
-                            med.code_operation = codes[counter + 1]
+                            med.code_operation = actual_code
                     counter += 1
                 counter = 0 
                 code_med_list[med.code_med].append(med.code_operation)
-                # med.save()
+                med.save()
                 fixed += 1
             else:
                 code_med_list[med.code_med].append(med.code_operation)
