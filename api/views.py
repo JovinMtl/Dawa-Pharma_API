@@ -902,9 +902,28 @@ class GeneralOps(viewsets.ViewSet):
         """We be based on the fied meds of each bon,
         and build from umutisold instances.
         """
-        return JsonResponse({
-            "corrected": [ ]
-        })
+        bons = BonDeCommand.objects.filter(total=0)
+        bons_seria = BonDeCommandSeria(bons, many=True)
+        for bon in bons:
+            code_operations = str(bon.meds).split(';')[:-1]
+            total = 0
+            for code_operation in code_operations:
+                try:
+                    umuti_sold = UmutiSold.objects.get(code_operation=code_operation)
+                except UmutiSold.DoesNotExist:
+                    pass
+                else:
+                    qte = umuti_sold.quantity
+                    prix_vente = umuti_sold.prix_vente
+                    total += (qte * prix_vente)
+            bon.total = total
+            bon.cout = total - (total * bon.assu_rate)
+            bon.save()
+        if bons_seria.is_valid:
+            return Response(bons_seria.data)
+        return Response({
+                "corrected": 0
+            })
 
         
 
