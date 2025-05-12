@@ -848,15 +848,20 @@ class GeneralOps(viewsets.ViewSet):
 
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
-    def doublonManagement(self, request):
+    def doublon_management(self, request):
         """
         Will attribute a new code_operation of 4letters for
         the one having same date entrant and code_med.
         """
         fixed = 0
-        new_code_operation =  "dfdou"
+        new_code_operation =  "dfdou" # GenerateCode(4).giveCode()
+        codes = []
+        codes.append(new_code_operation)
         doublon = []
-        # GenerateCode(4).giveCode()
+        
+        counter = 0
+        codes_number = []
+        
 
         # imitisets = ImitiSet.objects.all()
         meds = UmutiEntree.objects.all()
@@ -867,7 +872,23 @@ class GeneralOps(viewsets.ViewSet):
         for med in meds:
             if med.code_operation in code_med_list[med.code_med]:
                 doublon.append({med.code_med: med.code_operation})
-                med.code_operation = new_code_operation
+                med.code_operation = codes[counter]
+                while med.code_operation in code_med_list[med.code_med]:
+                    try:
+                        actual_code = codes[counter + 1]
+                    except IndexError:
+                        # generate a new code
+                        codes.append(f"jjovv{counter + 1}")
+                        med.code_operation = codes[counter + 1]
+                        break
+                    else:
+                        med.code_operation = codes[counter + 1]
+                        if med.code_operation in code_med_list[med.code_med]:
+                            pass
+                        else:
+                            med.code_operation = codes[counter + 1]
+                    counter += 1
+                counter = 0 
                 code_med_list[med.code_med].append(med.code_operation)
                 # med.save()
                 fixed += 1
@@ -875,7 +896,7 @@ class GeneralOps(viewsets.ViewSet):
                 code_med_list[med.code_med].append(med.code_operation)
 
         return JsonResponse({
-            "corrected": doublon
+            "corrected": [code_med_list, fixed]
         })
 
         
