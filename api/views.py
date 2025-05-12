@@ -895,6 +895,16 @@ class GeneralOps(viewsets.ViewSet):
         return JsonResponse({
             "corrected": [code_med_list, fixed]
         })
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def repair_bon_with_zero(self, request):
+        """We be based on the fied meds of each bon,
+        and build from umutisold instances.
+        """
+        return JsonResponse({
+            "corrected": [ ]
+        })
 
         
 
