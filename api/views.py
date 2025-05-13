@@ -898,6 +898,63 @@ class GeneralOps(viewsets.ViewSet):
     
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
+    def doublon_management_today(self, request):
+        """
+        Will attribute a new code_operation of 4letters for
+        the one having same date entrant and code_med.
+        """
+        today = timezone.now()
+        today -= timedelta(hours=today.hour)
+        meds = UmutiEntree.objects.filter(date_entrant__gte=today)
+
+        if not meds:
+            return JsonResponse({
+                "corrected": 0
+            })
+        
+        fixed = 0
+        code_generator8 = GenerateCode(8)
+        new_code_operation = code_generator8.giveCode()
+        codes = []
+        codes.append(new_code_operation)
+        counter = 0
+
+        code_med_list = {x.code_med:[] for x in meds}
+
+        
+        for med in meds:
+            if med.code_operation in code_med_list[med.code_med]:
+                med.code_operation = codes[counter]
+                while med.code_operation in code_med_list[med.code_med]:
+                    try:
+                        actual_code = codes[counter + 1]
+                    except IndexError:
+                        # generate a new code
+                        code_generator8 = GenerateCode(8)
+                        new_code_operation = code_generator8.giveCode()
+                        codes.append(new_code_operation)
+                        med.code_operation = codes[counter + 1]
+                        break
+                    else:
+                        actual_code = codes[counter + 1]
+                        if actual_code in code_med_list[med.code_med]:
+                            pass
+                        else:
+                            med.code_operation = actual_code
+                    counter += 1
+                counter = 0 
+                code_med_list[med.code_med].append(med.code_operation)
+                med.save()
+                fixed += 1
+            else:
+                code_med_list[med.code_med].append(med.code_operation)
+
+        return JsonResponse({
+            "corrected": [code_med_list, fixed]
+        })
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
     def repair_bon_with_zero(self, request):
         """We be based on the fied meds of each bon,
         and build from umutisold instances.
