@@ -826,6 +826,9 @@ class GeneralOps(viewsets.ViewSet):
         })
     
     def _updateAchatEntree(self, code_med, code_operation, data)->int:
+        consumed = 0
+        new_qte = 0
+        adding = 0
         try:
             umuti = UmutiEntree.objects.get(\
                 Q(code_med=code_med) & \
@@ -835,15 +838,32 @@ class GeneralOps(viewsets.ViewSet):
                 Q(code_operation=code_operation))
         except UmutiEntree.DoesNotExist:
             return 404
+        new_qte = int(data.get('quantite_initial'))
+        diff = 0
+        case = 0
+        if new_qte >= umuti.quantite_initial:
+            diff = new_qte - umuti.quantite_initial
+            case = 1
         else:
-            umuti.quantite_initial = int(data.get('quantite_initial'))
-            umuti_.quantite_initial = umuti.quantite_initial
-            umuti.prix_achat = int(data.get('prix_achat'))
-            umuti_.prix_achat = umuti.prix_achat
-            umuti.date_peremption = data.get('date_peremption')
-            umuti_.date_peremption = umuti.date_peremption
-            umuti.save()
-            umuti_.save()
+            diff = umuti.quantite_initial - new_qte
+            case = 2
+        if (case == 1):
+            umuti.quantite_initial = new_qte
+            umuti.quantite_restant += diff
+        elif (case == 2) and (umuti.quantite_restant >= diff):
+            umuti.quantite_initial = new_qte
+            umuti.quantite_restant -= diff
+        else:
+            return 403
+        umuti_.quantite_initial = umuti.quantite_initial
+        umuti_.quantite_restant = umuti.quantite_restant
+
+        umuti.prix_achat = int(data.get('prix_achat'))
+        umuti_.prix_achat = umuti.prix_achat
+        # umuti.date_peremption = data.get('date_peremption')
+        # umuti_.date_peremption = umuti.date_peremption
+        umuti.save()
+        umuti_.save()
         return 200
 
     @action(methods=['get'], detail=False,\
