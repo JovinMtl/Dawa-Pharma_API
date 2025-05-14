@@ -1090,7 +1090,7 @@ class EntrantImiti(viewsets.ViewSet):
         #     return None
         # else:
         #     return umuti_exist.code_med
-        umuti_exist = UmutiEntree.objects.filter(nom_med=nom_med)
+        umuti_exist = UmutiEntree.objects.filter(nom_med__iexact=nom_med)
         if umuti_exist:
             return umuti_exist[0].code_med
         else:
