@@ -266,4 +266,4 @@ class Journaling(models.Model):
     Will store the crucial common data, subjected to be
     used and be deleted any time soon.
     """
-    imiti_set_for_sync = models.TextField()
+    codes_for_sync = models.TextField() # will store a list of code_med

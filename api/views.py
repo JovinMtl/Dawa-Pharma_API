@@ -19,7 +19,7 @@ import os
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
     BonDeCommand, Assurance, ClassThep, SubClassThep,\
-    Client, BeneficeProgram
+    Client, BeneficeProgram, Journaling
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -110,7 +110,10 @@ class GeneralOps(viewsets.ViewSet):
             minimum_benefice = BeneficeProgram.objects.create()
             minimum_benefice.save()
             ben = 1
-        
+        journal = Journaling.objects.first().exists()
+        if not journal:
+            journal = Journaling.objects.create()
+            journal.codes_for_sync
         cls = self._createClasses_cloned()
         
         created.append(f"with {cls} ther. classes")
@@ -1188,6 +1191,9 @@ class EntrantImiti(viewsets.ViewSet):
         the code_med and date_echeance"""
         previous_sync_code = ImitiSet.objects.first().sync_code
         sync_code = give_sync_code(previous_sync_code)
+        codes_for_sync = Journaling.objects.first
+        procured = []
+
         procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
         # procured = UmutiEntree.objects.filter(code_med='106855').filter(quantite_restant__gte=1).order_by('date_peremption')
         print(f"GOtten len: {len(procured)}")
