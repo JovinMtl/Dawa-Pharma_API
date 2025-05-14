@@ -814,6 +814,7 @@ class GeneralOps(viewsets.ViewSet):
                 return Response(imiti_serialized.data)
         elif data_sent.get('request') == 'post':
             # former_interest = 1
+            journal = None
             update_status = 0
             code_operation = data_sent.get('code_operation')
             if code_operation:
@@ -823,6 +824,12 @@ class GeneralOps(viewsets.ViewSet):
                     data=data_sent)
             print(f"The code operation: {code_operation}")
             if update_status == 200:
+                journal = Journaling.objects.first()
+                codes_for_sync = list(StringToList(journal.codes_for_sync).toList())
+                if not(code_med in codes_for_sync): 
+                    codes_for_sync.append(code_med)
+                    journal.codes_for_sync = codes_for_sync
+                    journal.save()
                 return JsonResponse({
                     'response': 200
                 })
