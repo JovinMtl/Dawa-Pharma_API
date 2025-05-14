@@ -824,12 +824,7 @@ class GeneralOps(viewsets.ViewSet):
                     data=data_sent)
             print(f"The code operation: {code_operation}")
             if update_status == 200:
-                journal = Journaling.objects.first()
-                codes_for_sync = list(StringToList(journal.codes_for_sync).toList())
-                if not(code_med in codes_for_sync): 
-                    codes_for_sync.append(code_med)
-                    journal.codes_for_sync = codes_for_sync
-                    journal.save()
+                self._update_code_for_sync(code_med=code_med)
                 return JsonResponse({
                     'response': 200
                 })
@@ -839,6 +834,16 @@ class GeneralOps(viewsets.ViewSet):
         return JsonResponse({
             'response': 1
         })
+    
+    def _update_code_for_sync(self, code_med:str='')->int:
+        journal = Journaling.objects.first()
+        codes_for_sync = list(StringToList(journal.codes_for_sync).toList())
+        if not(code_med in codes_for_sync): 
+            codes_for_sync.append(code_med)
+            journal.codes_for_sync = codes_for_sync
+            journal.save()
+        return 0
+
     
     def _updateAchatEntree(self, code_med, code_operation, data)->int:
         consumed = 0
