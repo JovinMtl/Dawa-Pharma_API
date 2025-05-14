@@ -259,3 +259,11 @@ class CriticalOperation(models.Model):
     by superuser or regular user on the database.
     """
     # whodidit, operation, date 
+
+
+class Journaling(models.Model):
+    """
+    Will store the crucial common data, subjected to be
+    used and be deleted any time soon.
+    """
+    imiti_set_for_sync = models.TextField()
