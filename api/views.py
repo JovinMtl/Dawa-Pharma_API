@@ -110,15 +110,19 @@ class GeneralOps(viewsets.ViewSet):
             minimum_benefice = BeneficeProgram.objects.create()
             minimum_benefice.save()
             ben = 1
-        journal = Journaling.objects.first().exists()
+        journal = Journaling.objects.first()
+        journal_i = 0
         if not journal:
             journal = Journaling.objects.create()
-            journal.codes_for_sync
+            journal.codes_for_sync = []
+            journal.save()
+            journal_i = 1
         cls = self._createClasses_cloned()
         
         created.append(f"with {cls} ther. classes")
         created.append(f"{num_client} Init clients")
         created.append(f"ben : {ben}")
+        created.append(f"Journal : {journal_i}")
 
         return JsonResponse({"Setup done" : created})
     
@@ -1191,10 +1195,15 @@ class EntrantImiti(viewsets.ViewSet):
         the code_med and date_echeance"""
         previous_sync_code = ImitiSet.objects.first().sync_code
         sync_code = give_sync_code(previous_sync_code)
-        codes_for_sync = Journaling.objects.first
+        codes_for_sync = Journaling.objects.first().codes_for_sync
+        codes_for_sync = StringToList(codes_for_sync).toList()
         procured = []
-
-        procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
+        if len(codes_for_sync):
+            print(f"will compile : {len(codes_for_sync)} existing")
+            procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).order_by('date_peremption')
+        else:
+            print(f"will compile : {len(codes_for_sync)} existing")
+            procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
         # procured = UmutiEntree.objects.filter(code_med='106855').filter(quantite_restant__gte=1).order_by('date_peremption')
         print(f"GOtten len: {len(procured)}")
         pr_interest = BeneficeProgram.objects.first()
