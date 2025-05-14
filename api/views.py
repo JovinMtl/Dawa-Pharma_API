@@ -1209,6 +1209,7 @@ class EntrantImiti(viewsets.ViewSet):
         if len(codes_for_sync):
             print(f"will compile : {len(codes_for_sync)} existing")
             procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).order_by('date_peremption')
+            sync_code = 8 # assuring to re-write the lot
         else:
             print(f"will compile : {len(codes_for_sync)} existing")
             procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
