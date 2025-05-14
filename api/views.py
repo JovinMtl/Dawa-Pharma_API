@@ -1202,7 +1202,8 @@ class EntrantImiti(viewsets.ViewSet):
         the code_med and date_echeance"""
         previous_sync_code = ImitiSet.objects.first().sync_code
         sync_code = give_sync_code(previous_sync_code)
-        codes_for_sync = Journaling.objects.first().codes_for_sync
+        journal = Journaling.objects.first()
+        codes_for_sync = journal.codes_for_sync
         codes_for_sync = StringToList(codes_for_sync).toList()
         procured = []
         if len(codes_for_sync):
@@ -1255,7 +1256,8 @@ class EntrantImiti(viewsets.ViewSet):
                 if (int(umuti_set.qte_entrant_big)) < (int(umutie.quantite_initial)):
                     umuti_set.qte_entrant_big = int(umutie.quantite_initial)
                 umuti_set.save()
-
+        journal.codes_for_sync = []
+        journal.save()
         print("compileImitiSet: SYNC done.")
         return JsonResponse({"detail":"ok"}, status=200)
     
