@@ -30,11 +30,12 @@ from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
 #importing my additional code
 from .code_generator import GenerateCode
 from .shared.stringToList import StringToList
-from .shared.listStrToList import listStrToList, listIntToList,\
-      listDictIntSomme, listDictIntSomme2, listDictIntSomme3
+from .shared.listStrToList import listDictIntSomme2
 from .shared.stringToDate import stringToDate, shortStr2Date
 # from .shared.superiorInput import superiorInput
 from .shared.roundingNumber import roundNumber
+from .shared.syncCode import give_sync_code
+from .shared.initLot import init_lot
 
 
 # Making a weekday dict that will be used
@@ -860,8 +861,8 @@ class GeneralOps(viewsets.ViewSet):
 
         umuti.prix_achat = int(data.get('prix_achat'))
         umuti_.prix_achat = umuti.prix_achat
-        # umuti.date_peremption = data.get('date_peremption')
-        # umuti_.date_peremption = umuti.date_peremption
+        umuti.date_peremption = data.get('date_peremption')
+        umuti_.date_peremption = umuti.date_peremption
         umuti.save()
         umuti_.save()
         return 200
@@ -1185,6 +1186,8 @@ class EntrantImiti(viewsets.ViewSet):
     def compileImitiSet(self, request=None):
         """Compile all the list of the Medicament procured, according
         the code_med and date_echeance"""
+        previous_sync_code = ImitiSet.objects.first().sync_code
+        sync_code = give_sync_code(previous_sync_code)
         procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
         # procured = UmutiEntree.objects.filter(code_med='106855').filter(quantite_restant__gte=1).order_by('date_peremption')
         print(f"GOtten len: {len(procured)}")
@@ -1198,6 +1201,9 @@ class EntrantImiti(viewsets.ViewSet):
                 #we create that entry in the ImitiSet
                 umuti_new = self._umutiMushasha(umutie)
             else:
+                if sync_code != umuti_set.sync_code:
+                    umuti_set.lot = str(init_lot(umuti=umutie))
+                    umuti_set.sync_code = sync_code
                 qte_saved =  StringToList(umuti_set.checked_qte)
                 qte_tracked = dict(qte_saved.toList())
                 current_operation = {
