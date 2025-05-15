@@ -1051,6 +1051,8 @@ class EntrantImiti(viewsets.ViewSet):
         i = 0
         single = False
         pr_interest = BeneficeProgram.objects.first().ben
+        journal = Journaling.objects.first()
+        codes_for_sync = list(StringToList(journal.codes_for_sync).toList())
         for obj in data:
             # if (len(data) > 2) and (i == 0): # no title is sent
             #     i += 1 #to skip the title string
@@ -1071,11 +1073,19 @@ class EntrantImiti(viewsets.ViewSet):
                                         pr_interest=pr_interest) # 200 if ok
             if reponse != 200:
                 error_list.append(i)
+            codes_for_sync =  self._add_for_sync(codes_for_sync=codes_for_sync, code_med=code_med)
         
         if len(error_list):
             return JsonResponse({"detail": error_list})
+        journal.codes_for_sync = codes_for_sync
+        journal.save()
 
         return JsonResponse({"detail":"ok"}, status=200)
+    
+    def _add_for_sync(self, codes_for_sync, code_med:str='')->int:
+        if not(code_med in codes_for_sync): 
+            codes_for_sync.append(code_med)
+        return codes_for_sync
     
     def _doesExist(self, obj:dict):
         """This method checks if the umuti already exist with the same
