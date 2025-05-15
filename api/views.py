@@ -1597,6 +1597,8 @@ class ImitiOut(viewsets.ViewSet):
         except AttributeError:
             client_name = '' # should call him 'Visiteur'
         
+        journal = Journaling.objects.first()
+        codes_for_sync = list(StringToList(journal.codes_for_sync).toList())
         
         for actual in panier:
             code_med = actual.get('code_med')
@@ -1691,6 +1693,9 @@ class ImitiOut(viewsets.ViewSet):
                     code_operation=sold)
                 if sold:
                     total_facture += be_sold.prix_vente * order[2]
+                codes_for_sync =  self._add_for_sync(codes_for_sync=codes_for_sync, code_med=code_med)
+                journal.codes_for_sync = codes_for_sync
+                journal.save()
             success += 1
         # Should now update the reduction in bon_de_commande
         bon_de_commande = self._updateReduction(bon_de_commande, \
@@ -1698,6 +1703,11 @@ class ImitiOut(viewsets.ViewSet):
                 num_facture=created_facture_number)
 
         return JsonResponse({"sold": [created_facture_number, client_name]})
+    
+    def _add_for_sync(self, codes_for_sync, code_med:str='')->int:
+        if not(code_med in codes_for_sync): 
+            codes_for_sync.append(code_med)
+        return codes_for_sync
 
 
     def _checkNumBon(self, num_bon:str='')->bool:
