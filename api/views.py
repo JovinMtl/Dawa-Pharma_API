@@ -2117,19 +2117,22 @@ class Rapport(viewsets.ViewSet):
         get_data = request.query_params
         begin_date, end_date = self._getDate1()
         dates = None
+
         if get_data:
             dates = [get_data.get('date_debut'), get_data.get('date_fin')]
             print(f"Dates are: {dates}")
             begin_date, end_date = self._getDate1(date1=dates[0],\
             date2=dates[1])
+        end_date = end_date + timedelta(hours=23)\
+                     + timedelta(minutes=59) + timedelta(seconds=59)
+        
         meds = UmutiSold.objects.filter(Q(date_operation__gte=begin_date) &\
                     Q(date_operation__lte=end_date) & Q(cancelled=False))[::-1]
         meds_built = self._builtVente(meds)
-        imitiSerialized = SoldAsBonSeria(data=meds_built, many=True)
-
-        if imitiSerialized.is_valid():
-            return Response(imitiSerialized.data)
-
+        # imitiSerialized = SoldAsBonSeria(data=meds_built, many=True)
+        # if imitiSerialized.is_valid():
+        #     return Response(imitiSerialized.data)
+        
         return JsonResponse({"response": meds_built})
     
     
@@ -2142,14 +2145,15 @@ class Rapport(viewsets.ViewSet):
         get_data = request.query_params
         begin_date, end_date = self._getDate1()
         dates = None
+
         if get_data:
             dates = [get_data.get('date_debut'), get_data.get('date_fin')]
             print(f"Dates are: {dates}")
             begin_date, end_date = self._getDate1(date1=dates[0],\
             date2=dates[1])
+
         bons = BonDeCommand.objects.filter(Q(date_served__gte=begin_date) &\
                     Q(date_served__lte=end_date) & Q(cancelled=False))[::-1]
-        # bons = BonDeCommand.objects.all()[::-1]
         bons_serialized = BonDeCommandSeria(bons, many=True)
         if bons_serialized.is_valid:
             return JsonResponse({"response": bons_serialized.data})
