@@ -2089,6 +2089,8 @@ class Rapport(viewsets.ViewSet):
             print(f"Dates are: {dates}")
             begin_date, end_date = self._getDate1(date1=dates[0],\
             date2=dates[1])
+        end_date = end_date + timedelta(hours=23)\
+                     + timedelta(minutes=59) + timedelta(seconds=59)
         imiti = UmutiEntreeBackup.objects.filter(Q(date_entrant__gte=begin_date) &\
                     Q(date_entrant__lte=end_date)).order_by('-date_entrant')
         imitiSerialized = UmutiEntreeSeriazer(imiti, many=True)
