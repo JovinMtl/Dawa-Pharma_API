@@ -3053,6 +3053,7 @@ class Rapport(viewsets.ViewSet):
             vente['is_paid'] = bon.is_paid
             vente['rate'] = bon.assu_rate
             vente['id'] = umuti_sold.id
+            vente['caissier'] = umuti_sold.operator
 
             bons.append(vente)
 
