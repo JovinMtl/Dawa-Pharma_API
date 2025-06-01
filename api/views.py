@@ -1009,6 +1009,26 @@ class GeneralOps(viewsets.ViewSet):
         return Response({
             'response': counter == len(meds1)
         })
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def fix_doublon_bckup_today(self, request):
+
+        today = timezone.now()
+        today -= timedelta(hours=today.hour)
+        counter = 0
+
+        meds1 = UmutiEntree.objects.filter(date_entrant__gte=today)
+        meds2 = UmutiEntreeBackup.objects.filter(date_entrant__gte=today)
+
+        for med in meds2:
+            if med.code_med == meds1[counter].code_med:
+                med.code_operation = meds1[counter].code_operation
+                med.save()
+                counter += 1
+        return Response({
+            'response': counter == len(meds1)
+        })
 
     
     @action(methods=['get'], detail=False,\
