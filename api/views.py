@@ -49,7 +49,7 @@ week_days = {
     7: 'Dim'
 }
 # Global function
-def recordOperation(who_did_id:str='unknownUser', what_operation:str="endpoint_name", from_value:str="previous_value", to_value:str="new_value")->int:
+def recordOperation(who_did_id:str, what_operation:str, from_value:str, to_value:str)->int:
     """
     creates an instance: CriticalOperation
     """
