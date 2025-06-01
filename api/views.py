@@ -54,7 +54,7 @@ def recordOperation(who_did_id, what_operation:str, from_value:str, to_value:str
     creates an instance: CriticalOperation
     """
     new_record = CriticalOperation.objects.create(who_did_it=who_did_id)
-    msg = f"{what_operation} : {from_value} ==> {to_value}"
+    msg = f"{what_operation} : {from_value} ==> {to_value} . #{who_did_id.username}"
     new_record.operation = msg
     new_record.save()
     return 200
@@ -706,6 +706,9 @@ class GeneralOps(viewsets.ViewSet):
         """
         data_sent = request.data.get('imiti')
         print(f"The data sent: {data_sent}")
+        current_value = 0
+        new_value = 0
+        default_pr_interest = BeneficeProgram.objects.first().ben
         if not data_sent:
             return JsonResponse({
             'response': 0
@@ -726,6 +729,8 @@ class GeneralOps(viewsets.ViewSet):
                 former_interest = 1
                 umuti_set.is_pr_interest = bool(data_sent.get('is_pr_interest'))
                 cond_1 = float(data_sent.get('pr_interest'))
+                current_value = umuti_set.pr_interest
+                new_value = cond_1
                 cond_2 = bool(data_sent.get('is_pr_interest'))
                 
                 if cond_1:
@@ -739,6 +744,17 @@ class GeneralOps(viewsets.ViewSet):
                                                     former_interest=former_interest, \
                                                     new_interest=umuti_set.pr_interest)
                 umuti_set.save()
+        if umuti_set.is_pr_interest:
+            recordOperation(who_did_id=request.user,\
+                        what_operation="Intérêt individuel",\
+                        from_value=current_value,\
+                        to_value=new_value)
+        else:
+            print(f"The default ben: {default_pr_interest}")
+            recordOperation(who_did_id=request.user,\
+                        what_operation="Intérêt individuel",\
+                        from_value=umuti_set.pr_interest,\
+                        to_value=default_pr_interest)
         return JsonResponse({
             'response': 1
         })
