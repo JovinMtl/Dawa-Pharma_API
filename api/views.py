@@ -19,7 +19,7 @@ import os
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
     BonDeCommand, Assurance, ClassThep, SubClassThep,\
-    Client, BeneficeProgram, Journaling
+    Client, BeneficeProgram, Journaling, CriticalOperation
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -53,6 +53,11 @@ def recordOperation(who_did_id:str='unknownUser', what_operation:str="endpoint_n
     """
     creates an instance: CriticalOperation
     """
+    new_record = CriticalOperation.objects.create()
+    new_record.who_did_it = who_did_id[:19]
+    msg = f"{what_operation}: {from_value} , {to_value}"
+    new_record.operation = msg[:29]
+    new_record.save()
     return 200
 
 # Create your views here.
