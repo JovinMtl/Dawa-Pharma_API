@@ -258,7 +258,10 @@ class CriticalOperation(models.Model):
     This model tends to notice/record every critical operation done 
     by superuser or regular user on the database.
     """
-    # whodidit, operation, date 
+    # whodidit, operation, time 
+    who_did_it = models.CharField(max_length=20, default='Anonyme')
+    operation = models.TextField(null=True)
+    date_time = models.DateTimeField(default=timezone.now)
 
 
 class Journaling(models.Model):
