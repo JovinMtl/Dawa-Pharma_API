@@ -264,6 +264,9 @@ class CriticalOperation(models.Model):
     operation = models.TextField(null=True)
     date_time = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return f"{self.operation[:20]}; {self.who_did_it.username}. {str(self.date_time)[:16]}"
+
 
 class Journaling(models.Model):
     """

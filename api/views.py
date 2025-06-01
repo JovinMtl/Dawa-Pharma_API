@@ -54,7 +54,7 @@ def recordOperation(who_did_id, what_operation:str, from_value:str, to_value:str
     creates an instance: CriticalOperation
     """
     new_record = CriticalOperation.objects.create(who_did_it=who_did_id)
-    msg = f"{what_operation} : {from_value} ==> {to_value} . #{who_did_id.username}"
+    msg = f"{what_operation} : {from_value} ==> {to_value}."
     new_record.operation = msg
     new_record.save()
     return 200
@@ -821,6 +821,7 @@ class GeneralOps(viewsets.ViewSet):
         """
         data_sent = request.data.get('imiti')
         print(f"The data sent: {data_sent}")
+        former_state = None
         if not data_sent:
             return JsonResponse({
             'response': 0
@@ -839,22 +840,27 @@ class GeneralOps(viewsets.ViewSet):
         elif data_sent.get('request') == 'post':
             # former_interest = 1
             journal = None
-            update_status = 0
+            update_status = [0]
             code_operation = data_sent.get('code_operation')
+            current_value = 0
             if code_operation:
                 update_status = self._updateAchatEntree(\
                     code_med=code_med, \
                     code_operation=code_operation, \
                     data=data_sent)
             print(f"The code operation: {code_operation}")
-            if update_status == 200:
+            if update_status[0] == 200:
                 self._update_code_for_sync(code_med=code_med)
+                recordOperation(who_did_id=request.user,\
+                    what_operation=f"Modifier Achat ({update_status[1]['code_med']}-{update_status[1]['nom_med'][:15]})",\
+                    from_value=f"qte:{update_status[1]['qte']}, pxA:{update_status[1]['pxA']} , per:{update_status[1]['per']}",\
+                    to_value=f"qte:{data_sent['quantite_initial']}, pxA:{data_sent['prix_achat']} , per:{data_sent['date_peremption']}") 
                 return JsonResponse({
                     'response': 200
                 })
             else:
                 return JsonResponse({'response': 404})
-            
+           
         return JsonResponse({
             'response': 1
         })
@@ -873,6 +879,7 @@ class GeneralOps(viewsets.ViewSet):
         consumed = 0
         new_qte = 0
         adding = 0
+        current_data = {}
         try:
             umuti = UmutiEntree.objects.get(\
                 Q(code_med=code_med) & \
@@ -891,6 +898,11 @@ class GeneralOps(viewsets.ViewSet):
         else:
             diff = umuti.quantite_initial - new_qte
             case = 2
+        current_data['qte'] = umuti.quantite_initial
+        current_data['per'] = umuti.date_peremption
+        current_data['pxA'] = umuti.prix_achat
+        current_data['code_med'] = umuti.code_med
+        current_data['nom_med'] = umuti.nom_med
         if (case == 1):
             umuti.quantite_initial = new_qte
             umuti.quantite_restant += diff
@@ -908,7 +920,7 @@ class GeneralOps(viewsets.ViewSet):
         umuti_.date_peremption = umuti.date_peremption
         umuti.save()
         umuti_.save()
-        return 200
+        return [200, current_data]
 
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
