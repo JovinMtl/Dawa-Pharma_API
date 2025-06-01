@@ -4,7 +4,7 @@ from .models import UmutiEntree, ImitiSet, UmutiSold, \
     Assurance,\
     SubClassThep, ClassThep,\
     BonDeCommand, Client, BeneficeProgram as MinimumBenefice,\
-    Journaling
+    Journaling, CriticalOperation
 
 # Register your models here.
 
@@ -21,6 +21,7 @@ admin.site.register(BonDeCommand)
 admin.site.register(Client)
 admin.site.register(MinimumBenefice) 
 admin.site.register(Journaling)
+admin.site.register(CriticalOperation)
 
 admin.site.site_title = "Pharmacie UBUZIMA"
 admin.site.site_header = "Pharmacie Ubuzima Administration"

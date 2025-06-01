@@ -1,5 +1,6 @@
 from django.db import models
 # from datetime import datetime
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from datetime import timedelta
@@ -259,8 +260,8 @@ class CriticalOperation(models.Model):
     by superuser or regular user on the database.
     """
     # whodidit, operation, time 
-    who_did_it = models.CharField(max_length=20, default='Anonyme')
-    operation = models.CharField(max_length=30, default='')
+    who_did_it = models.ForeignKey(User, on_delete=models.CASCADE)
+    operation = models.TextField(null=True)
     date_time = models.DateTimeField(default=timezone.now)
 
 

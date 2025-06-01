@@ -49,14 +49,13 @@ week_days = {
     7: 'Dim'
 }
 # Global function
-def recordOperation(who_did_id:str, what_operation:str, from_value:str, to_value:str)->int:
+def recordOperation(who_did_id, what_operation:str, from_value:str, to_value:str)->int:
     """
     creates an instance: CriticalOperation
     """
-    new_record = CriticalOperation.objects.create()
-    new_record.who_did_it = who_did_id[:19]
-    msg = f"{what_operation}: {from_value} , {to_value}"
-    new_record.operation = msg[:29]
+    new_record = CriticalOperation.objects.create(who_did_it=who_did_id)
+    msg = f"{what_operation} : {from_value} ==> {to_value}"
+    new_record.operation = msg
     new_record.save()
     return 200
 
@@ -690,6 +689,10 @@ class GeneralOps(viewsets.ViewSet):
             elif data_sent.get('request') == 'post':
                 umuti_set.is_decimal = bool(data_sent.get('is_decimal'))
                 umuti_set.save()
+                recordOperation(who_did_id=request.user, \
+                        what_operation=f"Fractionner {(umuti_set.nom_med)[:15]}", \
+                        from_value=(not umuti_set.is_decimal), \
+                        to_value=umuti_set.is_decimal)
         return JsonResponse({
             'response': 1
         })
