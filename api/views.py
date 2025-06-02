@@ -620,12 +620,19 @@ class GeneralOps(viewsets.ViewSet):
     def setPrInterest(self, request):
         """Will return a Pr-Interest."""
         in_sent = request.data
+        print(f"THe sent: {in_sent}")
         sent_pr = in_sent.get('imiti').get('_value')
+        # sent_pr = in_sent.get('imiti')
         pr = BeneficeProgram.objects.first()
+        former_interest = pr.ben
         pr_interest = float(sent_pr)
         if pr_interest > 0 and pr_interest < 2:
             pr.ben = pr_interest
             pr.save()
+            recordOperation(who_did_id=request.user,\
+                what_operation="Changer pourcentage interet",\
+                from_value=former_interest, \
+                to_value=pr_interest)
             return Response({
                 'status': pr.ben
             })
