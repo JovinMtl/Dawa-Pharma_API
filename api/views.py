@@ -2089,7 +2089,8 @@ class ImitiOut(viewsets.ViewSet):
         Cancel the operation of Sell, for a given 
         ID in umutiSold.
         """
-        data_sent = request.data.get('imiti', {'_value': 0}).get('_value')
+        # data_sent = request.data.get('imiti', {'_value': 0}).get('_value')
+        data_sent = request.data.get('imiti')
         umuti_sold_id = int(data_sent)
         umuti_sold = None
         try:
@@ -2102,6 +2103,10 @@ class ImitiOut(viewsets.ViewSet):
         if retribution == 200:
             umuti_sold.cancelled = True
             umuti_sold.save()
+            recordOperation(who_did_id=request.user,\
+                what_operation=f"Annulé vente: {umuti_sold.nom_med[:10]} , qte:{umuti_sold.quantity} , pxV:{umuti_sold.prix_vente}",\
+                from_value=" ",\
+                to_value=" ")
             return JsonResponse({
                 'response': 200
             })
