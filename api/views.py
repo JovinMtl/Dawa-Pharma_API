@@ -25,7 +25,7 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
-      SoldAsBonSeria, ClientSeria, BonDeCommandSeria
+      ClientSeria, BonDeCommandSeria, OperationSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -2160,7 +2160,36 @@ class ImitiOut(viewsets.ViewSet):
 
 
 class Rapport(viewsets.ViewSet):
-    """This class is meant to be of generating reports"""
+    """
+    This class is meant to be of generating reports.
+    """
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def report_operations(self, request):
+        """
+        Tells the critical operations recorded.
+        """
+        get_data = request.query_params
+        begin_date, end_date = self._getDate1()
+        dates = None
+        if get_data:
+            dates = [get_data.get('date_debut'), get_data.get('date_fin')]
+            print(f"Dates are: {dates}")
+            begin_date, end_date = self._getDate1(date1=dates[0],\
+            date2=dates[1])
+        end_date = end_date + timedelta(hours=23)\
+                     + timedelta(minutes=59) + timedelta(seconds=59)
+        
+        operations = CriticalOperation.objects.filter(\
+            Q(date_time__gte=begin_date) &\
+            Q(date_time__lte=end_date))
+        operation_seria = OperationSeria(operations, many=True)
+        
+        if operation_seria.is_valid:
+            return Response( operation_seria.data)
+        return Response({
+                'response': 0
+            })
 
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
