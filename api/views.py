@@ -2186,9 +2186,11 @@ class Rapport(viewsets.ViewSet):
         operation_seria = OperationSeria(operations, many=True)
         
         if operation_seria.is_valid:
-            return Response( operation_seria.data)
+            return Response({
+                "response":operation_seria.data
+            })
         return Response({
-                'response': 0
+                'response': []
             })
 
     @action(methods=['get'], detail=False,\
