@@ -2107,6 +2107,7 @@ class ImitiOut(viewsets.ViewSet):
                 what_operation=f"Annulé vente: {umuti_sold.nom_med[:10]} , qte:{umuti_sold.quantity} , pxV:{umuti_sold.prix_vente}",\
                 from_value=" ",\
                 to_value=" ")
+            GeneralOps._update_code_for_sync(self=GeneralOps, code_med=umuti_sold.code_med)
             return JsonResponse({
                 'response': 200
             })
