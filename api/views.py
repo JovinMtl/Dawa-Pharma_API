@@ -1067,16 +1067,22 @@ class GeneralOps(viewsets.ViewSet):
         today -= timedelta(hours=today.hour)
         counter = 0
 
-        meds1 = UmutiEntree.objects.filter(date_entrant__gte=today)
         meds2 = UmutiEntreeBackup.objects.filter(date_entrant__gte=today)
 
         for med in meds2:
-            if med.code_med == meds1[counter].code_med:
-                med.code_operation = meds1[counter].code_operation
+            per = med.date_peremption
+            qte = med.quantite_initial
+            med1 = UmutiEntree.objects.filter(\
+                Q(date_peremption=per) &\
+                Q(code_med=med.code_med) &\
+                Q(quantite_initial=qte))
+            
+            if med1:
+                med.code_operation = med1[0].code_operation
                 med.save()
                 counter += 1
         return Response({
-            'response': counter == len(meds1)
+            'response': counter == len(meds2)
         })
 
     
