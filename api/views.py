@@ -2182,7 +2182,7 @@ class Rapport(viewsets.ViewSet):
         
         operations = CriticalOperation.objects.filter(\
             Q(date_time__gte=begin_date) &\
-            Q(date_time__lte=end_date))
+            Q(date_time__lte=end_date)).order_by("-date_time")
         operation_seria = OperationSeria(operations, many=True)
         
         if operation_seria.is_valid:
