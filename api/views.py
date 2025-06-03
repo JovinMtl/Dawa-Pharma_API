@@ -630,7 +630,7 @@ class GeneralOps(viewsets.ViewSet):
             pr.ben = pr_interest
             pr.save()
             recordOperation(who_did_id=request.user,\
-                what_operation="Changer pourcentage interet",\
+                what_operation="Changé le principe d'intérêt",\
                 from_value=former_interest, \
                 to_value=pr_interest)
             return Response({
@@ -753,7 +753,7 @@ class GeneralOps(viewsets.ViewSet):
                 umuti_set.save()
         if umuti_set.is_pr_interest:
             recordOperation(who_did_id=request.user,\
-                        what_operation="Intérêt individuel",\
+                        what_operation=f"Intérêt individuel ({umuti_set.code_med} - {umuti_set.nom_med[:10]})",\
                         from_value=current_value,\
                         to_value=new_value)
         else:
