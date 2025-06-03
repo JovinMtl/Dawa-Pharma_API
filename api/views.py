@@ -1041,16 +1041,22 @@ class GeneralOps(viewsets.ViewSet):
     def fix_doublon_bckup(self, request):
         counter = 0
 
-        meds1 = UmutiEntree.objects.all()
         meds2 = UmutiEntreeBackup.objects.all()
 
         for med in meds2:
-            if med.code_med == meds1[counter].code_med:
-                med.code_operation = meds1[counter].code_operation
+            per = med.date_peremption
+            qte = med.quantite_initial
+            med1 = UmutiEntree.objects.filter(\
+                Q(date_peremption=per) &\
+                Q(code_med=med.code_med) &\
+                Q(quantite_initial=qte))
+            
+            if med1:
+                med.code_operation = med1[0].code_operation
                 med.save()
                 counter += 1
         return Response({
-            'response': counter == len(meds1)
+            'response': counter == len(meds2)
         })
     
     @action(methods=['get'], detail=False,\
