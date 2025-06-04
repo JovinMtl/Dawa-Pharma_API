@@ -2580,6 +2580,26 @@ class Rapport(viewsets.ViewSet):
             return Response(meds_seria.data)
         return JsonResponse({"status":0})
     
+    # @action(methods=['get','post'], detail=False,\
+    #          permission_classes= [IsAuthenticated])
+    # def getMedYellow(self, request):
+    #     """
+    #     Returns instance of UmutiEntree with date peremption
+    #     with less 1 year and above 6months
+    #     """
+    #     today = timezone.now()
+    #     six_month = today + timedelta(days=180)
+    #     one_year = today + timedelta(days=360)
+    #     meds = UmutiEntree.objects.filter(\
+    #         quantite_restant__gte=1).filter(\
+    #         date_peremption__gte=six_month).\
+    #         exclude(date_peremption__gte=one_year)
+    #     meds_seria = UmutiEntreeSeriazer(meds, many=True)
+    #     if meds_seria.is_valid:
+    #         return Response(meds_seria.data)
+    #     return JsonResponse({"status":0})
+    
+
     @action(methods=['get','post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def getMedYellow(self, request):
@@ -2589,11 +2609,10 @@ class Rapport(viewsets.ViewSet):
         """
         today = timezone.now()
         six_month = today + timedelta(days=180)
-        one_year = today + timedelta(days=360)
         meds = UmutiEntree.objects.filter(\
-            quantite_restant__gte=1).filter(\
-            date_peremption__gte=six_month).\
-            exclude(date_peremption__gte=one_year)
+            Q(quantite_restant__gte=1) &\
+            Q(date_peremption__lt=six_month) & \
+            Q(date_peremption__gte=today))
         meds_seria = UmutiEntreeSeriazer(meds, many=True)
         if meds_seria.is_valid:
             return Response(meds_seria.data)
