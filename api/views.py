@@ -2599,6 +2599,22 @@ class Rapport(viewsets.ViewSet):
             return Response(meds_seria.data)
         return JsonResponse({"status":0})
     
+    # @action(methods=['get','post'], detail=False,\
+    #          permission_classes= [IsAuthenticated])
+    # def getMedRed(self, request):
+    #     """Returns instances of UmutiEntree with date peremption
+    #     in critical stage, not to serve the patient
+    #     """
+    #     today = timezone.now()
+    #     six_month = today + timedelta(days=180)
+    #     meds = UmutiEntree.objects.filter(\
+    #         quantite_restant__gte=1).filter(\
+    #         date_peremption__lt=six_month)
+    #     meds_seria = UmutiEntreeSeriazer(meds, many=True)
+    #     if meds_seria.is_valid:
+    #         return Response(meds_seria.data)
+    #     return JsonResponse({"status":0})
+    
     @action(methods=['get','post'], detail=False,\
              permission_classes= [IsAuthenticated])
     def getMedRed(self, request):
@@ -2609,7 +2625,7 @@ class Rapport(viewsets.ViewSet):
         six_month = today + timedelta(days=180)
         meds = UmutiEntree.objects.filter(\
             quantite_restant__gte=1).filter(\
-            date_peremption__lt=six_month)
+            date_peremption__lte=today)
         meds_seria = UmutiEntreeSeriazer(meds, many=True)
         if meds_seria.is_valid:
             return Response(meds_seria.data)
