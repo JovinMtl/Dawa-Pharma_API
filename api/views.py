@@ -372,7 +372,8 @@ class GeneralOps(viewsets.ViewSet):
         """
         Should return infos from code_operation in UmutiSold.
         """
-        sent_data = request.data.get('imiti').get('_value')
+        # sent_data = request.data.get('imiti').get('_value')
+        sent_data = request.data.get('imiti')
         print(f"The sent_data: {sent_data}")
         if not sent_data:
             return JsonResponse({"response": 'NoneType'})
@@ -713,7 +714,8 @@ class GeneralOps(viewsets.ViewSet):
     def setTxChange(self, request):
         """Will set a UsdToBif."""
         in_sent = request.data
-        sent_pr = in_sent.get('imiti').get('_value')
+        # sent_pr = in_sent.get('imiti').get('_value')
+        sent_pr = in_sent.get('imiti')
         tx = UsdToBif.objects.first()
         tx_change = float(sent_pr)
         if tx_change > 1000 and tx_change < 10000:
