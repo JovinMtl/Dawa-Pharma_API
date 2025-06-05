@@ -195,6 +195,54 @@ class GeneralOps(viewsets.ViewSet):
         return Response({
             'response': users_obj
         })
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def update_nom_med(self, request):
+        data = request.data.get('imiti')
+        code_med = data.get('code_med', None)
+        nom_med = data.get('nom_med', None)
+        if not(code_med and nom_med):
+            return Response({
+                'response': 404
+            })
+        med = ImitiSet.objects.get(code_med=code_med)
+        old_nom_med = med.nom_med
+        op1 = self._nom_achat(code_med=code_med, nom_med=nom_med)
+        op2 = self._nom_achat_2(code_med=code_med, nom_med=nom_med)
+        if op1+op2 == 400:
+            med.nom_med = nom_med
+            med.save()
+        recordOperation(who_did_id=request.user,\
+                        what_operation="Changé le nom",\
+                        from_value=old_nom_med,\
+                        to_value=nom_med)
+        self._update_code_for_sync(code_med=code_med)
+        return Response({
+            'response': 1
+        })
+    
+    def _nom_achat(self, code_med:str, nom_med:str)->int:
+        meds = UmutiEntree.objects.filter(code_med=code_med)
+        if not meds:
+            return 403
+        
+        for med in meds:
+            med.nom_med = nom_med
+            med.save()
+
+        return 200
+    
+    def _nom_achat_2(self, code_med:str, nom_med:str)->int:
+        meds = UmutiEntreeBackup.objects.filter(code_med=code_med)
+        if not meds:
+            return 403
+        
+        for med in meds:
+            med.nom_med = nom_med
+            med.save()
+            
+        return 200
 
 
     
