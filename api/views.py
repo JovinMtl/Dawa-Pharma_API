@@ -184,6 +184,17 @@ class GeneralOps(viewsets.ViewSet):
         return JsonResponse({"status": 1,\
                                 'reason':"Client ajoutee"},\
                                 status=200)
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def listUser(self, request):
+        users = User.objects.all()
+        users_obj = {}
+        for user in users:
+            users_obj[user.id] = user.username
+        return Response({
+            'response': users_obj
+        })
 
 
     
