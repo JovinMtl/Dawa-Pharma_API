@@ -1187,30 +1187,19 @@ class GeneralOps(viewsets.ViewSet):
         """
         days = [ 28, 31,28,31,30,31,30,31,31,30,31,30,31 ]
         meds = UmutiEntree.objects.all()
-        for med in meds:
+        meds2 = UmutiEntreeBackup.objects.all()
+
+        for (med, med2) in zip (meds, meds2):
             actual_date = med.date_peremption
+            actual_date2 = med2.date_peremption
             new_date = timezone.datetime(actual_date.year, \
                             actual_date.month, days[actual_date.month])
+            new_date2 = timezone.datetime(actual_date2.year, \
+                            actual_date2.month, days[actual_date2.month])
             med.date_peremption = new_date
+            med2.date_peremption = new_date2
             med.save()
-        return Response({
-            'response': 1
-        })
-    
-    @action(methods=['get'], detail=False,\
-             permission_classes= [IsAdminUser])
-    def date_per_to_31_bckp(self, request):
-        """
-        convert date_peremption to the last day of the month.
-        """
-        days = [ 28, 31,28,31,30,31,30,31,31,30,31,30,31 ]
-        meds = UmutiEntreeBackup.objects.all()
-        for med in meds:
-            actual_date = med.date_peremption
-            new_date = timezone.datetime(actual_date.year, \
-                            actual_date.month, days[actual_date.month])
-            med.date_peremption = new_date
-            med.save()
+            med2.save()
         return Response({
             'response': 1
         })
@@ -1226,8 +1215,6 @@ class GeneralOps(viewsets.ViewSet):
 
         meds = UmutiEntree.objects.filter(date_entrant__gte=today)
         meds2 = UmutiEntreeBackup.objects.filter(date_entrant__gte=today)
-
-        print(f"The today : {today} => {len(meds)}")
 
         for (med, med2) in zip (meds, meds2):
             actual_date = med.date_peremption
