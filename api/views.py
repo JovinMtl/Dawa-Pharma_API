@@ -2210,17 +2210,13 @@ class ImitiOut(viewsets.ViewSet):
 
         and return :  [['AL123', 'xt10', 1], ['AL123', 'xt11', 0]]
         """
-        # print(f"The qte received: {qte} from {data}") 
         reste = qte
         today = timezone.localdate()
 
-        # imiti = UmutiEntree.objects.filter(code_med=code_med).filter(quantite_restant__gte=1).order_by("date_peremption")
         imiti = UmutiEntree.objects.filter(\
             Q(code_med=code_med) & \
             Q(quantite_restant__gte=1) & \
             Q(date_peremption__gt=today)).order_by('date_peremption')
-        print(f"place order: {len(imiti)} , from {today}:{imiti[0].date_peremption}")
-        # print(f"code: {code_med}. The imiti: {imiti}. of len({len(imiti)}); with qte:{qte}")
         local_data = []
         if qte < 1:
             return []
@@ -2235,8 +2231,6 @@ class ImitiOut(viewsets.ViewSet):
                 local_data.append(to_add)
                 reste = 0
                 break
-        # print(f"Have done: {local_data}")
-        # return []
         if reste:
             return []
         else:
