@@ -1300,8 +1300,14 @@ class GeneralOps(viewsets.ViewSet):
         date_list = []
         for date in dates:
             tmp = date['date']
-            date_list.append(tmp)
+            formatted = self.__format_date(tmp)
+            date_list.append(formatted)
         return date_list
+    
+    def __format_date(self, date:str)->str:
+        tmp = str(date).split('-')
+        formatted_str = tmp[1] + "-" + tmp[0]
+        return formatted_str
     
 
         
