@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny,\
     IsAdminUser
 
-import json
+# import json
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -25,7 +25,8 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
-      ClientSeria, BonDeCommandSeria, OperationSeria
+      ClientSeria, BonDeCommandSeria, OperationSeria, \
+    CollectionSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -36,6 +37,8 @@ from .shared.stringToDate import stringToDate, shortStr2Date
 from .shared.roundingNumber import roundNumber
 from .shared.syncCode import give_sync_code
 from .shared.initLot import init_lot
+
+import requests
 
 
 # Making a weekday dict that will be used
@@ -1175,6 +1178,82 @@ class GeneralOps(viewsets.ViewSet):
         return Response({
                 "corrected": 0
             })
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def date_per_to_31(self, request):
+        """
+        gives the length of the collection.
+        """
+        days = [ 28, 31,28,31,30,31,30,31,31,30,31,30,31 ]
+        meds = UmutiEntree.objects.filter(quantite_restant__gte=1)
+        for med in meds:
+            actual_date = med.date_peremption
+            new_date = timezone.datetime(actual_date.year, \
+                            actual_date.month, days[actual_date.month])
+            med.date_peremption = new_date
+            med.save()
+        return Response({
+            'response': 1
+        })
+
+    
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def collection_len(self, request):
+        """
+        gives the length of the collection.
+        """
+        meds_len = ImitiSet.objects.all().count()
+        return Response({
+            'response': meds_len
+        })
+    
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def submit_collection(self, request):
+        """
+        gives the length of the collection.
+        """
+        data_to_send = []
+        val = 2
+
+        meds_len = ImitiSet.objects.all()
+    
+        for med in meds_len:
+            obj = {}
+            obj['nom_med'] = med.nom_med
+            obj['qte'] = med.quantite_restant
+            obj['price'] = med.prix_vente
+            data_to_send.append(obj)
+        
+        # forcing garbage collection
+        # meds_len = None
+        obj = None
+
+        worth = True
+        total_len = len(data_to_send)
+        ip = "http://127.0.0.1:8008/"
+        endpoint = "api/in/updateCollection/"
+        token = ''
+        headers = {}
+        fifies = Paginator(data_to_send, 5)
+        max_number = int(total_len / 50) + 1
+        counter = 1
+        headers['Authorization'] = "Bearer " + token
+        # if max_number == 1:
+        while worth:
+            paginated = fifies.get_page(counter)
+            paginated_seria = CollectionSeria(paginated, many=True)
+            print(f"The paginated: {paginated} ==> {paginated_seria.data}")
+            new_request = requests.post(ip+endpoint,{
+                'data': paginated_seria.data
+            }, headers=headers)
+            counter += 1
+            worth = False
+        return Response({
+            'response': paginated_seria.data
+        })
 
         
 
