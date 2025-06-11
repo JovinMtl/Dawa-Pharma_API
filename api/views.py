@@ -1247,7 +1247,7 @@ class GeneralOps(viewsets.ViewSet):
     
     @action(methods=['get', 'post'], detail=False,\
              permission_classes= [IsAdminUser])
-    def submit_collection(self, request):
+    def request_collection(self, request):
         """
         gives the length of the collection.
         """
@@ -1261,6 +1261,10 @@ class GeneralOps(viewsets.ViewSet):
             obj['nom_med'] = med.nom_med
             obj['qte'] = med.quantite_restant
             obj['price'] = med.prix_vente
+            obj['lot'] = med.lot
+            lote = StringToList(med.lot).toList()
+            lote = self._pack_dates(lote)
+            print(f"The lote : {lote}")
             data_to_send.append(obj)
         
         # forcing garbage collection
@@ -1281,15 +1285,24 @@ class GeneralOps(viewsets.ViewSet):
         while worth:
             paginated = fifies.get_page(counter)
             paginated_seria = CollectionSeria(paginated, many=True)
-            print(f"The paginated: {paginated} ==> {paginated_seria.data}")
-            new_request = requests.post(ip+endpoint,{
-                'data': paginated_seria.data
-            }, headers=headers)
+            # print(f"The paginated: {paginated} ==> {paginated_seria.data}")
+            # new_request = requests.post(ip+endpoint,{
+            #     'data': paginated_seria.data
+            # }, headers=headers)
             counter += 1
             worth = False
         return Response({
-            'response': paginated_seria.data
+            'response': paginated_seria.data,
+            'counter' : len(meds_len)
         })
+    
+    def _pack_dates(self, dates)->list:
+        date_list = []
+        for date in dates:
+            tmp = date['date']
+            date_list.append(tmp)
+        return date_list
+    
 
         
 

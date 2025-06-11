@@ -85,5 +85,7 @@ class SoldAsBonSeria(serializers.Serializer):
 class CollectionSeria(serializers.Serializer):
     nom_med = serializers.CharField(max_length=75, default="med")
     qte = serializers.IntegerField(default=0)
-    pv_t = serializers.IntegerField(default=0)
+    price = serializers.IntegerField(default=0)
+    lot = serializers.CharField(max_length=None, min_length=None, allow_blank=False, trim_whitespace=True)
+    
 
