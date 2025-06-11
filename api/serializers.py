@@ -82,4 +82,8 @@ class SoldAsBonSeria(serializers.Serializer):
     num_du_bon = serializers.CharField(max_length=10,default="0000")
 
 
+class CollectionSeria(serializers.Serializer):
+    nom_med = serializers.CharField(max_length=75, default="med")
+    qte = serializers.IntegerField(default=0)
+    pv_t = serializers.IntegerField(default=0)
 
