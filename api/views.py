@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny,\
     IsAdminUser
 
-# import json
+import json
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -1252,7 +1252,6 @@ class GeneralOps(viewsets.ViewSet):
         gives the length of the collection.
         """
         data_to_send = []
-        val = 2
 
         meds_len = ImitiSet.objects.all()
     
@@ -1261,40 +1260,35 @@ class GeneralOps(viewsets.ViewSet):
             obj['nom_med'] = med.nom_med
             obj['qte'] = med.quantite_restant
             obj['price'] = med.prix_vente
-            obj['lot'] = med.lot
             lote = StringToList(med.lot).toList()
             lote = self._pack_dates(lote)
-            print(f"The lote : {lote}")
+            obj['lot'] = lote
+            # print(f"The lote : {lote}")
             data_to_send.append(obj)
         
         # forcing garbage collection
-        # meds_len = None
+        meds_len = None
         obj = None
 
-        worth = True
-        total_len = len(data_to_send)
+        counter = len(data_to_send)
+
         ip = "http://127.0.0.1:8008/"
         endpoint = "api/in/updateCollection/"
         token = ''
         headers = {}
-        fifies = Paginator(data_to_send, 5)
-        max_number = int(total_len / 50) + 1
-        counter = 1
-        headers['Authorization'] = "Bearer " + token
+
+        data = CollectionSeria(data_to_send, many=True)
+
         # if max_number == 1:
-        while worth:
-            paginated = fifies.get_page(counter)
-            paginated_seria = CollectionSeria(paginated, many=True)
-            # print(f"The paginated: {paginated} ==> {paginated_seria.data}")
-            # new_request = requests.post(ip+endpoint,{
-            #     'data': paginated_seria.data
-            # }, headers=headers)
-            counter += 1
-            worth = False
+        if data.is_valid:
+            return Response({
+                'response': data.data,
+                'counter' : counter
+            })
         return Response({
-            'response': paginated_seria.data,
-            'counter' : len(meds_len)
-        })
+            'response': [],
+            'counter' : 0
+            })
     
     def _pack_dates(self, dates)->list:
         date_list = []
