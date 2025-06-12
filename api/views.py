@@ -1253,7 +1253,7 @@ class GeneralOps(viewsets.ViewSet):
         """
         data_to_send = []
 
-        meds_len = ImitiSet.objects.all()
+        meds_len = ImitiSet.objects.all()[:30]
     
         for med in meds_len:
             obj = {}
@@ -1277,16 +1277,20 @@ class GeneralOps(viewsets.ViewSet):
         token = ''
         headers = {}
 
-        data = CollectionSeria(data_to_send, many=True)
+        # data = CollectionSeria(data_to_send, many=True)
+        # paginated = Paginator(data.data, 50)
+        # paged = paginated.get_page(1)
+        print(f"The data: {data_to_send}")
 
-        # if max_number == 1:
-        if data.is_valid:
-            return Response({
-                'response': data.data,
-                'counter' : counter
-            })
+        # if data.is_valid:
+        #     requests.post(ip+endpoint, {'data':paged}, headers=headers)
+        #     return Response({
+        #         'response': data.data,
+        #         'counter' : counter
+        #     })
+        requests.post(ip+endpoint, {'data':json.dumps(data_to_send)}, headers=headers)
         return Response({
-            'response': [],
+            'response': data_to_send,
             'counter' : 0
             })
     
