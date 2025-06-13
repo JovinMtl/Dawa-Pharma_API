@@ -1261,7 +1261,7 @@ class GeneralOps(viewsets.ViewSet):
             obj['qte'] = med.quantite_restant
             obj['price'] = med.prix_vente
             lote = StringToList(med.lot).toList()
-            lote = self._pack_dates(lote)
+            lote = self._pack_dates(lote)[:3]
             obj['lot'] = lote
             # print(f"The lote : {lote}")
             data_to_send.append(obj)
@@ -1274,13 +1274,17 @@ class GeneralOps(viewsets.ViewSet):
 
         ip = "http://127.0.0.1:8008/"
         endpoint = "api/in/updateCollection/"
-        token = ''
-        headers = {}
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODA4MDYzLCJpYXQiOjE3NDk4MDA4NjMsImp0aSI6ImIyZTAyZTY5MDQ1MjQyMmQ4YWZmMmE3N2FlYTc4OGMwIiwidXNlcl9pZCI6MX0.7PUPmxC9x8LeeHqqjlqh2soLHuE4anWkwx0oebfNGfw"
+        Authorization = "Bearer " + token
+        headers = {
+            'Authorization' :  Authorization
+        }
+
 
         # data = CollectionSeria(data_to_send, many=True)
         # paginated = Paginator(data.data, 50)
         # paged = paginated.get_page(1)
-        print(f"The data: {data_to_send}")
+        # print(f"The data: {data_to_send}")
 
         # if data.is_valid:
         #     requests.post(ip+endpoint, {'data':paged}, headers=headers)
@@ -1288,7 +1292,8 @@ class GeneralOps(viewsets.ViewSet):
         #         'response': data.data,
         #         'counter' : counter
         #     })
-        requests.post(ip+endpoint, {'data':json.dumps(data_to_send)}, headers=headers)
+        sending = requests.post(ip+endpoint, {'data':json.dumps(data_to_send)}, headers=headers)
+        print(f"The request: {sending.status_code}")
         return Response({
             'response': data_to_send,
             'counter' : 0
