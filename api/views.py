@@ -39,6 +39,7 @@ from .shared.syncCode import give_sync_code
 from .shared.initLot import init_lot
 
 import requests
+import asyncio
 
 
 # Making a weekday dict that will be used
@@ -1247,15 +1248,15 @@ class GeneralOps(viewsets.ViewSet):
     
     @action(methods=['get', 'post'], detail=False,\
              permission_classes= [IsAdminUser])
-    def request_collection(self, request):
+    async def request_collection(self, request):
         """
         gives the length of the collection.
         """
         data_to_send = []
 
-        meds_len = ImitiSet.objects.all()[:30]
+        meds = ImitiSet.objects.all()[:30]
     
-        for med in meds_len:
+        for med in meds:
             obj = {}
             obj['nom_med'] = med.nom_med
             obj['qte'] = med.quantite_restant
@@ -1267,37 +1268,52 @@ class GeneralOps(viewsets.ViewSet):
             data_to_send.append(obj)
         
         # forcing garbage collection
-        meds_len = None
+        meds_len = len(data_to_send)
         obj = None
 
-        counter = len(data_to_send)
+        # ip = "http://127.0.0.1:8008/"
+        # endpoint = "api/in/updateCollection/"
+        # url = ip + endpoint
+        # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE2OTY3LCJpYXQiOjE3NDk4MDk3NjcsImp0aSI6IjFlZTJjNTVmYzk2OTQwYmQ4MmViNjIyODQ1Y2I1YjQzIiwidXNlcl9pZCI6MX0.bN8bozql8xMqGArWHzX75QZiCVBvChezbjGT_l-joCM"
+        # Authorization = "Bearer " + token
+        # headers = {
+        #     'Authorization' :  Authorization
+        # }
 
-        ip = "http://127.0.0.1:8008/"
-        endpoint = "api/in/updateCollection/"
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODA4MDYzLCJpYXQiOjE3NDk4MDA4NjMsImp0aSI6ImIyZTAyZTY5MDQ1MjQyMmQ4YWZmMmE3N2FlYTc4OGMwIiwidXNlcl9pZCI6MX0.7PUPmxC9x8LeeHqqjlqh2soLHuE4anWkwx0oebfNGfw"
-        Authorization = "Bearer " + token
-        headers = {
-            'Authorization' :  Authorization
-        }
 
+        # paginated = Paginator(data_to_send, 50)
+        # begin = 1
+        # page = 1
+        # failure = 0
+        # while ((meds_len / begin) >= 1) and (failure < 10):
+        #     paged = paginated.get_page(page)
+        #     paged_serialized = CollectionSeria(paged, many=True)
+        #     if page == 1:
+            #     begin = 50
+            # # sending = requests.post(url, {'data':json.dumps(paged_serialized.data)}, headers=headers)
+            # sending = asyncio.run(self._rep_sender_collection(url, paged_serialized.data, headers))
+            # print(f"The request: {sending}")
 
-        # data = CollectionSeria(data_to_send, many=True)
-        # paginated = Paginator(data.data, 50)
-        # paged = paginated.get_page(1)
-        # print(f"The data: {data_to_send}")
-
-        # if data.is_valid:
-        #     requests.post(ip+endpoint, {'data':paged}, headers=headers)
-        #     return Response({
-        #         'response': data.data,
-        #         'counter' : counter
-        #     })
-        sending = requests.post(ip+endpoint, {'data':json.dumps(data_to_send)}, headers=headers)
-        print(f"The request: {sending.status_code}")
+            # if sending.status_code == 200:
+            #     page += 1
+            #     begin += 50
+            # else:
+            #     failure += 1
+            #     begin = 1
+            #     page = 1  # in case we want to restart
+        
         return Response({
             'response': data_to_send,
             'counter' : 0
             })
+    
+    async def __sender_collection(self, url, data, headers):
+        sending = requests.post(url, {'data':json.dumps(data)}, headers=headers)
+        # data = await sending
+        return sending
+    async def _rep_sender_collection(self, url, data, headers):
+        sending = await self.__sender_collection(url, data, headers)
+        return sending
     
     def _pack_dates(self, dates)->list:
         date_list = []
@@ -1551,7 +1567,10 @@ class EntrantImiti(viewsets.ViewSet):
                     prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
                 else:
                     prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                umuti_set.prix_vente = roundNumber(prix_vente)
+                if prix_vente > umuti_set.prix_vente:
+                    umuti_set.prix_vente = roundNumber(prix_vente)
+                else:
+                    umuti_set.prix_vente = umuti_set.prix_vente
                 umuti_set.quantite_restant = round(somme_lot, 1)
                 umuti_set.lot = synced_lot
                 umuti_set.checked_qte = qte_tracked
