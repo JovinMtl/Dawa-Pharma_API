@@ -39,7 +39,6 @@ from .shared.syncCode import give_sync_code
 from .shared.initLot import init_lot
 
 import requests
-import asyncio
 
 
 # Making a weekday dict that will be used
@@ -1256,13 +1255,13 @@ class GeneralOps(viewsets.ViewSet):
     
     @action(methods=['get', 'post'], detail=False,\
              permission_classes= [IsAdminUser])
-    async def request_collection(self, request):
+    def request_collection(self, request):
         """
         gives the length of the collection.
         """
         data_to_send = []
 
-        meds = ImitiSet.objects.all()[:30]
+        meds = ImitiSet.objects.all()
     
         for med in meds:
             obj = {}
@@ -1279,49 +1278,45 @@ class GeneralOps(viewsets.ViewSet):
         meds_len = len(data_to_send)
         obj = None
 
-        # ip = "http://127.0.0.1:8008/"
-        # endpoint = "api/in/updateCollection/"
-        # url = ip + endpoint
-        # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5ODE2OTY3LCJpYXQiOjE3NDk4MDk3NjcsImp0aSI6IjFlZTJjNTVmYzk2OTQwYmQ4MmViNjIyODQ1Y2I1YjQzIiwidXNlcl9pZCI6MX0.bN8bozql8xMqGArWHzX75QZiCVBvChezbjGT_l-joCM"
-        # Authorization = "Bearer " + token
-        # headers = {
-        #     'Authorization' :  Authorization
-        # }
+        ip = "http://127.0.0.1:8008/"
+        endpoint = "api/in/updateCollection/"
+        url = ip + endpoint
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5OTAwMzkyLCJpYXQiOjE3NDk4OTMxOTIsImp0aSI6IjRlYmFjZGQxYWExZjQ2ODFhNDQyOTc3OWVhZjdiMjNmIiwidXNlcl9pZCI6MX0.2IOXasvHO3twIlLRtaIkDFk_n75nzxwTVLcNaXYQpVM"
+        Authorization = "Bearer " + token
+        headers = {
+            'Authorization' :  Authorization
+        }
 
 
-        # paginated = Paginator(data_to_send, 50)
-        # begin = 1
-        # page = 1
-        # failure = 0
-        # while ((meds_len / begin) >= 1) and (failure < 10):
-        #     paged = paginated.get_page(page)
-        #     paged_serialized = CollectionSeria(paged, many=True)
-        #     if page == 1:
-            #     begin = 50
-            # # sending = requests.post(url, {'data':json.dumps(paged_serialized.data)}, headers=headers)
-            # sending = asyncio.run(self._rep_sender_collection(url, paged_serialized.data, headers))
-            # print(f"The request: {sending}")
-
-            # if sending.status_code == 200:
-            #     page += 1
-            #     begin += 50
-            # else:
-            #     failure += 1
-            #     begin = 1
-            #     page = 1  # in case we want to restart
+        paginated = Paginator(data_to_send, 50)
+        begin = 1
+        page = 1
+        failure = 0
         
+        while (meds_len / begin) >= 1 and failure < 10:
+            paged = paginated.get_page(page)
+            paged_serialized = CollectionSeria(paged, many=True)
+
+            try:
+                response = requests.post(url, json={'data': paged_serialized.data}, headers=headers)
+                print(f"The request: {response.status_code}, page: {page} from {meds_len}")
+            except requests.RequestException as e:
+                print(f"Request failed: {e}")
+                failure += 1
+                continue
+
+            if response.status_code == 200:
+                page += 1
+                begin += 50
+            else:
+                failure += 1
+                begin = 1
+                page = 1  # restart if failed
+
         return Response({
             'response': data_to_send,
-            'counter' : 0
-            })
-    
-    async def __sender_collection(self, url, data, headers):
-        sending = requests.post(url, {'data':json.dumps(data)}, headers=headers)
-        # data = await sending
-        return sending
-    async def _rep_sender_collection(self, url, data, headers):
-        sending = await self.__sender_collection(url, data, headers)
-        return sending
+            'counter': 0
+        })
     
     def _pack_dates(self, dates)->list:
         date_list = []
