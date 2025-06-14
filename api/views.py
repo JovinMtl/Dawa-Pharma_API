@@ -210,6 +210,14 @@ class GeneralOps(viewsets.ViewSet):
             return Response({
                 'response': 404
             })
+        try:
+            exist_med = ImitiSet.objects.get(nom_med=nom_med)
+        except ImitiSet.DoesNotExist:
+            pass
+        else:
+            return Response({
+                'response': 0
+            })
         med = ImitiSet.objects.get(code_med=code_med)
         old_nom_med = med.nom_med
         op1 = self._nom_achat(code_med=code_med, nom_med=nom_med)
@@ -1327,8 +1335,17 @@ class GeneralOps(viewsets.ViewSet):
         tmp = str(date).split('-')
         formatted_str = tmp[1] + "-" + tmp[0]
         return formatted_str
-    
 
+class GeneralOps2(viewsets.ViewSet):
+    """
+    An extension of GeneralOps.
+    """
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def check_nom_med(self, request):
+        return Response({
+            'response': 1
+        })
         
 
 
