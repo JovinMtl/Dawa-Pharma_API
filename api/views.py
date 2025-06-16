@@ -1281,7 +1281,7 @@ class GeneralOps(viewsets.ViewSet):
         ip = "http://127.0.0.1:8008/"
         endpoint = "api/in/updateCollection/"
         url = ip + endpoint
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5OTAwMzkyLCJpYXQiOjE3NDk4OTMxOTIsImp0aSI6IjRlYmFjZGQxYWExZjQ2ODFhNDQyOTc3OWVhZjdiMjNmIiwidXNlcl9pZCI6MX0.2IOXasvHO3twIlLRtaIkDFk_n75nzxwTVLcNaXYQpVM"
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDcwNTIxLCJpYXQiOjE3NTAwNjMzMjEsImp0aSI6ImU0NDNmNjg0ZTkxMzQ3ZmU4ZDAyNmNkYTg3ZmEwYjgyIiwidXNlcl9pZCI6MX0.8ycBqdyvnGZruNf1-tMsRLVVK8aFGBATXgWji0p0444"
         Authorization = "Bearer " + token
         headers = {
             'Authorization' :  Authorization
@@ -1293,12 +1293,21 @@ class GeneralOps(viewsets.ViewSet):
         page = 1
         failure = 0
         
+        # ask the sync_code
+        url_sync_code = "api/in/request_code_sync/"
+        sync_code = 0
+        ask_code = requests.post(ip+url_sync_code, json={}, headers=headers)
+        if ask_code.status_code == 200:
+            response = ask_code.json()
+            sync_code = response.get('response', 0)
+        sync_code = self._give_code(num=sync_code)
+        
         while (meds_len / begin) >= 1 and failure < 10:
             paged = paginated.get_page(page)
             paged_serialized = CollectionSeria(paged, many=True)
 
             try:
-                response = requests.post(url, json={'data': paged_serialized.data}, headers=headers)
+                response = requests.post(url, json={'data': paged_serialized.data, 'sync_code':sync_code}, headers=headers)
                 print(f"The request: {response.status_code}, page: {page} from {meds_len}")
             except requests.RequestException as e:
                 print(f"Request failed: {e}")
@@ -1312,11 +1321,22 @@ class GeneralOps(viewsets.ViewSet):
                 failure += 1
                 begin = 1
                 page = 1  # restart if failed
-
+        # request to clean the outdated.
+        url_clean_outdated = "api/in/clean_outdated/"
+        # sync_code = 0
+        ask_code = requests.post(ip+url_clean_outdated, \
+                        json={'sync_code':sync_code}, \
+                        headers=headers)
         return Response({
             'response': data_to_send,
             'counter': 0
         })
+    
+    def _give_code(self, num)->int:
+        codes = [1, 2, 3, 4, 5]
+        if (num > 4) or (num < 0):
+            num = 0
+        return codes[num]
     
     def _pack_dates(self, dates)->list:
         date_list = []
