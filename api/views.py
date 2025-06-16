@@ -1271,24 +1271,25 @@ class GeneralOps(viewsets.ViewSet):
             lote = StringToList(med.lot).toList()
             lote = self._pack_dates(lote)[:3]
             obj['lot'] = lote
-            # print(f"The lote : {lote}")
             data_to_send.append(obj)
         
-        # forcing garbage collection
         meds_len = len(data_to_send)
+
+        # forcing garbage collection
+        meds = None
         obj = None
 
         ip = "http://127.0.0.1:8008/"
         endpoint = "api/in/updateCollection/"
         url = ip + endpoint
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDcwNTIxLCJpYXQiOjE3NTAwNjMzMjEsImp0aSI6ImU0NDNmNjg0ZTkxMzQ3ZmU4ZDAyNmNkYTg3ZmEwYjgyIiwidXNlcl9pZCI6MX0.8ycBqdyvnGZruNf1-tMsRLVVK8aFGBATXgWji0p0444"
+        # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDcwNTIxLCJpYXQiOjE3NTAwNjMzMjEsImp0aSI6ImU0NDNmNjg0ZTkxMzQ3ZmU4ZDAyNmNkYTg3ZmEwYjgyIiwidXNlcl9pZCI6MX0.8ycBqdyvnGZruNf1-tMsRLVVK8aFGBATXgWji0p0444"
         Authorization = "Bearer " + token
         headers = {
             'Authorization' :  Authorization
         }
 
-
-        paginated = Paginator(data_to_send, 50)
+        size = 20
+        paginated = Paginator(data_to_send, size)
         begin = 1
         page = 1
         failure = 0
@@ -1308,15 +1309,13 @@ class GeneralOps(viewsets.ViewSet):
 
             try:
                 response = requests.post(url, json={'data': paged_serialized.data, 'sync_code':sync_code}, headers=headers)
-                print(f"The request: {response.status_code}, page: {page} from {meds_len}")
             except requests.RequestException as e:
-                print(f"Request failed: {e}")
                 failure += 1
                 continue
 
             if response.status_code == 200:
                 page += 1
-                begin += 50
+                begin += size
             else:
                 failure += 1
                 begin = 1
@@ -1328,7 +1327,7 @@ class GeneralOps(viewsets.ViewSet):
                         json={'sync_code':sync_code}, \
                         headers=headers)
         return Response({
-            'response': data_to_send,
+            'response': 1,
             'counter': 0
         })
     
