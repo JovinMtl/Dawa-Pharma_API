@@ -274,3 +274,13 @@ class Journaling(models.Model):
     used and be deleted any time soon.
     """
     codes_for_sync = models.TextField() # will store a list of code_med
+
+class Info(models.Model):
+    """
+    One place for storing the infos regarding the Pharmacy.
+    """
+    address = models.CharField(max_length=60, default="Burundi")
+    pharma_name = models.CharField(max_length=35, default="Pharma")
+    remote_username = models.CharField(max_length=50, default="Pharma")
+    remote_password = models.CharField(max_length=50, default="Pharma")
+    last_updated = models.DateTimeField(default=timezone.now)
