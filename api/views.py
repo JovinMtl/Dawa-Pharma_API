@@ -19,14 +19,14 @@ import os
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
     BonDeCommand, Assurance, ClassThep, SubClassThep,\
-    Client, BeneficeProgram, Journaling, CriticalOperation
+    Client, BeneficeProgram, Journaling, CriticalOperation, Info
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
       ClientSeria, BonDeCommandSeria, OperationSeria, \
-    CollectionSeria
+    CollectionSeria, InfoSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -1259,6 +1259,9 @@ class GeneralOps(viewsets.ViewSet):
         """
         gives the length of the collection.
         """
+        token = request.data.get('imiti', 'done')
+        token = token[1:]
+        token = token[:-1]
         data_to_send = []
 
         meds = ImitiSet.objects.all()
@@ -1356,7 +1359,14 @@ class GeneralOps2(viewsets.ViewSet):
     """
     @action(methods=['get', 'post'], detail=False,\
              permission_classes= [IsAdminUser])
-    def check_nom_med(self, request):
+    def request_infos(self, request):
+        info = Info.objects.first()
+        info_s = InfoSeria(info)
+    
+        if info_s.is_valid:
+            return Response({
+                'response': info_s.data
+            })
         return Response({
             'response': 1
         })
