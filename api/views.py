@@ -1262,11 +1262,11 @@ class GeneralOps(viewsets.ViewSet):
         token = request.data.get('imiti', 'done')
         token = token[1:]
         token = token[:-1]
-        if len(token) == 2:
+        if len(token) <= 2:
             return JsonResponse({
-                'response': 400,
+                'response': 500,
                 'counter': 0
-            }, status=400)
+            }, status=500)
         data_to_send = []
 
         meds = ImitiSet.objects.all()
