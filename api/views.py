@@ -1260,8 +1260,8 @@ class GeneralOps(viewsets.ViewSet):
         gives the length of the collection.
         """
         token = request.data.get('imiti', 'done')
-        token = token[1:]
-        token = token[:-1]
+        # token = token[1:]
+        # token = token[:-1]
         if len(token) <= 2:
             return JsonResponse({
                 'response': 500,
