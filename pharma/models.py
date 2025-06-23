@@ -279,8 +279,15 @@ class Info(models.Model):
     """
     One place for storing the infos regarding the Pharmacy.
     """
-    pharma_name = models.CharField(max_length=35, default="Pharma")
-    address = models.CharField(max_length=60, default="Burundi")
+    name_pharma = models.CharField(max_length=35, default="Pharma")
+    address = models.CharField(max_length=60, default="Burundi") #bottom homepage
+    tel = models.IntegerField(default=0)
+    loc_street = models.CharField(max_length=15, default="13")
+    loc_quarter = models.CharField(max_length=15, default="Kamenge")
+    loc_commune = models.CharField(max_length=15, default="Ntahangwa")
+    loc_Province = models.CharField(max_length=15, default="Bujumbura")
+    loc_country = models.CharField(max_length=15, default="Burundi")
     remote_username = models.CharField(max_length=50, default="Pharma")
     remote_password = models.CharField(max_length=50, default="Pharma")
+    
     last_updated = models.DateTimeField(default=timezone.now)
