@@ -280,7 +280,7 @@ class Info(models.Model):
     One place for storing the infos regarding the Pharmacy.
     """
     name_pharma = models.CharField(max_length=35, default="Pharma")
-    code_pharma = models.CharField(max_length=8, default="PH000")
+    code_pharma = models.IntegerField(default=1000)
     address = models.CharField(max_length=60, default="Burundi") #bottom homepage
     tel = models.IntegerField(default=0)
     loc_street = models.CharField(max_length=15, default="13")
