@@ -741,7 +741,7 @@ class GeneralOps(viewsets.ViewSet):
     
 
     @action(methods=['post'], detail=False,\
-             permission_classes= [IsAdminUser])
+             permission_classes= [IsAuthenticated])
     def setDecimal(self, request):
         """
         Will get the id for umutiSet and return or 
