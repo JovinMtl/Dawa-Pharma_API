@@ -1287,8 +1287,8 @@ class GeneralOps(viewsets.ViewSet):
         meds = None
         obj = None
 
-        # ip = "http://127.0.0.1:8008/"
-        ip = "https://5hmc28-8008.csb.app/"  #CodeSandbox
+        ip = "http://127.0.0.1:8008/"
+        # ip = "https://5hmc28-8008.csb.app/"  #CodeSandbox
         endpoint = "api/in/updateCollection/"
         url = ip + endpoint
         # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDcwNTIxLCJpYXQiOjE3NTAwNjMzMjEsImp0aSI6ImU0NDNmNjg0ZTkxMzQ3ZmU4ZDAyNmNkYTg3ZmEwYjgyIiwidXNlcl9pZCI6MX0.8ycBqdyvnGZruNf1-tMsRLVVK8aFGBATXgWji0p0444"
@@ -1375,10 +1375,80 @@ class GeneralOps2(viewsets.ViewSet):
             })
         return Response({
             'response': 1
+        }) 
+    
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def update_infos(self, request):
+        infos = request.data.get('imiti')
+        print(f"The infos received: {infos}")
+        update_info = self._make_update_info(infos=infos)
+        if update_info == 200:
+            print("Successfully updated infos.")
+            return Response({
+                'response': 200
+            })
+        return Response({
+            'response': 1
         })
+    
+    def _make_update_info(self, infos)->int:
+        info_update = Info.objects.last()
+        name_pharma = infos.get("name_pharma", '')[:34]
+        code_pharma = infos.get("code_pharma", '1000')
         
+        remote_password = infos.get("remote_password", 'j')
 
+        if len(remote_password) >= 8 and len(name_pharma) >= 5:
+            info_update.name_pharma = name_pharma
+            info_update.code_pharma = code_pharma
+            info_update.tel = int(infos.get('tel',0))
+            info_update.loc_street = infos.get("loc_street", '')[:14]
+            info_update.loc_quarter = infos.get("loc_quarter", '')[:14]
+            info_update.loc_commune = infos.get("loc_commune", '')[:14]
+            info_update.loc_Province = infos.get("loc_Province", '')[:14]
+            info_update.remote_username = name_pharma
+            info_update.remote_password = remote_password
 
+            info_update.save()
+
+        return 200
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def set_last_prix_vente(self, request):
+        """
+        Will get the id for umutiSet and return or 
+        update its decimal field.
+        """
+        data_sent = request.data.get('imiti')
+        print(f"The data sent: {data_sent}")
+        if not data_sent:
+            return JsonResponse({
+            'response': 0
+        })
+        code_med = data_sent.get('code_med')
+        try:
+            umuti_set = ImitiSet.objects.get(code_med=code_med)
+            umuti_set_seria = ImitiSetSeriazer(umuti_set)
+        except ImitiSet.DoesNotExist:
+            return JsonResponse({
+                'response': 404,
+            })
+        else:
+            if data_sent.get('request') == 'get':
+                if umuti_set_seria.is_valid:
+                    return Response(umuti_set_seria.data)
+            elif data_sent.get('request') == 'post':
+                umuti_set.last_prix_vente = bool(data_sent.get('last_prix_vente'))
+                umuti_set.save()
+                recordOperation(who_did_id=request.user, \
+                        what_operation=f"Consideré le dernier prix sur {(umuti_set.nom_med)[:15]}", \
+                        from_value=(not umuti_set.last_prix_vente), \
+                        to_value=umuti_set.last_prix_vente)
+        return JsonResponse({
+            'response': 1
+        })
                 
             
 
@@ -1581,8 +1651,8 @@ class EntrantImiti(viewsets.ViewSet):
             sync_code = 8 # assuring to re-write the lot
         else:
             print(f"will compile : {len(codes_for_sync)} existing")
-            procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
-        # procured = UmutiEntree.objects.filter(code_med='106855').filter(quantite_restant__gte=1).order_by('date_peremption')
+            # procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
+            procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_entrant')
         print(f"GOtten len: {len(procured)}")
         pr_interest = BeneficeProgram.objects.first()
         for umutie in procured:
@@ -1614,10 +1684,12 @@ class EntrantImiti(viewsets.ViewSet):
                     prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
                 else:
                     prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                if prix_vente > umuti_set.prix_vente:
+                if (prix_vente > umuti_set.prix_vente) and not \
+                    (umuti_set.last_prix_vente):
                     umuti_set.prix_vente = roundNumber(prix_vente)
                 else:
                     umuti_set.prix_vente = umuti_set.prix_vente
+
                 umuti_set.quantite_restant = round(somme_lot, 1)
                 umuti_set.lot = synced_lot
                 umuti_set.checked_qte = qte_tracked
