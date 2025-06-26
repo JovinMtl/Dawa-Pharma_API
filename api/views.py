@@ -1679,16 +1679,20 @@ class EntrantImiti(viewsets.ViewSet):
 
                 
                 umuti_set.prix_achat = umutie.prix_achat
+                prix_vente = 0
                 
                 if umuti_set.is_pr_interest:
                     prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
                 else:
                     prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                if (prix_vente > umuti_set.prix_vente) and not \
-                    (umuti_set.last_prix_vente):
+                if (prix_vente > umuti_set.prix_vente) and \
+                    (umuti_set.last_prix_vente == False):
                     umuti_set.prix_vente = roundNumber(prix_vente)
-                else:
+                elif (prix_vente <= umuti_set.prix_vente) and \
+                    (umuti_set.last_prix_vente == False):
                     umuti_set.prix_vente = umuti_set.prix_vente
+                else:
+                    umuti_set.prix_vente = umutie.prix_vente
 
                 umuti_set.quantite_restant = round(somme_lot, 1)
                 umuti_set.lot = synced_lot
