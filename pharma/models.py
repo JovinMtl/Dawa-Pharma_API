@@ -92,6 +92,7 @@ class ImitiSet(models.Model):
     is_pr_interest = models.BooleanField(default=False)
     pr_interest = models.FloatField(default=1.5)
     sync_code = models.IntegerField(default=0)
+    last_prix_vente = models.BooleanField(default=False)
 
 
     def __str__(self) -> str:
