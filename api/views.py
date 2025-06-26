@@ -1446,6 +1446,7 @@ class GeneralOps2(viewsets.ViewSet):
                         what_operation=f"Consideré le dernier prix sur {(umuti_set.nom_med)[:15]}", \
                         from_value=(not umuti_set.last_prix_vente), \
                         to_value=umuti_set.last_prix_vente)
+                GeneralOps._update_code_for_sync(self=GeneralOps, code_med=umuti_set.code_med)
         return JsonResponse({
             'response': 1
         })
@@ -1680,7 +1681,7 @@ class EntrantImiti(viewsets.ViewSet):
                 
                 umuti_set.prix_achat = umutie.prix_achat
                 prix_vente = 0
-                
+
                 if umuti_set.is_pr_interest:
                     prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
                 else:
