@@ -1188,7 +1188,7 @@ class GeneralOps(viewsets.ViewSet):
             })
     
     @action(methods=['get'], detail=False,\
-             permission_classes= [IsAdminUser])
+             permission_classes= [IsAuthenticated])
     def date_per_to_31(self, request):
         """
         convert date_peremption to the last day of the month.
@@ -1213,7 +1213,7 @@ class GeneralOps(viewsets.ViewSet):
         })
     
     @action(methods=['get'], detail=False,\
-             permission_classes= [IsAdminUser])
+             permission_classes= [IsAuthenticated])
     def today_per_to_31(self, request):
         """
         convert the inputs entered today to have date_peremption to the last day of the month.
@@ -1243,7 +1243,7 @@ class GeneralOps(viewsets.ViewSet):
 
     
     @action(methods=['get'], detail=False,\
-             permission_classes= [IsAdminUser])
+             permission_classes= [IsAuthenticated])
     def collection_len(self, request):
         """
         gives the length of the collection.
@@ -1254,7 +1254,7 @@ class GeneralOps(viewsets.ViewSet):
         })
     
     @action(methods=['get', 'post'], detail=False,\
-             permission_classes= [IsAdminUser])
+             permission_classes= [IsAuthenticated])
     def request_collection(self, request):
         """
         gives the length of the collection.
