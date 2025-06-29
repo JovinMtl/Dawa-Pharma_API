@@ -19,7 +19,8 @@ import os
 from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
     BonDeCommand, Assurance, ClassThep, SubClassThep,\
-    Client, BeneficeProgram, Journaling, CriticalOperation, Info
+    Client, BeneficeProgram, Journaling, CriticalOperation, \
+    Info, PerteMed
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
@@ -2549,6 +2550,12 @@ class ImitiOut(viewsets.ViewSet):
             })
     
     def _record_perte(self, med, qte, who_did_it, motif):
+        new_perte = PerteMed.objects.create(med=med, who_did_it=who_did_it)
+        new_perte.qte = qte
+        new_perte.motif = motif
+        new_perte.date_operation = timezone.now()
+        new_perte.save()
+        
         return 200
 
 class Rapport(viewsets.ViewSet):
