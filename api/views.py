@@ -2515,10 +2515,22 @@ class ImitiOut(viewsets.ViewSet):
              permission_classes= [IsAdminUser])
     def add_perte(self, request):
         data = request.data
-        code_med = data.get('code_med')
-        code_operation = data.get('code_operation')
-        qte = data.get('qte', 1)
+        print(f"The data sent: {data}")
+        code_med = data.get('code_med', '')
+        code_operation = data.get('code_operation', '')
+        qte = (data.get('qte', 1))
+        qte = 0
+        try:
+            qte = int(qte)
+        except ValueError:
+            qte = 1
         motif = data.get('motif', 'Perime')
+
+        if not (code_operation):
+            return Response({
+                'response': 0,
+                'detail': 'no_code'
+            })
 
         med = None
         try:
@@ -2526,8 +2538,11 @@ class ImitiOut(viewsets.ViewSet):
                 Q(code_med=code_med) & \
                 Q(code_operation=code_operation))
         except UmutiEntree.DoesNotExist:
-            pass
-        if med.quantite_restant >= qte:
+            return Response({
+                'response': 0,
+                'detail': 'no_med_found'
+            })
+        if (med.quantite_restant >= qte) and (qte > 0):
             med.quantite_restant -= qte
             med.save()
             result = self._record_perte(med=med, qte=qte, \
@@ -2550,12 +2565,13 @@ class ImitiOut(viewsets.ViewSet):
             })
     
     def _record_perte(self, med, qte, who_did_it, motif):
-        new_perte = PerteMed.objects.create(med=med, who_did_it=who_did_it)
+        new_perte = PerteMed.objects.create(med=med, \
+                        who_did_it=who_did_it)
         new_perte.qte = qte
         new_perte.motif = motif
         new_perte.date_operation = timezone.now()
         new_perte.save()
-        
+
         return 200
 
 class Rapport(viewsets.ViewSet):
