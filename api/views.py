@@ -2519,7 +2519,6 @@ class ImitiOut(viewsets.ViewSet):
         code_med = data.get('code_med', '')
         code_operation = data.get('code_operation', '')
         qte = (data.get('qte', 1))
-        qte = 0
         try:
             qte = int(qte)
         except ValueError:
@@ -2533,6 +2532,7 @@ class ImitiOut(viewsets.ViewSet):
             })
 
         med = None
+        prix_vente = 0
         try:
             med = UmutiEntree.objects.get(\
                 Q(code_med=code_med) & \
@@ -2542,11 +2542,15 @@ class ImitiOut(viewsets.ViewSet):
                 'response': 0,
                 'detail': 'no_med_found'
             })
+        med_set = ImitiSet.objects.get(code_med=code_med)
+        prix_vente = med_set.prix_vente
         if (med.quantite_restant >= qte) and (qte > 0):
             med.quantite_restant -= qte
             med.save()
             result = self._record_perte(med=med, qte=qte, \
-                               who_did_it=request.user, \
+                                prix_achat=med.prix_achat,\
+                                prix_vente=prix_vente,\
+                                who_did_it=request.user, \
                                 motif=motif)
             if result == 200:
                 recordOperation(who_did_id=request.user, what_operation=f"Med ({code_med}, qte:{qte}) Perime", from_value='', to_value='')
@@ -2564,7 +2568,7 @@ class ImitiOut(viewsets.ViewSet):
                 'detail': 'qte_insuffisant'
             })
     
-    def _record_perte(self, med, qte, who_did_it, motif):
+    def _record_perte(self, med, qte,prix_achat, prix_vente, who_did_it, motif):
         new_perte = PerteMed.objects.create(med=med, \
                         who_did_it=who_did_it)
         new_perte.qte = qte
