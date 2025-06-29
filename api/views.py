@@ -2143,7 +2143,6 @@ class ImitiOut(viewsets.ViewSet):
             codes_for_sync.append(code_med)
         return codes_for_sync
 
-
     def _checkNumBon(self, num_bon:str='')->bool:
         bon = BonDeCommand.objects.filter(num_bon=num_bon)
         if bon:
@@ -2247,11 +2246,13 @@ class ImitiOut(viewsets.ViewSet):
         bon_de_commande.save()
 
         return bon_de_commande
+    
     def _completeBon(self,bon_de_commande:BonDeCommand,\
          code_operation:str)->BonDeCommand:
         bon_de_commande.meds += f"{code_operation};"
         bon_de_commande.save()
         return bon_de_commande
+    
     def _createBon(self, client,\
         client_obj, assu_obj, \
         categorie)->int:
@@ -2365,7 +2366,6 @@ class ImitiOut(viewsets.ViewSet):
         else:
             return local_data
     
-
     def _place_order(self, code_med:str='000', qte:int=0) -> list:
         """ The function takes a list of order and make a repartition of qte
         based on input data of this type:
@@ -2400,8 +2400,7 @@ class ImitiOut(viewsets.ViewSet):
             return []
         else:
             return local_data
-
-    
+   
     def _imitiSell(self, umuti:UmutiEntree, \
                    qte:int, operator:str, \
                    reference_umuti:ImitiSet,\
@@ -2511,6 +2510,46 @@ class ImitiOut(viewsets.ViewSet):
         umuti_entree.save()
         return 200
 
+    @action(methods=['post', 'get'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def add_perte(self, request):
+        data = request.data
+        code_med = data.get('code_med')
+        code_operation = data.get('code_operation')
+        qte = data.get('qte', 1)
+        motif = data.get('motif', 'Perime')
+
+        med = None
+        try:
+            med = UmutiEntree.objects.get(\
+                Q(code_med=code_med) & \
+                Q(code_operation=code_operation))
+        except UmutiEntree.DoesNotExist:
+            pass
+        if med.quantite_restant >= qte:
+            med.quantite_restant -= qte
+            med.save()
+            result = self._record_perte(med=med, qte=qte, \
+                               who_did_it=request.user, \
+                                motif=motif)
+            if result == 200:
+                recordOperation(who_did_id=request.user, what_operation=f"Med ({code_med}, qte:{qte}) Perime", from_value='', to_value='')
+                GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
+                return Response({
+                    'response': 1
+                    })
+            return Response({
+                'response': 0,
+                'detail': 'echoue'
+            })
+        else:
+            return Response({
+                'response': 0,
+                'detail': 'qte_insuffisant'
+            })
+    
+    def _record_perte(self, med, qte, who_did_it, motif):
+        return 200
 
 class Rapport(viewsets.ViewSet):
     """
