@@ -2383,7 +2383,7 @@ class ImitiOut(viewsets.ViewSet):
             Q(quantite_restant__gte=1) & \
             Q(date_peremption__gt=today)).order_by('date_peremption')
         local_data = []
-        if qte < 1:
+        if qte == 0:
             return []
         i = 0
         for elm in imiti:
