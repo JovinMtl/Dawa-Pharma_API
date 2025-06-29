@@ -303,3 +303,6 @@ class PerteMed(models.Model):
     who_did_it = models.ForeignKey(User, on_delete=models.CASCADE)
     motif = models.CharField(max_length=25, default='Perime')
     date_operation = models.DateTimeField(default=timezone.now)
+
+    def __str__(self) -> str:
+        return f"{str(self.med.nom_med)[:10]}, qte: {self.qte}, pxVente:{self.prix_vente}"
