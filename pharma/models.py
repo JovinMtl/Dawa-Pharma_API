@@ -298,6 +298,8 @@ class Info(models.Model):
 class PerteMed(models.Model):
     med = models.ForeignKey(UmutiEntree, on_delete=models.CASCADE)
     qte = models.IntegerField(default=0)
+    prix_achat = models.IntegerField(default=0)
+    prix_vente = models.IntegerField(default=0)
     who_did_it = models.ForeignKey(User, on_delete=models.CASCADE)
     motif = models.CharField(max_length=25, default='Perime')
     date_operation = models.DateTimeField(default=timezone.now)
