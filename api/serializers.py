@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from pharma.models import ImitiSet, umutiReportSell, UmutiSold,\
       UmutiEntree, imitiSuggest, Assurance,\
-      Client, BonDeCommand, CriticalOperation, Info
+      Client, BonDeCommand, CriticalOperation, Info,\
+      PerteMed
 
 
 class ImitiSetSeriazer(serializers.ModelSerializer):
@@ -55,6 +56,15 @@ class InfoSeria(serializers.ModelSerializer):
     class Meta:
         model = Info
         fields = '__all__'       
+
+class PerteSeria(serializers.Serializer): 
+    nom_med = serializers.CharField(required=True, max_length=75)
+    qte = serializers.IntegerField(default=0)
+    prix_achat = serializers.IntegerField(default=0)
+    prix_vente = serializers.IntegerField(default=0)
+    who_did_it = serializers.CharField(required=True, max_length=35)
+    motif = serializers.CharField(required=True, max_length=25)
+    date_operation = serializers.CharField(required=True, max_length=45)
 
 class ImitiSuggestSeria(serializers.Serializer):
     code_med = serializers.CharField(required=True, max_length=6)
