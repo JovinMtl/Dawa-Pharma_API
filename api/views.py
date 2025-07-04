@@ -27,7 +27,7 @@ from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
       ClientSeria, BonDeCommandSeria, OperationSeria, \
-    CollectionSeria, InfoSeria
+    CollectionSeria, InfoSeria, PerteSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -2582,6 +2582,38 @@ class Rapport(viewsets.ViewSet):
     """
     This class is meant to be of generating reports.
     """
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def get_pertes(self, request):
+        page_number = 1
+        pertes = PerteMed.objects.all().order_by("-date_operation")
+        print(f"the len: {len(pertes)}: {pertes}")
+        pertes_list = []
+        
+
+        for perte in pertes:
+            pertes_obj = {}
+            pertes_obj['nom_med'] = perte.med.nom_med
+            pertes_obj['qte'] = perte.qte
+            pertes_obj['prix_achat'] = perte.prix_achat
+            pertes_obj['prix_vente'] = perte.prix_vente
+            pertes_obj['who_did_it'] = perte.who_did_it.username
+            pertes_obj['motif'] = perte.motif
+            pertes_obj['date_operation'] = perte.date_operation
+
+            pertes_list.append(pertes_obj)
+            
+        # paginate = Paginator(object_list=pertes, per_page=50)
+        # paginated = paginate.get_page(number=page_number)
+        pertes_s = PerteSeria(pertes_list, many=True)
+        if pertes_s.is_valid:
+            return Response({
+                'response': pertes_s.data
+            })
+        return Response({
+            'response': 1
+        })
+    
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
     def report_operations(self, request):
