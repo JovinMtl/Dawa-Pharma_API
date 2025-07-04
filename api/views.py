@@ -2514,7 +2514,7 @@ class ImitiOut(viewsets.ViewSet):
     @action(methods=['post', 'get'], detail=False,\
              permission_classes= [IsAdminUser])
     def add_perte(self, request):
-        data = request.data
+        data = request.data.get('imiti', {'code_med': '', 'code_operation': '', 'qte': '0'})
         print(f"The data sent: {data}")
         code_med = data.get('code_med', '')
         code_operation = data.get('code_operation', '')
@@ -2587,7 +2587,7 @@ class Rapport(viewsets.ViewSet):
     def get_pertes(self, request):
         page_number = 1
         pertes = PerteMed.objects.all().order_by("-date_operation")
-        print(f"the len: {len(pertes)}: {pertes}")
+        # print(f"the len: {len(pertes)}: {pertes}")
         pertes_list = []
         
 
