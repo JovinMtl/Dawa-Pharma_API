@@ -1646,7 +1646,16 @@ class EntrantImiti(viewsets.ViewSet):
             today = datetime.now()
             return today
 
-
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def reset_lot(self, request=None):
+        meds = ImitiSet.objects.all()
+        for med in meds:
+            med.lot = []
+            med.save()
+        return Response({
+            'response': True
+        })
     
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
@@ -1788,40 +1797,25 @@ class EntrantImiti(viewsets.ViewSet):
                 is_zero = True
             if lote.get('date') == (str(umutie.date_peremption))[:7]:
                 codes_operation = lote.get('code_operation')
-                for ope in codes_operation:
-                    cp_ope = dict(ope)
-                    code_ope_str = cp_ope.popitem()[0]
-                    if code_ope_str == umutie.code_operation:
-                        # should update
-                        ope[code_operation] = umutie.quantite_restant
-                        updated = True
-                        
-                    else:
-                        # should add new
-                        add_ope = True
-                        continue
-                once += 1
-                if updated:
-                    lote['qte'] = (listDictIntSomme2(lote['code_operation']))
-                if add_ope:
-                    obj = { 
-                                str(umutie.code_operation) : umutie.quantite_restant
-                            }
-                    lote['code_operation'].append(obj)
-                    lote['qte'] = int(listDictIntSomme2(lote['code_operation']))
-                    j += 1
-                    once +=1
+                for code_ops in codes_operation:
+                    print(f"codes_operation: {codes_operation}")
+                    obj_2 = {
+                        code_operation: umutie.quantite_restant
+                    }
+                    code_ops = { **code_ops, **obj_2}
+                
+                lote['qte'] = (listDictIntSomme2(lote['code_operation']))
+
             counter += 1
             
-        if (not j) and (not once):
+        if not len(lot_list):
             obj = {
                 'date': (str(umutie.date_peremption))[:7],
                 'qte': (umutie.quantite_restant), # was int.
-                'code_operation': [
+                'code_operation': 
                         { 
                             str(umutie.code_operation) : umutie.quantite_restant
-                        }
-                    ],
+                        },
                 'to_panier': 0
             }
             i += 1
@@ -2563,7 +2557,9 @@ class ImitiOut(viewsets.ViewSet):
         prix_vente = med_set.prix_vente
         if (med.quantite_restant >= qte) and (qte > 0):
             med.quantite_restant -= qte
+            med_set.quantite_restant -= qte
             med.save()
+            med_set.save()
             result = self._record_perte(med=med, qte=qte, \
                                 prix_achat=med.prix_achat,\
                                 prix_vente=prix_vente,\
@@ -2594,6 +2590,21 @@ class ImitiOut(viewsets.ViewSet):
         new_perte.save()
 
         return 200
+    def _dcrmt_lot(self, lot, cd_ope, ckd_qte, qte):
+        ckd_qte = {'Sdo5606ky970': 4.0}
+        ckd_qte[cd_ope] -= qte
+        cds = []
+        for cd in ckd_qte:
+            cds.append(cd)
+        lots = [
+            {'date': '2025-06', 'qte': 4.0, 'code_operation': [{'Sdo5606ky970': 4.0}], 'to_panier': 0}
+            ]
+        ops = []
+        for lot in lots:
+            lot['qte'] -= qte
+            ops.append(lot['code_operation'])
+        print(f"The lot: {lot}")
+        return lot
 
 class Rapport(viewsets.ViewSet):
     """
