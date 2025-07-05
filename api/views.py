@@ -2533,6 +2533,9 @@ class ImitiOut(viewsets.ViewSet):
     def add_perte(self, request):
         data = request.data.get('imiti', {'code_med': '', 'code_operation': '', 'qte': '0'})
         print(f"The data sent: {data}")
+        return Response({
+            'response': 1
+            })
         code_med = data.get('code_med', '')
         code_operation = data.get('code_operation', '')
         qte = (data.get('qte', 1))
