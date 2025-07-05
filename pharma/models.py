@@ -35,7 +35,7 @@ class UmutiEntree(models.Model):
     operator = models.CharField(max_length=20, default='null')
 
     def __str__(self) -> str:
-        return f"{self.code_med} : {(str(self.date_peremption))[:7]} : {self.nom_med}"
+        return f"{self.code_med} : {(str(self.date_peremption))[:7]} : {self.nom_med} : {self.quantite_restant}= {self.prix_vente}"
 
 class UmutiEntreeBackup(models.Model):
     date_entrant = models.DateTimeField(default=timezone.now)
