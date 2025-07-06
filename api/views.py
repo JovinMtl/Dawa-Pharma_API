@@ -2623,6 +2623,9 @@ class ImitiOut(viewsets.ViewSet):
         if found_ope == 1:
             med_set.lot = lote
             med_set.quantite_restant -= qte
+            checked_qte = dict(StringToList(med_set.checked_qte).toList())
+            checked_qte[code_operation] -= qte
+            med_set.checked_qte = checked_qte
             med_set.save()
             return 200
         elif found_ope == 0:
