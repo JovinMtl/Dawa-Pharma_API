@@ -2600,14 +2600,15 @@ class ImitiOut(viewsets.ViewSet):
         return 200
     def _retribute_med_set(self, code_med, qte, code_operation):
         med_set = ImitiSet.objects.get(code_med=code_med)
-        lote = StringToList(med_set.lot).toList()
-        lote = [
-            {'date': '2029-08', 'qte': 3.0, 
-             'code_operation': [
-                 {'Sdo5606ky970': 3.0}
-                 ], 
-            'to_panier': 0}
-            ]
+        lote = list(StringToList(med_set.lot).toList())
+        # lote = [
+        #     {'date': '2029-08', 'qte': 3.0, 
+        #      'code_operation': [
+        #          {'Sdo5606ky970': 3.0}
+        #          ], 
+        #     'to_panier': 0}
+        #     ]
+        print(f"Lote starts as: {lote}")
         
         for lot in lote:
             codes_ops = lot.get('code_operation', [])
