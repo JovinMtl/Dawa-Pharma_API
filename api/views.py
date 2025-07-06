@@ -2533,12 +2533,10 @@ class ImitiOut(viewsets.ViewSet):
     def add_perte(self, request):
         data = request.data.get('imiti', {'code_med': '', 'code_operation': '', 'qte': '0'})
         print(f"The data sent: {data}")
-        # return Response({
-        #     'response': 1
-        #     })
         code_med = data.get('code_med', '')
         code_operation = data.get('code_operation', '')
         qte = (data.get('qte', 1))
+        med_set_retributed = 0
         try:
             qte = int(qte)
         except ValueError:
@@ -2564,30 +2562,34 @@ class ImitiOut(viewsets.ViewSet):
             })
         med_set = ImitiSet.objects.get(code_med=code_med)
         prix_vente = med_set.prix_vente
+        
         if (med.quantite_restant >= qte) and (qte > 0):
             med.quantite_restant -= qte
-            # med.save()
-            self._retribute_med_set(code_med=code_med, qte=qte, code_operation=code_operation)
-            # result = self._record_perte(med=med, qte=qte, \
-            #                     prix_achat=med.prix_achat,\
-            #                     prix_vente=prix_vente,\
-            #                     who_did_it=request.user, \
-            #                     motif=motif)
-            # if result == 200:
-            #     recordOperation(who_did_id=request.user, what_operation=f"Med ({code_med}, qte:{qte}) Perime", from_value='', to_value='')
-            #     GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
-            #     return Response({
-            #         'response': 1
-            #         })
-            return Response({
-                'response': 0,
-                'detail': 'echoue'
-            })
+            med.save()
+            med_set_retributed = self._retribute_med_set(\
+                code_med=code_med, \
+                code_operation=code_operation, qte=qte)
         else:
             return Response({
                 'response': 0,
                 'detail': 'qte_insuffisant'
             })
+        if med_set_retributed == 200:
+            result = self._record_perte(med=med, qte=qte, \
+                                prix_achat=med.prix_achat,\
+                                prix_vente=prix_vente,\
+                                who_did_it=request.user, \
+                                motif=motif)
+            if result == 200:
+                recordOperation(who_did_id=request.user, what_operation=f"Med ({code_med}, qte:{qte}) Perime", from_value='', to_value='')
+                GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
+                return Response({
+                    'response': 1
+                    })
+        return Response({
+            'response': 0,
+            'detail': 'echoue'
+        })
     
     def _record_perte(self, med, qte,prix_achat, prix_vente, who_did_it, motif):
         new_perte = PerteMed.objects.create(med=med, \
@@ -2598,17 +2600,16 @@ class ImitiOut(viewsets.ViewSet):
         new_perte.save()
 
         return 200
-    def _retribute_med_set(self, code_med, qte, code_operation):
+    
+    def _retribute_med_set(self, code_med, code_operation, qte):
+        """
+        This helper method will help add_perte endpoint to retrieve
+        the value of perte from med_set.
+        """
         med_set = ImitiSet.objects.get(code_med=code_med)
         lote = list(StringToList(med_set.lot).toList())
-        # lote = [
-        #     {'date': '2029-08', 'qte': 3.0, 
-        #      'code_operation': [
-        #          {'Sdo5606ky970': 3.0}
-        #          ], 
-        #     'to_panier': 0}
-        #     ]
-        print(f"Lote starts as: {lote}")
+        
+        found_ope = 0
         
         for lot in lote:
             codes_ops = lot.get('code_operation', [])
@@ -2616,12 +2617,18 @@ class ImitiOut(viewsets.ViewSet):
                 if code_operation in codes_op:
                     codes_op[code_operation] -= qte
                     lot['qte'] -= qte
+                    found_ope += 1
                     break
         
-        print(f"The lote: ends with: {lote}")
-
-
-        return 200
+        if found_ope == 1:
+            med_set.lot = lote
+            med_set.quantite_restant -= qte
+            med_set.save()
+            return 200
+        elif found_ope == 0:
+            return 403
+        else:
+            return 400
 
 class Rapport(viewsets.ViewSet):
     """
