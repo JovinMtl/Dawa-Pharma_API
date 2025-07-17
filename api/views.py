@@ -10,7 +10,7 @@ import json
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 import os
@@ -2533,9 +2533,9 @@ class ImitiOut(viewsets.ViewSet):
     def add_perte(self, request):
         data = request.data.get('imiti', {'code_med': '', 'code_operation': '', 'qte': '0'})
         print(f"The data sent: {data}")
-        # return Response({
-        #     'response': 1
-        # })
+        return Response({
+            'response': 1
+        })
         code_med = data.get('code_med', '')
         code_operation = data.get('code_operation', '')
         qte = (data.get('qte', 1))
@@ -3622,9 +3622,11 @@ class Rapport(viewsets.ViewSet):
             query = UmutiSold.objects.filter\
                 (Q(date_operation__gte=begin_date) & \
                  Q(date_operation__lt=begin_date+timedelta(days=0.8)))
+            total = query.aggregate(p_vente = Sum('prix_vente'))['p_vente'] or 0
             week_day = datetime.weekday(begin_date)
             x.append(week_days[week_day+1])
-            y.append(len(query))
+            # y.append(len(query))
+            y.append(total)
             begin_date += timedelta(days=1)
         return JsonResponse({"X":x, 'Y':y})
     
