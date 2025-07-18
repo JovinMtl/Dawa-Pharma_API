@@ -3644,12 +3644,13 @@ class Rapport(viewsets.ViewSet):
             query = UmutiEntree.objects.filter\
                 (Q(date_entrant=begin_date) & \
                  Q(date_entrant=begin_date+timedelta(days=0.8)))
-            total = query.aggregate(p_vente = Sum('prix_achat'))['prix_achat'] or 0
+            total = query.aggregate(p_achat = Sum('prix_achat'))['p_achat'] or 0
             week_day = datetime.weekday(begin_date)
             x.append(week_days[week_day+1])
             # y.append(len(query))
             y.append(total)
             begin_date += timedelta(days=1)
+        print(f"Found data: {y}")
         return JsonResponse({"X":x, 'Y':y})
     
     def _getDate(self, data_params)->list:
