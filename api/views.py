@@ -829,12 +829,14 @@ class GeneralOps(viewsets.ViewSet):
                         what_operation=f"Intérêt individuel ({umuti_set.code_med} - {umuti_set.nom_med[:10]})",\
                         from_value=current_value,\
                         to_value=new_value)
+            GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
         else:
             print(f"The default ben: {default_pr_interest}")
             recordOperation(who_did_id=request.user,\
                         what_operation="Intérêt individuel",\
                         from_value=umuti_set.pr_interest,\
                         to_value=default_pr_interest)
+            GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
         return JsonResponse({
             'response': 1
         })
