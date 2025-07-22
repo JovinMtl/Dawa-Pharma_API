@@ -1302,8 +1302,9 @@ class GeneralOps(viewsets.ViewSet):
         meds = None
         obj = None
 
-        ip = "http://127.0.0.1:8008/"
+        # ip = "http://127.0.0.1:8008/"
         # ip = "https://5hmc28-8008.csb.app/"  #CodeSandbox
+        ip = "https://muteule.pythonanywhere.com"
         endpoint = "api/in/updateCollection/"
         url = ip + endpoint
         # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUwMDcwNTIxLCJpYXQiOjE3NTAwNjMzMjEsImp0aSI6ImU0NDNmNjg0ZTkxMzQ3ZmU4ZDAyNmNkYTg3ZmEwYjgyIiwidXNlcl9pZCI6MX0.8ycBqdyvnGZruNf1-tMsRLVVK8aFGBATXgWji0p0444"
@@ -1351,7 +1352,7 @@ class GeneralOps(viewsets.ViewSet):
                         json={'sync_code':sync_code}, \
                         headers=headers)
         return Response({
-            'response': 1,
+            'response': sync_code or 1,
             'counter': 0
         })
     
