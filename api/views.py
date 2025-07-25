@@ -3632,7 +3632,8 @@ class Rapport(viewsets.ViewSet):
         while begin_date <= end_date:
             query = UmutiSold.objects.filter\
                 (Q(date_operation__gte=begin_date) & \
-                 Q(date_operation__lt=begin_date+timedelta(days=0.8)))
+                 Q(date_operation__lt=begin_date+timedelta(days=0.8)) & \
+                 Q(cancelled=False))
             total = query.aggregate(p_vente = Sum('prix_vente'))['p_vente'] or 0
             week_day = datetime.weekday(begin_date)
             x.append(week_days[week_day+1])
