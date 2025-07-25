@@ -1364,6 +1364,14 @@ class GeneralOps(viewsets.ViewSet):
     
     def _pack_dates(self, dates)->list:
         date_list = []
+        if type(dates) == type(date_list):
+            pass
+        else:
+            today = datetime.now()
+            two_year = today + timedelta(days=720)
+            year_string = f"{two_year.day}-{two_year.month}-{two_year.year}"
+            print(f"Found the wrong date format of {dates}. setting to {year_string}")
+            return [year_string]
         for date in dates:
             tmp = date['date']
             formatted = self.__format_date(tmp)
