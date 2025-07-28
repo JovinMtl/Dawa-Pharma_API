@@ -3654,12 +3654,11 @@ class Rapport(viewsets.ViewSet):
         y = [] # quantifiers
         while begin_date <= end_date:
             query = UmutiEntree.objects.filter\
-                (Q(date_entrant=begin_date) & \
-                 Q(date_entrant=begin_date+timedelta(days=0.8)))
+                (Q(date_entrant__gte=begin_date) & \
+                 Q(date_entrant__lt=begin_date+timedelta(days=0.8)))
             total = query.aggregate(p_achat = Sum('prix_achat'))['p_achat'] or 0
             week_day = datetime.weekday(begin_date)
             x.append(week_days[week_day+1])
-            # y.append(len(query))
             y.append(total)
             begin_date += timedelta(days=1)
         print(f"Found data: {y}")
