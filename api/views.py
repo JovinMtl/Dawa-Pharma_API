@@ -77,6 +77,17 @@ class GeneralOps(viewsets.ViewSet):
         checks and creates required instances.
         """
         created = []
+        med_set = ImitiSet.objects.all()
+        med_set_created = 0
+        if not len(med_set):
+            empty_list = []
+            empty_dict = {}
+            med_set_instance = ImitiSet.objects.create\
+                (lot=empty_list, checked_imiti=empty_dict, \
+                 checked_qte=empty_dict)
+            med_set_instance.save()
+            med_set_created += 1
+
         num_client = self._createInitClient()
         try:
             assu_sans = Assurance.objects.get(name="Sans")
@@ -131,6 +142,7 @@ class GeneralOps(viewsets.ViewSet):
         created.append(f"{num_client} Init clients")
         created.append(f"ben : {ben}")
         created.append(f"Journal : {journal_i}")
+        created.append(f"med_set: {med_set_created}")
 
         return JsonResponse({"Setup done" : created})
     
