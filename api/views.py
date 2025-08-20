@@ -1510,11 +1510,19 @@ class GeneralOps2(viewsets.ViewSet):
                 'response': 0
             }) 
         date_str = str(new_date).split('-')
-        new_date = datetime(year=int(date_str[0]), month=int(date_str[1]), day=int(date_str[2]), hour=8)
+        new_date = datetime(year=int(date_str[0]), month=int(date_str[1]), day=int(date_str[2]))
 
         bon.date_served = new_date
 
         meds_sold = UmutiSold.objects.filter(bon_de_commande__num_bon=id_bon)
+        date_operation = meds_sold.first().date_operation
+        h = date_operation.hour + 2   # +2 to keep timezone.
+        m = date_operation.minute
+        s = date_operation.second
+        new_date += timedelta(hours=h)
+        new_date += timedelta(minutes=m)
+        new_date += timedelta(seconds=s)
+        
         for med in meds_sold:
             med.date_operation = new_date
             med.save()
