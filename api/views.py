@@ -1707,7 +1707,11 @@ class EntrantImiti(viewsets.ViewSet):
                     umuti_set.sync_code = sync_code
                     umuti_set.prix_vente = 0
                 qte_saved =  StringToList(umuti_set.checked_qte)
-                qte_tracked = dict(qte_saved.toList())
+                qte_tracked = {}
+                try:
+                    qte_tracked = dict(qte_saved.toList())
+                except TypeError:
+                    pass
                 current_operation = {
                     umutie.code_operation: umutie.quantite_restant
                 }
