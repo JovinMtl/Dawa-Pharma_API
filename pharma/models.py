@@ -182,7 +182,7 @@ class UmutiSold(models.Model):
     cancelled = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"{self.code_operation}: {self.nom_med}, {self.quantity}"
+        return f"{self.code_operation}: {self.nom_med}, {self.quantity}: {self.bon_de_commande.num_bon}"
 
 class umutiReportSell(models.Model):
     """THis will contain report of its sale in a given period of time"""
