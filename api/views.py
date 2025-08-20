@@ -1490,11 +1490,38 @@ class GeneralOps2(viewsets.ViewSet):
     @action(methods=['get', 'post'], detail=False,\
              permission_classes= [IsAdminUser])
     def move_vente(self, request):
-        data_sent = request.data
-        print(f"The sent data:{data_sent}")
-        
+        data_sent = request.data.get('imiti', \
+                        {
+                            'newDate': '', 
+                            'idBon': ''
+                        })
+        new_date = data_sent.get('newDate')
+        id_bon = data_sent.get('idBon')
+
+        if not id_bon and not new_date:
+            return Response({
+                'response': 0
+            }) 
+
+        try:
+            bon = BonDeCommand.objects.get(num_bon=id_bon)
+        except BonDeCommand.DoesNotExist:
+            return Response({
+                'response': 0
+            }) 
+        date_str = str(new_date).split('-')
+        new_date = datetime(year=int(date_str[0]), month=int(date_str[1]), day=int(date_str[2]), hour=8)
+
+        bon.date_served = new_date
+
+        meds_sold = UmutiSold.objects.filter(bon_de_commande__num_bon=id_bon)
+        for med in meds_sold:
+            med.date_operation = new_date
+            med.save()
+        bon.save()
+
         return Response({
-            'response': 1
+            'response': 200
         })
                 
             
