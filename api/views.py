@@ -1486,6 +1486,16 @@ class GeneralOps2(viewsets.ViewSet):
         return JsonResponse({
             'response': 1
         })
+    
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def move_vente(self, request):
+        data_sent = request.data
+        print(f"The sent data:{data_sent}")
+        
+        return Response({
+            'response': 1
+        })
                 
             
 
