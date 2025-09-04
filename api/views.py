@@ -984,32 +984,27 @@ class GeneralOps(viewsets.ViewSet):
         except UmutiEntree.DoesNotExist:
             return 404
         new_qte = int(data.get('quantite_initial'))
-        diff = 0
-        case = 0
-        if new_qte >= umuti.quantite_initial:
-            diff = new_qte - umuti.quantite_initial
-            case = 1
-        else:
-            diff = umuti.quantite_initial - new_qte
-            case = 2
+        
+        ratio = float(new_qte / umuti.quantite_initial)
+        
         current_data['qte'] = umuti.quantite_initial
         current_data['per'] = umuti.date_peremption
         current_data['pxA'] = umuti.prix_achat
         current_data['code_med'] = umuti.code_med
         current_data['nom_med'] = umuti.nom_med
-        if (case == 1):
-            umuti.quantite_initial = new_qte
-            umuti.quantite_restant += diff
-        elif (case == 2) and (umuti.quantite_restant >= diff):
-            umuti.quantite_initial = new_qte
-            umuti.quantite_restant -= diff
-        else:
-            return 403
+        
+        umuti.quantite_initial = new_qte
+        umuti.quantite_restant = (umuti.quantite_restant * ratio)
+        
         umuti_.quantite_initial = umuti.quantite_initial
         umuti_.quantite_restant = umuti.quantite_restant
 
-        umuti.prix_achat = int(data.get('prix_achat'))
+        # umuti.prix_achat = int(data.get('prix_achat'))
+        umuti.prix_achat = int(umuti.prix_achat * ratio)
         umuti_.prix_achat = umuti.prix_achat
+
+        # update imitisold
+        self.__update_imitisold(code_operation=umuti.code_operation, ratio=ratio)
 
         umuti_set = ImitiSet.objects.get(code_med=code_med)
         if umuti_set.is_pr_interest:
@@ -1027,6 +1022,9 @@ class GeneralOps(viewsets.ViewSet):
         umuti.save()
         umuti_.save()
         return [200, current_data]
+    
+    def __update_imitisold(self, code_operation, ratio:float=1.0)->int:
+        return 200
 
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAuthenticated])
@@ -1736,6 +1734,7 @@ class EntrantImiti(viewsets.ViewSet):
             print(f"will compile : {len(codes_for_sync)} existing")
             # procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
             procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_entrant')
+            # procured = UmutiEntree.objects.order_by('date_entrant')
         print(f"GOtten len: {len(procured)}")
         pr_interest = BeneficeProgram.objects.first()
         for umutie in procured:
