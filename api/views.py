@@ -1004,7 +1004,10 @@ class GeneralOps(viewsets.ViewSet):
         umuti_.prix_achat = umuti.prix_achat
 
         # update imitisold
-        self.__update_imitisold(code_operation=umuti.code_operation, ratio=ratio)
+        rep_ = self.__update_imitisold(\
+            code_operation=umuti.code_operation, ratio=ratio)
+        if rep_ == 404:
+            return rep_
 
         umuti_set = ImitiSet.objects.get(code_med=code_med)
         if umuti_set.is_pr_interest:
@@ -1024,6 +1027,13 @@ class GeneralOps(viewsets.ViewSet):
         return [200, current_data]
     
     def __update_imitisold(self, code_operation, ratio:float=1.0)->int:
+        if not code_operation :
+            return 404
+        imiti_sold = UmutiSold.objects.filter(code_operation_entrant=code_operation)
+        for med in imiti_sold:
+            med.quantity *= ratio
+            med.prix_vente  = int(med.prix_vente * ratio)
+            med.save()
         return 200
 
     @action(methods=['get'], detail=False,\
