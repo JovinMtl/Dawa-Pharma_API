@@ -1000,7 +1000,7 @@ class GeneralOps(viewsets.ViewSet):
         umuti_.quantite_restant = umuti.quantite_restant
 
         # umuti.prix_achat = int(data.get('prix_achat'))
-        umuti.prix_achat = int(umuti.prix_achat * ratio)
+        umuti.prix_achat = int(umuti.prix_achat / ratio)
         umuti_.prix_achat = umuti.prix_achat
 
         # update imitisold
