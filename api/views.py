@@ -3731,12 +3731,10 @@ class Rapport(viewsets.ViewSet):
             tot = query.aggregate(p_achat = Sum(\
                 ExpressionWrapper(F('prix_achat') * F('quantite_initial'), \
                                   output_field=FloatField())))['p_achat'] or 0
-            print(f"The tot: {tot}")
             week_day = datetime.weekday(begin_date)
             x.append(week_days[week_day+1])
             y.append(tot)
             begin_date += timedelta(days=1)
-        print(f"Found data: {y}")
         return JsonResponse({"X":x, 'Y':y})
     
     def _getDate(self, data_params)->list:
