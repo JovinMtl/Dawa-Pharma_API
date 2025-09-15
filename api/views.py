@@ -10,7 +10,7 @@ import json
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
-from django.db.models import Q, Sum
+from django.db.models import Q, Sum, F, ExpressionWrapper, FloatField
 from django.contrib.auth.models import User
 from datetime import timedelta, datetime
 import os
@@ -3727,10 +3727,14 @@ class Rapport(viewsets.ViewSet):
             query = UmutiEntree.objects.filter\
                 (Q(date_entrant__gte=begin_date) & \
                  Q(date_entrant__lt=begin_date+timedelta(days=0.8)))
-            total = query.aggregate(p_achat = Sum('prix_achat'))['p_achat'] or 0
+            # total = query.aggregate(p_achat = Sum('prix_achat'))['p_achat'] or 0
+            tot = query.aggregate(p_achat = Sum(\
+                ExpressionWrapper(F('prix_achat') * F('quantite_initial'), \
+                                  output_field=FloatField())))['p_achat'] or 0
+            print(f"The tot: {tot}")
             week_day = datetime.weekday(begin_date)
             x.append(week_days[week_day+1])
-            y.append(total)
+            y.append(tot)
             begin_date += timedelta(days=1)
         print(f"Found data: {y}")
         return JsonResponse({"X":x, 'Y':y})
