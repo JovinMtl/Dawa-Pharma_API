@@ -1553,7 +1553,7 @@ class GeneralOps2(viewsets.ViewSet):
         if not code_med:
             return Response({})
         
-        meds = UmutiSold.objects.filter(code_med=code_med)
+        meds = UmutiSold.objects.filter(Q(code_med=code_med) & Q(cancelled=False))
         med_seria = UmutiSoldSeriazer(meds, many=True)
         
         if med_seria.is_valid:
