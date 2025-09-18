@@ -1539,6 +1539,21 @@ class GeneralOps2(viewsets.ViewSet):
         return Response({
             'response': 200
         })
+    
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def histo_vente(self, request):
+        """
+        Will return the translation from : 
+            UmutiEntree --> UmuitiSold
+        """
+        code_med = '1EC66r'
+        meds = UmutiSold.objects.filter(code_med=code_med)
+        med_seria = UmutiSoldSeriazer(meds, many=True)
+        
+        if med_seria.is_valid:
+            return Response(med_seria.data)
+        return Response({})
                 
             
 
