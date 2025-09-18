@@ -1547,7 +1547,12 @@ class GeneralOps2(viewsets.ViewSet):
         Will return the translation from : 
             UmutiEntree --> UmuitiSold
         """
-        code_med = '1EC66r'
+        data_sent = request.data.get('imiti', {'code_med': '', 'request': 'get'})
+        code_med = data_sent.get('code_med')
+
+        if not code_med:
+            return Response({})
+        
         meds = UmutiSold.objects.filter(code_med=code_med)
         med_seria = UmutiSoldSeriazer(meds, many=True)
         
