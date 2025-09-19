@@ -1756,9 +1756,9 @@ class EntrantImiti(viewsets.ViewSet):
         codes_for_sync = StringToList(codes_for_sync).toList()
         procured = []
         if len(codes_for_sync):
-            print(f"will compile : {len(codes_for_sync)} existing")
             # procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).filter(quantite_restant__gte=1).order_by('date_peremption')
-            procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).order_by('date_peremption')
+            # procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).order_by('date_peremption')
+            procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).order_by('date_entrant')
             sync_code = 8 # assuring to re-write the lot
         else:
             print(f"will compile : {len(codes_for_sync)} existing")
@@ -1776,10 +1776,12 @@ class EntrantImiti(viewsets.ViewSet):
                 #we create that entry in the ImitiSet
                 umuti_new = self._umutiMushasha(umutie)
             else:
+                if umuti_set.code_med=='1EC66r': print(f"Started with sync_code {sync_code}: {umuti_set.sync_code}, v:{umuti_set.prix_vente}")
                 if sync_code != umuti_set.sync_code:
                     umuti_set.lot = str(init_lot(umuti=umutie))
                     umuti_set.sync_code = sync_code
                     umuti_set.prix_vente = 0
+
                 qte_saved =  StringToList(umuti_set.checked_qte)
                 qte_tracked = {} 
                 try:
@@ -1799,18 +1801,22 @@ class EntrantImiti(viewsets.ViewSet):
                 prix_vente = 0
 
                 if umuti_set.is_pr_interest:
-                    prix_vente = umuti_set.prix_achat * umuti_set.pr_interest
+                    prix_vente = umutie.prix_achat * umuti_set.pr_interest
                 else:
-                    prix_vente = umuti_set.prix_achat * pr_interest.ben 
-                if (prix_vente > umuti_set.prix_vente) and \
-                    (umuti_set.last_prix_vente == False):
+                    prix_vente = umutie.prix_achat * pr_interest.ben 
+                # if (prix_vente > umuti_set.prix_vente) and \
+                #     (umuti_set.last_prix_vente == False):
+                #     umuti_set.prix_vente = roundNumber(prix_vente)
+                # elif (prix_vente <= umuti_set.prix_vente) and \
+                #     (umuti_set.last_prix_vente == False):
+                #     umuti_set.prix_vente = umuti_set.prix_vente
+                # else:
+                #     print(f"Using default prix_vente")
+                #     umuti_set.prix_vente = umutie.prix_vente
+
+                if umutie.quantite_restant:
                     umuti_set.prix_vente = roundNumber(prix_vente)
-                elif (prix_vente <= umuti_set.prix_vente) and \
-                    (umuti_set.last_prix_vente == False):
-                    umuti_set.prix_vente = umuti_set.prix_vente
-                    if umutie.code_med == '891195':print("HERE.")
-                else:
-                    umuti_set.prix_vente = umutie.prix_vente
+
 
                 umuti_set.quantite_restant = round(somme_lot, 1)
                 umuti_set.lot = synced_lot
@@ -1823,9 +1829,10 @@ class EntrantImiti(viewsets.ViewSet):
                 if (int(umuti_set.qte_entrant_big)) < (int(umutie.quantite_initial)):
                     umuti_set.qte_entrant_big = int(umutie.quantite_initial)
                 umuti_set.save()
+                if umuti_set.code_med=='1EC66r': print(f"Ended with code {sync_code}: {umuti_set.sync_code}, v:{umuti_set.prix_vente}")
                 
-                if umutie.code_med == '891195':
-                    print(f"pA:{umutie.prix_achat}, pV:{umutie.prix_vente}==>{umuti_set.prix_vente}")
+                # if umutie.code_med == '891195':
+                #     print(f"pA:{umutie.prix_achat}, pV:{umutie.prix_vente}==>{umuti_set.prix_vente}")
         journal.codes_for_sync = []
         journal.save()
         print("compileImitiSet: SYNC done.")
