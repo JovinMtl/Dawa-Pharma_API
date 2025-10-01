@@ -1815,7 +1815,10 @@ class EntrantImiti(viewsets.ViewSet):
                 #     umuti_set.prix_vente = umutie.prix_vente
 
                 if umutie.quantite_restant:
-                    umuti_set.prix_vente = roundNumber(prix_vente)
+                    if umutie.prix_vente <= umuti_set.prix_vente: 
+                        pass
+                    else:
+                        umuti_set.prix_vente = roundNumber(prix_vente)
 
 
                 umuti_set.quantite_restant = round(somme_lot, 1)
