@@ -1576,8 +1576,7 @@ class EntrantImiti(viewsets.ViewSet):
         data = dataReceived.get('imiti')
         print(f"The data Received: {dataReceived.get('imiti')}")
         # return JsonResponse({"detail":"NoneType"})
-        if not data:
-            return JsonResponse({"detail":"NoneType"})
+        if not data: return JsonResponse({"detail":"NoneType"})
         # first of all, generate the codes
         code_12 = GenerateCode()
         code_operation = code_12.giveCode()
@@ -1588,17 +1587,13 @@ class EntrantImiti(viewsets.ViewSet):
         journal = Journaling.objects.first()
         codes_for_sync = list(StringToList(journal.codes_for_sync).toList())
         for obj in data:
-            # if (len(data) > 2) and (i == 0): # no title is sent
-            #     i += 1 #to skip the title string
-            #     continue
             if (len(data) == 1):
                 single = True
             
             code_6 = GenerateCode(6)
             code_med = code_6.giveCode()
-            # print(f"using code: {code_med}")
-            # We should check the existence of umuti with that code or nom_med
             check_exist = self._doesExist(obj=obj)
+            
             if check_exist:
                 code_med = check_exist # in case there is a match.
             reponse = self._addUmuti(obj=obj,code_med=code_med,\
@@ -1676,6 +1671,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.classe_med = obj.get('classe_med') 
         umuti_new.sous_classe_med = obj.get('sous_classe_med') 
         umuti_new.forme = obj.get('forme')
+        umuti_new.type_med = str(obj.get('type_med', 'Boite'))[:9]
         # if obj.get('ratio'):
         #     umuti_new.ratio = obj.get('ratio')
         # umuti_new.type_vente = obj.get('type_vente')
@@ -1756,16 +1752,11 @@ class EntrantImiti(viewsets.ViewSet):
         codes_for_sync = StringToList(codes_for_sync).toList()
         procured = []
         if len(codes_for_sync):
-            # procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).filter(quantite_restant__gte=1).order_by('date_peremption')
-            # procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).order_by('date_peremption')
             procured = UmutiEntree.objects.filter(code_med__in=codes_for_sync).order_by('date_entrant')
             sync_code = 8 # assuring to re-write the lot
         else:
-            print(f"will compile : {len(codes_for_sync)} existing")
-            # procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_peremption')
             procured = UmutiEntree.objects.filter(quantite_restant__gte=1).order_by('date_entrant')
-            # procured = UmutiEntree.objects.order_by('date_entrant')
-        print(f"GOtten len: {len(procured)}")
+        
         pr_interest = BeneficeProgram.objects.first()
         for umutie in procured:
             code = umutie.code_med
@@ -1804,22 +1795,12 @@ class EntrantImiti(viewsets.ViewSet):
                     prix_vente = umutie.prix_achat * umuti_set.pr_interest
                 else:
                     prix_vente = umutie.prix_achat * pr_interest.ben 
-                # if (prix_vente > umuti_set.prix_vente) and \
-                #     (umuti_set.last_prix_vente == False):
-                #     umuti_set.prix_vente = roundNumber(prix_vente)
-                # elif (prix_vente <= umuti_set.prix_vente) and \
-                #     (umuti_set.last_prix_vente == False):
-                #     umuti_set.prix_vente = umuti_set.prix_vente
-                # else:
-                #     print(f"Using default prix_vente")
-                #     umuti_set.prix_vente = umutie.prix_vente
 
                 if umutie.quantite_restant:
                     if umutie.prix_vente <= umuti_set.prix_vente: 
                         pass
                     else:
                         umuti_set.prix_vente = roundNumber(prix_vente)
-
 
                 umuti_set.quantite_restant = round(somme_lot, 1)
                 umuti_set.lot = synced_lot
@@ -1834,14 +1815,11 @@ class EntrantImiti(viewsets.ViewSet):
                 umuti_set.save()
                 if umuti_set.code_med=='1EC66r': print(f"Ended with code {sync_code}: {umuti_set.sync_code}, v:{umuti_set.prix_vente}")
                 
-                # if umutie.code_med == '891195':
-                #     print(f"pA:{umutie.prix_achat}, pV:{umutie.prix_vente}==>{umuti_set.prix_vente}")
         journal.codes_for_sync = []
         journal.save()
         print("compileImitiSet: SYNC done.")
         return JsonResponse({"detail":"ok"}, status=200)
-    
-    
+     
     
     def _round100(self, data:int)->int:
         """Rounding number according to 100.
