@@ -306,3 +306,11 @@ class PerteMed(models.Model):
 
     def __str__(self) -> str:
         return f"{str(self.med.nom_med)[:10]}, qte: {self.qte}, pxVente:{self.prix_vente}"
+
+
+class MedUnit(models.Model):
+    unit = models.CharField(max_length=25, default='Plaquette')
+    level = models.IntegerField(default=1)
+
+    def __str__(self) -> str:
+        return f"{str(self.unit)}, level: {self.level}."
