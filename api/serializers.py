@@ -3,7 +3,7 @@ from rest_framework import serializers
 from pharma.models import ImitiSet, umutiReportSell, UmutiSold,\
       UmutiEntree, imitiSuggest, Assurance,\
       Client, BonDeCommand, CriticalOperation, Info,\
-      PerteMed
+      PerteMed, MedUnit
 
 
 class ImitiSetSeriazer(serializers.ModelSerializer):
@@ -55,7 +55,12 @@ class OperationSeria(serializers.ModelSerializer):
 class InfoSeria(serializers.ModelSerializer):
     class Meta:
         model = Info
-        fields = '__all__'       
+        fields = '__all__'   
+
+class MedUnitSeria(serializers.ModelSerializer):
+    class Meta:
+        model = MedUnit
+        fields = '__all__'    
 
 class PerteSeria(serializers.Serializer): 
     nom_med = serializers.CharField(required=True, max_length=75)

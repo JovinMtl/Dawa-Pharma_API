@@ -6,7 +6,8 @@ from rest_framework_simplejwt.views import (TokenObtainPairView, \
 
 
 from .views import EntrantImiti, ImitiOut, Rapport,\
-    Assurances, GeneralOps, GeneralOps2
+    Assurances, GeneralOps, GeneralOps2, \
+    ModifierAchat
 
 
 router = DefaultRouter()
@@ -16,6 +17,7 @@ router.register(r'rep', Rapport, basename='rep')
 router.register(r'assu', Assurances, basename='assurances')
 router.register(r'gOps', GeneralOps, basename='gops')
 router.register(r'gOps2', GeneralOps2, basename='gops2')
+router.register(r'achat', ModifierAchat, basename='achat')
 
 urlpatterns = [
     path('', include(router.urls)),

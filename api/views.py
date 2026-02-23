@@ -3973,7 +3973,7 @@ class ModifierAchat(viewsets.ViewSet):
     def px_achat(self, request):
         data = request.data.get('imiti')
         if not data:
-            return Response({})
+            return Response({"status": 403, "message": "Données manquantes"})
         
         code_med = data.get('code_med')
         code_operation = data.get('code_operation')
@@ -4011,7 +4011,7 @@ class ModifierAchat(viewsets.ViewSet):
         """
         data = request.data.get('imiti')
         if not data:
-            return Response({})
+            return Response({"status": 403, "message": "Données manquantes"})
         
         code_med = data.get('code_med')
         code_operation = data.get('code_operation')
@@ -4043,5 +4043,48 @@ class ModifierAchat(viewsets.ViewSet):
             return Response({"status": 403, "message": "La nouvelle quantité est inférieure à la quantité consommée."})
         elif new_qte == 0:
             return Response({"status": 403, "message": "Contacter Thierry Jovin pour supprimer ce médicament."})
+        
+        return Response({"status": 200})
+    
+
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def date_peremption(self, request):
+        """
+        Will update the quantite_initial of UmutiEntree.
+
+        Note that this endpoint does not update for under the consumed qte.
+        """
+        data = request.data.get('imiti')
+        if not data:
+            return Response({"status": 403, "message": "Données manquantes"})
+        
+        code_med = data.get('code_med')
+        code_operation = data.get('code_operation')
+        new_date = data.get('new_date')
+        
+        if ((code_med==None) and (code_operation==None) and (new_date == None)):
+            return Response({"status": 403, "message": "Données incomplètes"})
+
+        med = None
+        try:
+            med = UmutiEntree.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+        except UmutiEntree.DoesNotExist:
+            return Response({"status": 404, "message": "Médicament non trouvé"})
+        
+        checked_date = shortStr2Date(new_date)
+        new_date = timezone.datetime(checked_date[0],\
+            checked_date[1], checked_date[2])
+        if not new_date:
+            return Response({"status": 403, "message": "Format de date incorrect"})
+        else :
+            old_date = med.date_peremption
+            med.date_peremption = new_date
+            med.save()
+            recordOperation(who_did_id=request.user,\
+                    what_operation=f"Modifier Date de péremption de ({str(med.nom_med)[:20]}--code:{code_med})",\
+                    from_value=old_date,\
+                    to_value=new_date)
+            GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
         
         return Response({"status": 200})
