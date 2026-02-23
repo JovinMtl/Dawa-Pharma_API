@@ -20,14 +20,15 @@ from pharma.models import UmutiEntree, ImitiSet, UmutiSold, \
     umutiReportSell, imitiSuggest, UmutiEntreeBackup, UsdToBif,\
     BonDeCommand, Assurance, ClassThep, SubClassThep,\
     Client, BeneficeProgram, Journaling, CriticalOperation, \
-    Info, PerteMed
+    Info, PerteMed, MedUnit
 
 #importing the serializers
 from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       UmutiEntreeSeriazer, ImitiSuggestSeria, imitiSuggestSeria, \
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
       ClientSeria, BonDeCommandSeria, OperationSeria, \
-    CollectionSeria, InfoSeria, PerteSeria
+    CollectionSeria, InfoSeria, PerteSeria, \
+    MedUnitSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -89,6 +90,7 @@ class GeneralOps(viewsets.ViewSet):
             med_set_created += 1
 
         num_client = self._createInitClient()
+        med_unit = self._createMedUnit()
         try:
             assu_sans = Assurance.objects.get(name="Sans")
         except Assurance.DoesNotExist:
@@ -143,6 +145,7 @@ class GeneralOps(viewsets.ViewSet):
         created.append(f"ben : {ben}")
         created.append(f"Journal : {journal_i}")
         created.append(f"med_set: {med_set_created}")
+        created.append(f"med_unit: {med_unit}")
 
         return JsonResponse({"Setup done" : created})
     
@@ -390,6 +393,15 @@ class GeneralOps(viewsets.ViewSet):
                             'reason':'erreur du serveur'},\
                             status=406)
     
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getMedUnit(self, request):
+        units = MedUnit.objects.all()
+        units_seria = MedUnitSeria(units, many=True)
+        if units_seria.is_valid:
+            return Response(units_seria.data)
+        return Response({})
+    
     @action(methods=['post'], detail=False,\
              permission_classes= [AllowAny])
     def getInfo(self, request):
@@ -616,7 +628,21 @@ class GeneralOps(viewsets.ViewSet):
             sub_cl_obj.save()
         
         return 200
-    
+    def _createMedUnit(self)->int:
+        units = [
+            ('Pièce', 1), ('Cpe', 1),
+            ('Plaquette', 2), 
+            ('Boite', 3),
+            ]
+        created = 0
+
+        for u in units:
+            try:
+                MedUnit.objects.get(unit=u[0])
+            except MedUnit.DoesNotExist:
+                MedUnit.objects.create(unit=u[0], level=u[1])
+                created += 1
+        return created
     def _createInitClient(self)->int:
         """
         Will create two instances of Client:
@@ -3922,5 +3948,100 @@ class Rapport(viewsets.ViewSet):
 
         return JsonResponse({"X": x, "Y":y})
     
+class ModifierAchat(viewsets.ViewSet):
+    """
+    Designed to update achats
+    """
+
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def unite_egal(self, request):
+        return Response({})
+    
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def unite_reduire(self, request):
+        return Response({})
+    
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def unite_augm(self, request):
+        return Response({})
+    
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def px_achat(self, request):
+        data = request.data.get('imiti')
+        if not data:
+            return Response({})
+        
+        code_med = data.get('code_med')
+        code_operation = data.get('code_operation')
+        new_px_achat = data.get('new_px_achat')
+        if not(code_med and code_operation and new_px_achat):
+            return Response({"status": 403})
+
+        med = None
+        try:
+            med = UmutiEntree.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+        except UmutiEntree.DoesNotExist:
+            return Response({})
+        
+        if (med.prix_achat != new_px_achat) and \
+            (new_px_achat > 0):
+            old_px_achat = med.prix_achat
+            med.prix_achat = int(new_px_achat)
+            med.save()
+            recordOperation(who_did_id=request.user,\
+                    what_operation=f"Modifier Px.Achat de ({str(med.nom_med)[:20]}--code:{code_med})",\
+                    from_value=old_px_achat,\
+                    to_value=new_px_achat)
+            GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
+        
+        return Response({"status": 200})
 
 
+    @action(methods=['get','post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def n_qte(self, request):
+        """
+        Will update the quantite_initial of UmutiEntree.
+
+        Note that this endpoint does not update for under the consumed qte.
+        """
+        data = request.data.get('imiti')
+        if not data:
+            return Response({})
+        
+        code_med = data.get('code_med')
+        code_operation = data.get('code_operation')
+        new_qte = data.get('new_qte')
+        if ((code_med==None) and (code_operation==None) and (new_qte == None)):
+            return Response({"status": 403, "message": "Données incomplètes"})
+
+        med = None
+        try:
+            med = UmutiEntree.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+        except UmutiEntree.DoesNotExist:
+            return Response({"status": 404, "message": "Médicament non trouvé"})
+        
+        if (med.quantite_initial != new_qte) and \
+            (new_qte > 0) and \
+            ((med.quantite_initial - med.quantite_restant) <= new_qte):
+            old_qte = med.quantite_initial
+            # Increase or decrease the remaining quantity
+            new_qte_r = int(med.quantite_restant + (new_qte - med.quantite_initial))
+            med.quantite_initial = int(new_qte)
+            med.quantite_restant = new_qte_r
+            med.save()
+            recordOperation(who_did_id=request.user,\
+                    what_operation=f"Modifier Quantité initial de ({str(med.nom_med)[:20]}--code:{code_med})",\
+                    from_value=old_qte,\
+                    to_value=new_qte)
+            GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
+        elif ((med.quantite_initial - med.quantite_restant) > new_qte) and new_qte:
+            return Response({"status": 403, "message": "La nouvelle quantité est inférieure à la quantité consommée."})
+        elif new_qte == 0:
+            return Response({"status": 403, "message": "Contacter Thierry Jovin pour supprimer ce médicament."})
+        
+        return Response({"status": 200})
