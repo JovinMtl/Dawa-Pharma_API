@@ -90,7 +90,7 @@ class GeneralOps(viewsets.ViewSet):
             med_set_created += 1
 
         num_client = self._createInitClient()
-        med_unit = self._createMedUnit()
+        # med_unit = self._createMedUnit()
         try:
             assu_sans = Assurance.objects.get(name="Sans")
         except Assurance.DoesNotExist:
@@ -145,7 +145,7 @@ class GeneralOps(viewsets.ViewSet):
         created.append(f"ben : {ben}")
         created.append(f"Journal : {journal_i}")
         created.append(f"med_set: {med_set_created}")
-        created.append(f"med_unit: {med_unit}")
+        # created.append(f"med_unit: {med_unit}")
 
         return JsonResponse({"Setup done" : created})
     
