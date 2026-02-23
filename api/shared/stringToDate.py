@@ -38,7 +38,9 @@ def stringToDate(date:str)->list:
 
 def shortStr2Date(date:str)->list:
     """
-    Date of this form: '2024-12-16'
+    Converts Date of this form: '2024-12-16' into native date format
+    [2024, 12, 16]
+    '2024-12-16' is the date format used in the front-end.
     """
     date_list = date.split('-')
     return [int(date_list[0]), int(date_list[1]),\
