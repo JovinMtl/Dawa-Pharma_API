@@ -28,7 +28,7 @@ from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
       ClientSeria, BonDeCommandSeria, OperationSeria, \
     CollectionSeria, InfoSeria, PerteSeria, \
-    MedUnitSeria
+    MedUnitSeria, ClassThepSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -306,6 +306,25 @@ class GeneralOps(viewsets.ViewSet):
 
         return JsonResponse({"Setup" : isReady,\
                              "Missing": missing})
+    
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [AllowAny])
+    def check_class(self, request):
+        """
+        Returns all instances of Assurances, except
+        of name: 'Sans' and 'Pharmacie Ubuzima'
+        """
+        class_ther = request.data.get('imiti')
+        
+        if not class_ther:
+            return Response({"status": 403, "message": "Données manquantes."})
+        qs = ClassThep.objects.filter(name__contains=class_ther)
+        if not qs:
+            return Response({"status": 404, "message": "Classe Thérap non trouvée."})
+        qs_seria = ClassThepSeria(qs, many=True)
+        if qs_seria.is_valid:
+            return Response(qs_seria.data)
+        return Response({})
 
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
@@ -2071,6 +2090,54 @@ class ImitiOut(viewsets.ViewSet):
             })
 
         return JsonResponse({"THings are":"okay"})
+    
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def dispo_non_zero(self, request):
+        page = 0
+        imiti = ImitiSet.objects.filter(quantite_restant__gte=1).order_by('-date_last_vente')
+        # numbering total/syntesis
+        syntesis = self.__make_syntesis(imiti=imiti)
+        syntesis['page_number'] = page
+        syntesis_serialized = SyntesiSeria(syntesis)
+        if page > 0:
+            paginated = Paginator(imiti, 15)
+            imiti = paginated.get_page(int(page))
+
+        imitiSerialized = ImitiSetSeriazer(imiti, many=True)
+
+        if imitiSerialized.is_valid and syntesis_serialized.is_valid:
+            return Response({
+                'data': imitiSerialized.data,
+                'syntesis': syntesis_serialized.data
+            })
+
+        return Response({"THings are":"okay"})
+    
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def dispo_ord_zero(self, request):
+        page = 0
+        imiti = ImitiSet.objects.all().order_by('-quantite_restant')
+        # numbering total/syntesis
+        syntesis = self.__make_syntesis(imiti=imiti)
+        syntesis['page_number'] = page
+        syntesis_serialized = SyntesiSeria(syntesis)
+        if page > 0:
+            paginated = Paginator(imiti, 15)
+            imiti = paginated.get_page(int(page))
+
+        imitiSerialized = ImitiSetSeriazer(imiti, many=True)
+
+        if imitiSerialized.is_valid and syntesis_serialized.is_valid:
+            return Response({
+                'data': imitiSerialized.data,
+                'syntesis': syntesis_serialized.data
+            })
+
+        return Response({"THings are":"okay"})
     
 
     
