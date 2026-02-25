@@ -28,7 +28,7 @@ from .serializers import ImitiSetSeriazer, UmutiSoldSeriazer,\
       LastIndexSeria, SyntesiSeria, AssuranceSeria,\
       ClientSeria, BonDeCommandSeria, OperationSeria, \
     CollectionSeria, InfoSeria, PerteSeria, \
-    MedUnitSeria, ClassThepSeria
+    MedUnitSeria, ClassThepSeria, SubClassThepSeria
 
 #importing my additional code
 from .code_generator import GenerateCode
@@ -324,6 +324,58 @@ class GeneralOps(viewsets.ViewSet):
         qs_seria = ClassThepSeria(qs, many=True)
         if qs_seria.is_valid:
             return Response(qs_seria.data)
+        return Response({})
+    
+
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [AllowAny])
+    def check_subclass(self, request):
+        """
+        Returns all instances of Assurances, except
+        of name: 'Sans' and 'Pharmacie Ubuzima'
+        """
+        s_class_ther = request.data.get('imiti')
+        print(f"s_class_ther: {s_class_ther}")
+        
+        if not s_class_ther:
+            return Response({"status": 403, "message": "Données manquantes."})
+        qs = SubClassThep.objects.filter(n_group=s_class_ther)
+        if not qs:
+            return Response({"status": 404, "message": "Classe Thérap non trouvée."})
+        qs_seria = SubClassThepSeria(qs, many=True)
+        if qs_seria.is_valid:
+            return Response(qs_seria.data)
+        return Response({})
+    
+
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [AllowAny])
+    def add_class_subclass(self, request):
+        """
+        Returns all instances of Assurances, except
+        of name: 'Sans' and 'Pharmacie Ubuzima'
+        """
+        data = request.data.get('imiti')
+        class_ther = str(data.get('newClassName'))
+        s_class_ther = str(data.get('newSubClassName'))
+        n_group = str(data.get('n_group'))
+        print(f"The data sent: {data}")
+        
+        if (s_class_ther==None) and\
+            ((class_ther==None) or\
+            (n_group==None)):
+            return Response({"status": 403, "message": "Données manquantes."})
+        status = 0
+        if n_group:
+            # existing class
+            status = self._add_sub_class([s_class_ther, n_group])
+        elif class_ther:
+            # new class
+            status = self._createOneClass([class_ther, s_class_ther])
+
+        if status != 200:
+            return Response({"status": 403, "message": "Opération echouée."})  
+        
         return Response({})
 
     @action(methods=['get'], detail=False,\
@@ -647,6 +699,27 @@ class GeneralOps(viewsets.ViewSet):
             sub_cl_obj.save()
         
         return 200
+    def _add_sub_class(self, data:list)->int:
+        """ adds a new subClass
+        Data: ['s_class_ther', 'n_group']"""
+        s_class_ther = str(data[0])[:70]
+        n_group = str(data[1])[:5]
+        
+        # Check if there is a class with that n_group.
+        cl = None
+        try:
+            cl = ClassThep.objects.get(n_group=n_group)
+        except ClassThep.DoesNotExist:
+            return 404
+        
+        # the doublon of s_cl does not matter
+        new_s_cl = SubClassThep.objects.create(\
+            name=s_class_ther, parent=cl, \
+            n_group=n_group)
+        new_s_cl.save()
+
+        return 200
+    
     def _createMedUnit(self)->int:
         units = [
             ('Pièce', 1), ('Cpe', 1),
