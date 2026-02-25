@@ -359,7 +359,6 @@ class GeneralOps(viewsets.ViewSet):
         class_ther = str(data.get('newClassName'))
         s_class_ther = str(data.get('newSubClassName'))
         n_group = str(data.get('n_group'))
-        print(f"The data sent: {data}")
         
         if (s_class_ther==None) and\
             ((class_ther==None) or\
@@ -376,7 +375,7 @@ class GeneralOps(viewsets.ViewSet):
         if status != 200:
             return Response({"status": 403, "message": "Opération echouée."})  
         
-        return Response({})
+        return Response({"status": 200})
 
     @action(methods=['get'], detail=False,\
              permission_classes= [AllowAny])
@@ -712,11 +711,15 @@ class GeneralOps(viewsets.ViewSet):
         except ClassThep.DoesNotExist:
             return 404
         
-        # the doublon of s_cl does not matter
-        new_s_cl = SubClassThep.objects.create(\
-            name=s_class_ther, parent=cl, \
-            n_group=n_group)
-        new_s_cl.save()
+        # check the doublon
+        qs = SubClassThep.objects.filter(name=s_class_ther, n_group=n_group)
+        if not qs:
+            new_s_cl = SubClassThep.objects.create(\
+                name=s_class_ther, parent=cl, \
+                n_group=n_group)
+            new_s_cl.save()
+        else:
+            return 403
 
         return 200
     
@@ -807,6 +810,21 @@ class GeneralOps(viewsets.ViewSet):
         y.remove([]) # removing the initial empty list
 
         return JsonResponse({"x":x, "y":y})
+
+
+    @action(methods=['get'], detail=False,\
+             permission_classes= [AllowAny])
+    def getClasses_(self, request):
+        """
+        Returns the array of classes 
+        """
+        cl = ClassThep.objects.all()
+        cl_seria = ClassThepSeria(cl, many=True)
+        
+        if cl_seria.is_valid:
+            return Response(cl_seria.data)
+        
+        return JsonResponse({})
     
     @action(methods=['get'], detail=False,\
              permission_classes= [IsAdminUser])
