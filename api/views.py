@@ -472,6 +472,31 @@ class GeneralOps(viewsets.ViewSet):
             return Response(units_seria.data)
         return Response({})
     
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [AllowAny])
+    def unit_confirm(self, request):
+        data = request.data.get("imiti")
+        code_med = data.get('code_med')
+        unit_med_id = data.get('med_unit_id')
+
+        if (code_med==None and unit_med_id==None):
+            return Response({"status": 403, "message": "Données manquantes."})
+        
+        unit = None
+        try:
+            unit = MedUnit.objects.get(id=unit_med_id)
+        except MedUnit.DoesNotExist:
+            return Response({"status": 403, "message": "Unité introuvable."})
+        med = None
+        try:
+            med = ImitiSet.objects.get(code_med=code_med)
+        except ImitiSet.DoesNotExist:
+            return Response({"status": 403, "message": "Medicament introuvable."})
+        med.med_unit = unit
+        med.save()
+
+        return Response({"status": 200})
+    
     @action(methods=['post'], detail=False,\
              permission_classes= [AllowAny])
     def getInfo(self, request):
@@ -1671,6 +1696,59 @@ class GeneralOps2(viewsets.ViewSet):
             med.date_operation = new_date
             med.save()
         bon.save()
+
+        return Response({
+            'response': 200
+        })
+    
+    @action(methods=['get', 'post'], detail=False,\
+             permission_classes= [IsAdminUser])
+    def move_achat(self, request):
+        data_sent = request.data.get('imiti')
+        new_date = data_sent.get('newDate')
+        code_med = data_sent.get('codeMed')
+        code_operation = data_sent.get('codeOperation')
+        
+        if code_med==None or  new_date==None or code_operation==None :
+            return Response({
+                'response': 0
+            }) 
+
+        try:
+            med = UmutiEntree.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+            med_ = UmutiEntreeBackup.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+        except UmutiEntree.DoesNotExist:
+            return Response({
+                'response': 0
+            })
+        
+        if str(med.date_entrant)[:10] == new_date:
+            print("shouldn't change same date")
+            return Response({
+                'response': 0
+            })
+        date_str = str(new_date).split('-')
+        new_date = datetime(year=int(date_str[0]), month=int(date_str[1]), day=int(date_str[2]))
+        new_date = timezone.make_aware(new_date)
+        if new_date > timezone.now():
+            print("shouldn't change to future date.")
+            return Response({
+                'response': 0
+            })
+
+        
+        date_entrant = med.date_entrant
+        h = date_entrant.hour + 2   # +2 to keep timezone.
+        m = date_entrant.minute
+        s = date_entrant.second
+        new_date += timedelta(hours=h)
+        new_date += timedelta(minutes=m)
+        new_date += timedelta(seconds=s)
+        
+        med.date_entrant = new_date
+        med_.date_entrant = new_date
+        med.save()
+        med_.save()
 
         return Response({
             'response': 200
@@ -4124,7 +4202,80 @@ class ModifierAchat(viewsets.ViewSet):
     @action(methods=['get','post'], detail=False,\
              permission_classes= [IsAdminUser])
     def unite_augm(self, request):
-        return Response({})
+        print(f"data: {request.data}")
+        data = request.data.get('imiti')
+        if data==None:
+            return Response({"status": 403, "message": "Données manquantes"})
+        
+        code_med = data.get('code_med')
+        code_operation = data.get('code_operation')
+        old_unit = data.get('old_unit')
+        new_unit = data.get('new_unit')
+        qte = data.get('qte')
+        old_qte = 1
+        if code_med==None or code_operation==None or\
+            old_unit==None or new_unit==None or\
+            qte==None:
+            return Response({"status": 403, "message": "Données erronées."})
+        elif not(type(code_med)==str and \
+                type(code_operation)==str and \
+                type(old_unit)==str and \
+                type(new_unit)==str and \
+                type(qte)==int):
+            return Response({"status": 403, "message": "Format des données erronées."})
+        else:
+            pass
+
+        med_unit = None
+        try:
+            med_unit = MedUnit.objects.get(unit=new_unit)
+        except MedUnit.DoesNotExist:
+            return Response({"status": 403, "message": "Med_unit introuvable."})
+        
+        med = None
+        try:
+            med = UmutiEntree.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+            med_ = UmutiEntreeBackup.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+        except UmutiEntree.DoesNotExist:
+            return Response({"status": 403, "message": "Médicament introuvable."})
+        
+        med.med_unit = med_unit
+        med_.med_unit = med_unit
+
+        # increase qte_initial 
+        # (qte_initial * qte) and 
+        # qte_restant (qte_restant * qte)
+        old_qte = med.quantite_initial
+        med.quantite_initial = med.quantite_initial * qte
+        med_.quantite_initial = med.quantite_initial
+        med.quantite_restant = med.quantite_restant * qte
+        med_.quantite_restant = med.quantite_restant
+        
+        # decrease px_achat ( px_achat / qte )
+        med.prix_achat = round(med.prix_achat / qte)
+
+        med.save()
+        med_.save()
+
+        # query umutisold:
+        med_solds = UmutiSold.objects.filter(\
+            Q(code_med=code_med) & \
+            Q(code_operation_entrant=code_operation))
+        # px_vente = px_vente / qte
+        # qty = qty * qte
+        for med_sold in med_solds:
+            med_sold.prix_vente = round(med_sold.prix_vente / qte)
+            med_sold.quantity = med_sold.quantity * qte
+            med_sold.save()
+
+
+        recordOperation(who_did_id=request.user,\
+                what_operation=f"Modifier unité ({str(med.nom_med)[:20]}--code:{code_med})",\
+                from_value=f"{old_unit}:{old_qte}",\
+                to_value=f"{new_unit}:{old_qte*qte}")
+        GeneralOps._update_code_for_sync(self=GeneralOps, code_med=code_med)
+
+        return Response({"status": 200})
     
     @action(methods=['get','post'], detail=False,\
              permission_classes= [IsAdminUser])
@@ -4142,6 +4293,7 @@ class ModifierAchat(viewsets.ViewSet):
         med = None
         try:
             med = UmutiEntree.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
+            med_ = UmutiEntreeBackup.objects.get(Q(code_med=code_med) & Q(code_operation=code_operation))
         except UmutiEntree.DoesNotExist:
             return Response({})
         
@@ -4149,7 +4301,9 @@ class ModifierAchat(viewsets.ViewSet):
             (new_px_achat > 0):
             old_px_achat = med.prix_achat
             med.prix_achat = int(new_px_achat)
+            med_.prix_achat = med.prix_achat
             med.save()
+            med_.save()
             recordOperation(who_did_id=request.user,\
                     what_operation=f"Modifier Px.Achat de ({str(med.nom_med)[:20]}--code:{code_med})",\
                     from_value=old_px_achat,\
