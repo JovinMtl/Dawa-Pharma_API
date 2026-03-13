@@ -12,6 +12,32 @@ year_1970 = today - timedelta(days=52209)
 
 # All the structure of Pharma operations will be defined here
 
+
+class MedUnit(models.Model):
+    unit = models.CharField(max_length=25, default='Plaquette')
+    level = models.IntegerField(default=1)
+
+    def __str__(self) -> str:
+        return f"{str(self.unit)} = level: {self.level}."
+
+def getMedUnitInstance():
+    unit = 1
+    try:
+        unit = MedUnit.objects.get(unit='Plaquette')
+    except MedUnit.DoesNotExist:
+        unit = MedUnit.objects.create()
+        unit.save()
+    return unit
+
+def getMedUnitInstance_():
+    unit = None
+    try:
+        unit = MedUnit.objects.get(unit='Plaquette')
+    except MedUnit.DoesNotExist:
+        unit = MedUnit.objects.create()
+        unit.save()
+    return unit.id
+
 class UmutiEntree(models.Model):
     date_entrant = models.DateTimeField(default=timezone.now)
     date_peremption = models.DateField(default=timezone.now)
@@ -33,6 +59,7 @@ class UmutiEntree(models.Model):
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
     operator = models.CharField(max_length=20, default='null')
+    med_unit = models.ForeignKey(MedUnit, on_delete=models.CASCADE, default=getMedUnitInstance)
 
     def __str__(self) -> str:
         return f"{self.code_med} : {(str(self.date_peremption))[:7]} : {self.nom_med} : {self.quantite_restant}= {self.prix_vente}"
@@ -58,6 +85,7 @@ class UmutiEntreeBackup(models.Model):
     location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     code_operation = models.CharField(max_length=12, default='null') #code yo kwinjiza uwo muti(miti):commune
     operator = models.CharField(max_length=20, default='null')
+    med_unit = models.ForeignKey(MedUnit, on_delete=models.CASCADE, default=getMedUnitInstance)
 
     def __str__(self) -> str:
         return f"{self.code_med} {(str(self.date_entrant))[:7]}"
@@ -93,6 +121,8 @@ class ImitiSet(models.Model):
     pr_interest = models.FloatField(default=1.5)
     sync_code = models.IntegerField(default=0)
     last_prix_vente = models.BooleanField(default=False)
+    med_unit = models.ForeignKey(MedUnit, on_delete=models.CASCADE, default=getMedUnitInstance_)
+
 
 
     def __str__(self) -> str:
@@ -308,9 +338,3 @@ class PerteMed(models.Model):
         return f"{str(self.med.nom_med)[:10]}, qte: {self.qte}, pxVente:{self.prix_vente}"
 
 
-class MedUnit(models.Model):
-    unit = models.CharField(max_length=25, default='Plaquette')
-    level = models.IntegerField(default=1)
-
-    def __str__(self) -> str:
-        return f"{str(self.unit)}, level: {self.level}."
