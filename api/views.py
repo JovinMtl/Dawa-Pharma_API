@@ -1954,7 +1954,7 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.classe_med = obj.get('classe_med') 
         umuti_new.sous_classe_med = obj.get('sous_classe_med') 
         umuti_new.forme = obj.get('forme')
-        umuti_new.type_med = str(obj.get('type_med', 'Boite'))[:9]
+        # umuti_new.type_med = str(obj.get('type_med', 'Boite'))[:9]
         # if obj.get('ratio'):
         #     umuti_new.ratio = obj.get('ratio')
         # umuti_new.type_vente = obj.get('type_vente')
@@ -3832,13 +3832,13 @@ class Rapport(viewsets.ViewSet):
             umuti_new.code_med = umuti_entree.get('code_med')
             umuti_new.nom_med = umuti_entree.get('nom_med')
             umuti_new.description_umuti = umuti_entree.get('description_med')
-            umuti_new.type_med = umuti_entree.get('famille_med')
-            umuti_new.type_achat = umuti_entree.get('type_achat')
-            umuti_new.ratio = umuti_entree.get('ratio')
+            # umuti_new.type_med = umuti_entree.get('famille_med')
+            # umuti_new.type_achat = umuti_entree.get('type_achat')
+            # umuti_new.ratio = umuti_entree.get('ratio')
             # umuti_new.type_vente = umuti_entree.get('type_vente')
             umuti_new.prix_achat = umuti_entree.get('prix_vente')
             umuti_new.prix_vente = umuti_entree.get('prix_vente')
-            umuti_new.difference = umuti_entree.get('difference')
+            # umuti_new.difference = umuti_entree.get('difference')
             umuti_new.quantite_initial = umuti_entree.get('quantite_initial')
             umuti_new.quantite_restant = umuti_entree.get('quantite_restant')
             # umuti_new.location = umuti_entree.get('location')

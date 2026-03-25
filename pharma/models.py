@@ -46,13 +46,9 @@ class UmutiEntree(models.Model):
     classe_med = models.CharField(max_length=65, default='null')
     sous_classe_med = models.CharField(max_length=65, default='null')
     forme = models.CharField(max_length=8, default='null')
-    type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
-    type_achat  = models.CharField(max_length=10, default='null') #kurangura  carton
-    ratio = models.FloatField(default=1) #ari carton ndayidandaza carton
     type_vente = models.CharField(max_length=10, default='null') #kudetailla
     prix_achat = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe
     prix_vente = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
-    prix_achat_usd = models.FloatField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
     prix_vente_usd = models.FloatField(default=0) #8: ayo plaquette tuyidandaza muri usd
     quantite_initial = models.IntegerField(default=0) # izinjiye ubwambere
     quantite_restant = models.FloatField(default=0) #10: plaquette zisigaye
@@ -72,13 +68,9 @@ class UmutiEntreeBackup(models.Model):
     classe_med = models.CharField(max_length=65, default='null')
     sous_classe_med = models.CharField(max_length=65, default='null')
     forme = models.CharField(max_length=8, default='null')
-    type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
-    type_achat  = models.CharField(max_length=10, default='null') #kurangura  carton
-    ratio = models.FloatField(default=1) #ari carton ndayidandaza carton
     type_vente = models.CharField(max_length=10, default='null') #kudetailla
     prix_achat = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe
     prix_vente = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
-    prix_achat_usd = models.FloatField(default=0)  #7: ayo Carton/plaquette yaranguwe muri usd
     prix_vente_usd = models.FloatField(default=0) #8: ayo plaquette tuyidandaza muri usd
     quantite_initial = models.FloatField(default=0) # izinjiye ubwambere
     quantite_restant = models.IntegerField(default=0) #10: plaquette zisigaye
@@ -97,16 +89,10 @@ class ImitiSet(models.Model):
     classe_med = models.CharField(max_length=65, default='null')
     sous_classe_med = models.CharField(max_length=65, default='null')
     forme = models.CharField(max_length=8, default='null')
-    # type_med = models.CharField("Ni Flacon canke plaquette,",max_length=10, default='null')  # ...
-    # type_achat  = models.CharField(max_length=10, default='null') #kurangura
-    # ratio = models.FloatField(default=1) #ari carton ndayidandaza carton
-    # type_vente = models.CharField(max_length=10, default='null') #kudetailla
     prix_achat = models.IntegerField(default=0)  #7: ayo Carton/plaquette yaranguwe
     prix_vente = models.IntegerField(default=0) #8: ayo plaquette tuyidandaza
     prix_vente_usd = models.FloatField(default=0) #8: ayo plaquette tuyidandaza muri usd
-    # difference = models.IntegerField(default=0) #9: benefice ONY ADMIN
     quantite_restant = models.FloatField(default=0) #10: plaquette zisigaye
-    # location = models.CharField(max_length=10, default='null')  #11: ni nka cote yaho wowusanga vyoroshe
     lot = models.TextField() #dates izohererako 
     # [
     #    {'date':"2025,04", 'qte':"3", 'code_operation':'12stM'},
