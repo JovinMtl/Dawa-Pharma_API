@@ -1589,7 +1589,7 @@ class GeneralOps2(viewsets.ViewSet):
     An extension of GeneralOps.
     """
     @action(methods=['get', 'post'], detail=False,\
-             permission_classes= [IsAdminUser])
+             permission_classes= [AllowAny])
     def request_infos(self, request):
         info = Info.objects.first()
         info_s = InfoSeria(info)
@@ -1638,6 +1638,55 @@ class GeneralOps2(viewsets.ViewSet):
             info_update.save()
 
         return 200
+    
+    @action(methods=['post'], detail=False,\
+             permission_classes= [IsAuthenticated])
+    def set_fixed_prix_vente(self, request):
+        """
+        Will do as the name suggests.
+        """
+        data = request.data.get('imiti')
+
+        if data == None:
+            return Response({"status": 403, "message": "Données manquantes"})
+
+        code_med = data.get('code_med')
+        prix_vente = data.get('prix_vente')
+        is_prix_vente_fixed = data.get('is_prix_vente_fixed')
+        new_prix_vente = data.get('new_prix_vente')
+        
+        if code_med==None or prix_vente==None or \
+            is_prix_vente_fixed==None  or\
+            new_prix_vente==None:
+            return Response({"status": 403, "message": "Données incomplètes"})
+        if (type(code_med) != str) or \
+            (type(prix_vente) != int) or \
+            (type(is_prix_vente_fixed) != bool) or \
+            (type(new_prix_vente) != int) or \
+            (new_prix_vente <= 0):
+            return Response({"status": 403, "message": "Données invalides"})
+        
+        med = None
+        try:
+            med = ImitiSet.objects.get(code_med=code_med)
+        except ImitiSet.DoesNotExist:
+            return Response({"status": 404, "message": "Médicament non trouvé"})
+        
+        if is_prix_vente_fixed and \
+            (med.prix_vente == new_prix_vente):
+            return Response({"status": 403, "message": "Meme chose"})
+        
+        med.is_prix_vente_fixed = is_prix_vente_fixed
+        med.prix_vente = new_prix_vente
+        med.save()
+
+        recordOperation(who_did_id=request.user, \
+                what_operation=f"Prix de Vente fixe ({'Activé' if med.is_prix_vente_fixed else 'Désactivé'}) sur {(med.nom_med)[:15]} -- [{med.code_med}]", \
+                from_value=prix_vente, \
+                to_value=f"{new_prix_vente if med.is_prix_vente_fixed else 0}")
+        GeneralOps._update_code_for_sync(self=GeneralOps, code_med=med.code_med)
+        
+        return Response({"status": 200})
     
     @action(methods=['post'], detail=False,\
              permission_classes= [IsAuthenticated])
@@ -2001,7 +2050,9 @@ class EntrantImiti(viewsets.ViewSet):
                 #we create that entry in the ImitiSet
                 umuti_new = self._umutiMushasha(umutie)
             else:
-                if umuti_set.code_med=='1EC66r': print(f"Started with sync_code {sync_code}: {umuti_set.sync_code}, v:{umuti_set.prix_vente}")
+                if umuti_set.is_prix_vente_fixed: 
+                    print(f"Can't touch this. Px.V:{umuti_set.prix_vente}")
+                    continue
                 if sync_code != umuti_set.sync_code:
                     umuti_set.lot = str(init_lot(umuti=umutie))
                     umuti_set.sync_code = sync_code
@@ -4219,14 +4270,12 @@ class ModifierAchat(viewsets.ViewSet):
         
         code_med = data.get('code_med')
         code_operation = data.get('code_operation')
-        old_unit = data.get('old_unit')
         new_unit = data.get('new_unit')
         if code_med==None or code_operation==None or\
-            old_unit==None or new_unit==None :
+            new_unit==None :
             return Response({"status": 403, "message": "Données erronées."})
         elif not(type(code_med)==str and \
                 type(code_operation)==str and \
-                type(old_unit)==str and \
                 type(new_unit)==str):
             return Response({"status": 403, "message": "Format des données erronées."})
         else:
