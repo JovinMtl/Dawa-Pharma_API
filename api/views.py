@@ -2230,10 +2230,10 @@ class EntrantImiti(viewsets.ViewSet):
         umuti_new.sous_classe_med = \
             (str(umuti.sous_classe_med))[:65]
         umuti_new.forme = (str(umuti.forme))[:7]
-        umuti_new.type_med = str(umuti.type_med)
-        umuti_new.type_achat = str(umuti.type_achat)
-        umuti_new.ratio = str(umuti.ratio)
-        umuti_new.type_vente = str(umuti.type_vente)
+        # umuti_new.type_med = str(umuti.type_med)
+        # umuti_new.type_achat = str(umuti.type_achat)
+        # umuti_new.ratio = str(umuti.ratio)
+        # umuti_new.type_vente = str(umuti.type_vente)
         usd_to_bif = UsdToBif.objects.get(id=1)
         try:
             last_umuti = UmutiEntree.objects.filter(code_med=umuti_new.code_med).last()
@@ -2249,7 +2249,7 @@ class EntrantImiti(viewsets.ViewSet):
             pass
         
         umuti_new.quantite_restant = umuti.quantite_restant
-        umuti_new.location = str(umuti.location)
+        # umuti_new.location = str(umuti.location)
         umuti_new.lot = str('')
         umuti_new.date_last_vente = umuti.date_entrant
         umuti_new.qte_entrant_big = int(umuti.quantite_initial)
@@ -3835,13 +3835,13 @@ class Rapport(viewsets.ViewSet):
             umuti_new.type_med = umuti_entree.get('famille_med')
             umuti_new.type_achat = umuti_entree.get('type_achat')
             umuti_new.ratio = umuti_entree.get('ratio')
-            umuti_new.type_vente = umuti_entree.get('type_vente')
+            # umuti_new.type_vente = umuti_entree.get('type_vente')
             umuti_new.prix_achat = umuti_entree.get('prix_vente')
             umuti_new.prix_vente = umuti_entree.get('prix_vente')
             umuti_new.difference = umuti_entree.get('difference')
             umuti_new.quantite_initial = umuti_entree.get('quantite_initial')
             umuti_new.quantite_restant = umuti_entree.get('quantite_restant')
-            umuti_new.location = umuti_entree.get('location')
+            # umuti_new.location = umuti_entree.get('location')
             umuti_new.code_operation = umuti_entree.get('code_operation')
             umuti_new.operator = umuti_entree.get('operator')
 
