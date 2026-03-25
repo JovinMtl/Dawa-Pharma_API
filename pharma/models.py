@@ -122,6 +122,7 @@ class ImitiSet(models.Model):
     sync_code = models.IntegerField(default=0)
     last_prix_vente = models.BooleanField(default=False)
     med_unit = models.ForeignKey(MedUnit, on_delete=models.CASCADE, default=getMedUnitInstance_)
+    is_prix_vente_fixed = models.BooleanField(default=False)
 
 
 
