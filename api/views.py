@@ -2051,7 +2051,7 @@ class EntrantImiti(viewsets.ViewSet):
                 umuti_new = self._umutiMushasha(umutie)
             else:
                 if umuti_set.is_prix_vente_fixed: 
-                    print(f"Can't touch this. Px.V:{umuti_set.prix_vente}")
+                    print(f"Can't touch this, with code {umuti_set.code_med}, Px.V:{umuti_set.prix_vente}.")
                     continue
                 if sync_code != umuti_set.sync_code:
                     umuti_set.lot = str(init_lot(umuti=umutie))
