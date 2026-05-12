@@ -13,7 +13,7 @@ from api.shared.stringToList import StringToList
 from api.views import EntrantImiti
 
 #importing a model to mock about its operation
-from pharma.models import UmutiSold
+from pharma.models import UmutiSold, UsdToBif
 
 
 class EntrantImitiTestCase(APITestCase):
@@ -21,6 +21,8 @@ class EntrantImitiTestCase(APITestCase):
 
     def setUp(self) -> None:
         self.instance = EntrantImiti()
+        # Create required UsdToBif record for _umutiMushasha
+        UsdToBif.objects.get_or_create(id=1, defaults={'actualExchangeRate': 2800})
 
     def test_umutiMushasha(self):
         umuti_entree = Mock()
@@ -68,12 +70,12 @@ class EntrantImitiTestCase(APITestCase):
             date_patched.return_value = {'date_operation': datetime.today()}
 
     def test_findLastDate(self):
-        umuti = 'jo33'
+        code_med = 'jo33'
         UmutiSold = Mock()
         # UmutiSold.objects.filter.side_effect = self._give_umutiSold()
         UmutiSold.objects.filter().last.return_value = type('obj', (object,), {'date_operation': datetime.today()})
         # umuti.date_operation = datetime.today()
-        reponse = self.instance._findLastDate(code_umuti=umuti)
+        reponse = self.instance._findLastDate(code_med=code_med)
 
         print(f"The response is {reponse}")
 

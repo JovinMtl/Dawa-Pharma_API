@@ -25,14 +25,14 @@ class RapportTestCase(APITestCase):
 
     def test_recordNew(self):
         """Testing the record new. umuti_new is of type umutiSold"""
-        umuti_sold = MagicMock
-        umuti_sold.code_umuti = 1
-        umuti_sold.name_umuti = "test 1 umuti"
+        umuti_sold = MagicMock()
+        umuti_sold.code_med = 'test_code_1'
+        umuti_sold.name_med = "test 1 umuti"
         umuti_sold.quantity = 3
-        umuti_sold.price_out = 1500
+        umuti_sold.prix_vente = 1500
 
         umuti_sold.price_total = 4500
-        umuti_sold.price_in = 1200
+        umuti_sold.prix_achat = 1200
         umuti_sold.difference = 900
 
         response = self.instance_rapport._recordNew(umuti=umuti_sold)
@@ -41,17 +41,17 @@ class RapportTestCase(APITestCase):
     
     def test_makeReport(self):
         """Works on umutiSold objects"""
-        umuti_sold = MagicMock
-        umuti_sold.code_umuti = 1
-        umuti_sold.name_umuti = "test 1 umuti"
+        umuti_sold = MagicMock()
+        umuti_sold.code_med = 'test_code_1'
+        umuti_sold.name_med = "test 1 umuti"
         umuti_sold.quantity = 3
-        umuti_sold.price_out = 1500
+        umuti_sold.prix_vente = 1500
 
         umuti_sold.price_total = 4500
-        umuti_sold.price_in = 1200
+        umuti_sold.prix_achat = 1200
         umuti_sold.difference = 900
     #     umuti_sold_qs.iterator.return_value = iter((individual_obj1, individual_obj2, individual_obj3))
-        response = self.instance_rapport._makeReport([ umuti_sold])
+        response = self.instance_rapport._makeReport([umuti_sold])
         assert response == 200
     
     def test_updateRecord(self):
@@ -59,7 +59,7 @@ class RapportTestCase(APITestCase):
         umuti_set: nb_rest, nb_vente, px_T_vente, benefice, px_T_rest
         umuti: quantity, price_in, price_out, 
         """
-        umuti_set = Mock
+        umuti_set = Mock()
         umuti_set.nb_rest = 4
         umuti_set.nb_vente = 3
         umuti_set.px_T_vente = 4500
@@ -69,13 +69,13 @@ class RapportTestCase(APITestCase):
         umuti_set.save = Mock()
         umuti_set.save.side_effect = self._save_func
 
-        umuti = MagicMock
+        umuti = MagicMock()
         umuti.quantity = 3
-        umuti.price_in = 1200
-        umuti.price_out = 1500
+        umuti.prix_achat = 1200
+        umuti.prix_vente = 1500
 
-        response = self.instance_rapport._updateRecord(umuti_set=umuti_set\
-                                                       , umuti=umuti)
+        response = self.instance_rapport._updateRecord(umuti_set=umuti_set,
+                                                       umuti=umuti)
         assert response.nb_rest == 1
     
     def _save_func(self):
