@@ -1,7 +1,8 @@
 
 from rest_framework.test import APITestCase
-from datetime import datetime, timedelta
+from datetime import timedelta
 from django.urls import reverse
+from django.utils import timezone
 import json
 
 
@@ -26,8 +27,8 @@ class EntrantImitiTestCase(APITestCase):
 
     def test_umutiMushasha(self):
         umuti_entree = Mock()
-        umuti_entree.date_winjiriyeko = datetime.today()
-        umuti_entree.date_peremption = datetime.today() + \
+        umuti_entree.date_winjiriyeko = timezone.now()
+        umuti_entree.date_peremption = timezone.now() + \
             timedelta(days=360)
         umuti_entree.code_umuti = 'a23et'
         umuti_entree.name_umuti = 'amoxi'
@@ -67,13 +68,13 @@ class EntrantImitiTestCase(APITestCase):
     
     def give_date(self):
         with patch('EntrantImiti._findLastDate') as date_patched:
-            date_patched.return_value = {'date_operation': datetime.today()}
+            date_patched.return_value = {'date_operation': timezone.now()}
 
     def test_findLastDate(self):
         code_med = 'jo33'
         UmutiSold = Mock()
         # UmutiSold.objects.filter.side_effect = self._give_umutiSold()
-        UmutiSold.objects.filter().last.return_value = type('obj', (object,), {'date_operation': datetime.today()})
+        UmutiSold.objects.filter().last.return_value = type('obj', (object,), {'date_operation': timezone.now()})
         # umuti.date_operation = datetime.today()
         reponse = self.instance._findLastDate(code_med=code_med)
 

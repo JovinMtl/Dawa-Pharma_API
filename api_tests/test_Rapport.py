@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
-from datetime import datetime
 from django.urls import reverse
+from django.utils import timezone
 
 from unittest.mock import MagicMock, Mock
 
@@ -13,7 +13,7 @@ class RapportTestCase(APITestCase):
 
     def setUp(self) -> None:
         self.data = {
-            'date1': datetime.now()
+            'date1': timezone.now()
         }
         self.url = reverse('rep-reportSell')
         self.request = self.client.post(self.url, data=self.data)
