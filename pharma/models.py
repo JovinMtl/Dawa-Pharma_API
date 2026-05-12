@@ -21,13 +21,13 @@ class MedUnit(models.Model):
         return f"{str(self.unit)} = level: {self.level}."
 
 def getMedUnitInstance():
-    unit = 1
+    unit = None
     try:
         unit = MedUnit.objects.get(unit='Plaquette')
     except MedUnit.DoesNotExist:
         unit = MedUnit.objects.create()
         unit.save()
-    return unit
+    return unit.id
 
 def getMedUnitInstance_():
     unit = None
